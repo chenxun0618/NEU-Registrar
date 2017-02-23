@@ -10,12 +10,15 @@
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
 
         function init() {
+            if ($routeParams.crn === "_") {
+                $routeParams.crn = "";
+            }
             vm.crn = $routeParams.crn;
             vm.addClass = !vm.crn;
             vm.editClass = !!vm.crn;
 
             if (vm.editClass) {
-                vm.class = ClassService.getClassByCRN(vm.crn); // find in session state instead for now
+                vm.class = findClassInSessionState(vm.crn); // find in session state instead for now
             } else {
                 vm.class = {};
             }
@@ -37,6 +40,10 @@
             timesOfDay = [];
             var count = 0;
             for (var x = 0; x < 2400; x += 5) {
+                if (x % 100 == 60) {
+                    x += 35;
+                    continue;
+                }
                 var str = ("000" + x);
                 var str2 = str.slice(str.length - 4, str.length - 2) + ":" + str.slice(str.length - 2);
                 timesOfDay[count] = str2;
@@ -52,8 +59,32 @@
         }
 
         function saveAndReturnToSchedule() {
-            // iterate through session state to find thing, or if add mode, append to end
+            var schedule = JSON.parse(sessionStorage.schedule);
+            if (vm.addClass) {
+                vm.class.crn = "" + Math.floor(Math.random() * 10000); // dummy for now
+                schedule.push(vm.class);
+            } else {
+                editOldClass(schedule[vm.class.sessionStateIndex], vm.class);
+            }
+            sessionStorage.schedule = JSON.stringify(schedule);
             $location.url("/schedule-submission");
+        }
+
+        function findClassInSessionState(crn) {
+            var schedule = JSON.parse(sessionStorage.schedule);
+            for (var x = 0; x < schedule.length; x++) {
+                var current = schedule[x];
+                if (current.crn === crn) {
+                    current.sessionStateIndex = x;
+                    return current;
+                }
+            }
+        }
+
+        function editOldClass(oldClass, newClass) {
+            oldClass.meetingDays = newClass.meetingDays;
+            oldClass.meetingStart = newClass.meetingStart;
+            oldClass.meetingEnd = newClass.meetingEnd;
         }
 
         init();
