@@ -1,0 +1,56 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <p class="navbar-text pull-left">
+                <a back class="navbar-link">
+                    <span class="glyphicon glyphicon-chevron-left"/>
+                </a>
+            </p>
+            <a class="navbar-brand">
+                Schedule
+            </a>
+            <p class="navbar-text pull-right">
+                <a ng-if="model.loggedInUser && model.loggedInUser._id === model.uid && model.user.isManager" href="#/user/{{model.uid}}/fund/{{model.fid}}/security/add" class="navbar-link">
+                    <span class="glyphicon glyphicon-search"/>
+                </a>
+            </p>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div ng-if="model.error" class="alert alert-danger">
+        {{model.error}}
+    </div>
+
+    <ul class="list-group">
+        <li ng-if="model.securities.length === 0" class="list-group-item">
+            <a class="no-color">No securities found</a>
+        </li>
+        <li ng-if="model.securities.length > 0" class="list-group-item">
+            <a class="no-color bold">Security</a>
+            <a class="pull-right no-color">Percent Change</a>
+        </li>
+        <li ng-repeat="security in model.securities" class="list-group-item">
+            <a href="#/user/{{model.uid}}/fund/{{model.fid}}/security/{{security._id}}">{{security.symbol}}</a>
+            <a class="pull-right" ng-class="{'red-text': (security.percentChange.substring(0, security.percentChange.length - 1) < 0),
+            'green-text': (security.percentChange.substring(0, security.percentChange.length - 1) > 0),
+            'black-text': (security.percentChange.substring(0, security.percentChange.length - 1) == 0)}">
+                {{security.percentChange}}
+            </a>
+        </li>
+    </ul>
+</div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <p class="navbar-text pull-right">
+                <a href="#/user/{{model.loggedInUser._id}}">
+                    <span class="glyphicon glyphicon-user"/>
+                </a>
+            </p>
+        </div>
+    </div>
+</nav>

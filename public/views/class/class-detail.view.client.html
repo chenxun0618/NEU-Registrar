@@ -1,0 +1,105 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <p class="navbar-text pull-left">
+                <a back class="navbar-link">
+                    <span class="glyphicon glyphicon-chevron-left"/>
+                </a>
+            </p>
+            <a class="navbar-brand">
+                {{(model.loggedInUser && model.loggedInUser._id === model.uid && model.user.isManager) ? "Class Edit" : "Class Add"}}
+            </a>
+            <p ng-if="model.loggedInUser && model.loggedInUser._id === model.uid && model.user.isManager" class="navbar-text pull-right">
+                <a ng-click="model.updateFund(model.fundname, model.description)" class="navbar-link">
+                    <span class="glyphicon glyphicon-ok"/>
+                </a>
+            </p>
+        </div>
+    </div>
+</nav>
+
+<div ng-if="model.loggedInUser && model.loggedInUser._id === model.user._id && model.user.isManager" class="container">
+
+    <div ng-if="model.error" class="alert alert-danger">
+        {{model.error}}
+    </div>
+
+    <form>
+        <div class="form-group">
+            <label for="fundname">Name</label>
+            <input ng-model="model.fund.name"
+                   type="text"
+                   class="form-control"
+                   id="fundname"
+                   placeholder="Name"
+                   ng-class="{'error': model.error == model.missing_fund_name}"/>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+			<textarea ng-model="model.fund.description" rows="5" id="description" class="form-control"
+                      placeholder="Description"></textarea>
+        </div>
+    </form>
+
+    <a class="btn btn-danger btn-block"
+       ng-click="model.deleteFund()">Delete</a>
+</div>
+
+<div ng-if="!(model.loggedInUser && model.loggedInUser._id === model.user._id && model.user.isManager)" class="container">
+
+    <div ng-if="model.error" class="alert alert-danger">
+        {{model.error}}
+    </div>
+
+    <ul class="list-group security-data">
+        <li class="list-group-item">
+            <a class="no-color bold">Name</a>
+            <a class="pull-right no-color">{{model.fund.name}}</a>
+        </li>
+        <li ng-if="model.fund.description" class="list-group-item">
+            <a class="no-color bold">Description</a><br>
+            <a class="no-color">{{model.fund.description}}</a>
+        </li>
+        <li class="list-group-item">
+            <a class="no-color bold">Investors</a>
+            <a class="pull-right no-color">{{model.fund.investors.length}}</a>
+        </li>
+        <li class="list-group-item">
+            <a class="no-color bold">Manager</a>
+            <a href="#/user/{{model.manager._id}}" class="pull-right">{{model.manager.username}}</a>
+        </li>
+    </ul>
+
+    <ul class="list-group security-data">
+        <li ng-if="model.securities.length > 0" class="list-group-item">
+            <a class="no-color bold">Security</a>
+            <a class="pull-right no-color">Percent Change</a>
+        </li>
+        <li ng-repeat="security in model.securities" class="list-group-item">
+            <a href="#/user/{{model.uid}}/fund/{{model.fid}}/security/{{security._id}}">{{security.symbol}}</a>
+            <a class="pull-right" ng-class="{'red-text': (security.percentChange.substring(0, security.percentChange.length - 1) < 0),
+            'green-text': (security.percentChange.substring(0, security.percentChange.length - 1) > 0),
+            'black-text': (security.percentChange.substring(0, security.percentChange.length - 1) == 0)}">
+                {{security.percentChange}}
+            </a>
+        </li>
+    </ul>
+
+    <a ng-if="model.loggedInUser && model.loggedInUser.isManager === false && !model.isInvestedInThisFund" class="btn btn-primary btn-block"
+       ng-click="model.invest()">Invest</a>
+    <a ng-if="model.loggedInUser && model.loggedInUser.isManager === false && model.isInvestedInThisFund" class="btn btn-danger btn-block"
+       ng-click="model.divest()">Divest</a>
+
+</div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <p class="navbar-text pull-right">
+                <a href="#/user/{{model.loggedInUser._id}}">
+                    <span class="glyphicon glyphicon-user"/>
+                </a>
+            </p>
+        </div>
+    </div>
+</nav>
