@@ -10,7 +10,7 @@
                 controller: "ScheduleSubmissionController",
                 controllerAs: "model"
             })
-            .when("/class-detail", {
+            .when("/class-detail/:crn", {
                 templateUrl: "views/class/class-detail.view.client.html",
                 controller: "ClassDetailController",
                 controllerAs: "model"

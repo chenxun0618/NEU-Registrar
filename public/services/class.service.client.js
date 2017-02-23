@@ -7,19 +7,112 @@
 
         var api = {
             getAllSubjectCodes: getAllSubjectCodes,
+            getAllSubmittedSchedules: getAllSubmittedSchedules,
             getAllCRNs: getAllCRNs,
             getCurrentTerm: getCurrentTerm,
             getAllStatuses: getAllStatuses,
             getAllPartOfTerms: getAllPartOfTerms,
             getAllInstructionalMethods: getAllInstructionalMethods,
             getAllCreditHours: getAllCreditHours,
-            getCampus: getCampus,
+            getAllMeetingDays: getAllMeetingDays,
+            getAllCampuses: getAllCampuses,
             getAllSections: getAllSections,
             getAllWaitlist: getAllWaitlist,
             getAllDoNotPublish: getAllDoNotPublish,
             getAllSpecialApprovals: getAllSpecialApprovals,
             getClassByCRN: getClassByCRN
         };
+
+        function getAllSubmittedSchedules() {
+
+            // dummy data for now
+            return [
+                {
+                    term: "Spring 2014",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Summer 1 2014",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Summer 2 2014",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Fall 2014",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Spring 2015",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Summer 1 2015",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Summer 2 2015",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Fall 2015",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Spring 2016",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Summer 1 2016",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Summer 2 2016",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Fall 2016",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Spring 2017",
+                    submitter: "001104152",
+                    draft: false,
+                    schedule: []
+                },
+                {
+                    term: "Summer 1 2017",
+                    submitter: "001104152",
+                    draft: true,
+                    schedule: []
+                }
+            ];
+        }
 
         function getAllSubjectCodes() {
             return ["ACCT", "CS", "DS", "IS", "MATH", "PHYS", "PSYC"];
@@ -49,7 +142,11 @@
             return ["4", "1", "2", "3", "8", "16"]; // ?
         }
 
-        function getCampus() {
+        function getAllMeetingDays() {
+            return ["MWR", "TF", "MW", "M", "T", "W", "R", "F", "S"];
+        }
+
+        function getAllCampuses() {
             return ["BOS", "SEA", "VTL", "XCR"];
         }
 
@@ -78,7 +175,7 @@
                 departmentCode: "ACCT",
                 departmentName: "Accounting",
                 subjectCode: "ACCT",
-                subjectCode: "Accounting",
+                subjectName: "Accounting",
                 term: "201810",
                 courseNumber: "1225",
                 section: "03",
@@ -89,8 +186,8 @@
                 instructionalMethod: "TR",
                 creditHour: "4",
                 meetingDays: "MWR",
-                meetingStart: "1335",
-                meetingEnd: "1440",
+                meetingStart: "13:35",
+                meetingEnd: "14:40",
                 campus: "BOS",
                 primaryInstructor: "001303804",
                 secondaryInstructors: [],

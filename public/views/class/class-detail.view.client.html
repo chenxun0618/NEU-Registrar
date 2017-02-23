@@ -1,95 +1,64 @@
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand">
-                {{(model.loggedInUser && model.loggedInUser._id === model.uid && model.user.isManager) ? "Fund Edit" : "Fund Detail"}}
-            </a>
-        </div>
-    </div>
-</nav>
-
 <div class="container">
+    <h1 class="margin-bottom-20">
+        {{model.addClass ? "Add Class" : "Edit Class"}}
+    </h1>
 
     <div ng-if="model.error" class="alert alert-danger">
         {{model.error}}
     </div>
 
-    <form>
-        <div class="form-group">
-            <label for="fundname">Name</label>
-            <input ng-model="model.fund.name"
-                   type="text"
-                   class="form-control"
-                   id="fundname"
-                   placeholder="Name"
-                   ng-class="{'error': model.error == model.missing_fund_name}"/>
-        </div>
-        <div class="form-group">
-            <label for="description">Description</label>
-			<textarea ng-model="model.fund.description" rows="5" id="description" class="form-control"
-                      placeholder="Description"></textarea>
-        </div>
-    </form>
+    <table class="table narrow">
+        <tbody>
+        <tr>
+            <td>Title</td>
+            <td ng-if="model.addClass">{{model.class.shortTitle}}</td>
+            <td ng-if="model.editClass">{{model.class.shortTitle}}</td>
+        </tr>
+        <tr>
+            <td>Subject Code</td>
+            <td ng-if="model.addClass">
+                <select ng-model="model.class.subjectCode">
+                    <option ng-repeat="option in model.allSubjectCodes" value="{{option}}">{{option}}</option>
+                </select>
+            </td>
+            <td ng-if="model.editClass">{{model.class.subjectCode}}</td>
+        </tr>
+        <tr>
+            <td>Course No.</td>
+            <td ng-if="model.addClass">
+                <input ng-model="model.class.courseNumber"></input>
+            </td>
+            <td ng-if="model.editClass">{{model.class.courseNumber}}</td>
+        </tr>
+        <tr>
+            <td>Meeting Days</td>
+            <td>
+                <select ng-model="model.class.meetingDays">
+                    <option ng-repeat="option in model.allMeetingDays" value="{{option}}">{{option}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Meeting Start</td>
+            <td>
+                <select ng-model="model.class.meetingStart">
+                    <option ng-repeat="option in model.allMeetingStartTimes" value="{{option}}">{{option}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Meeting End</td>
+            <td>
+                <select ng-model="model.class.meetingEnd">
+                    <option ng-repeat="option in model.allMeetingEndTimes" value="{{option}}">{{option}}</option>
+                </select>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-    <a class="btn btn-danger btn-block"
-       ng-click="model.deleteFund()">Delete</a>
-</div>
-
-<div ng-if="!(model.loggedInUser && model.loggedInUser._id === model.user._id && model.user.isManager)" class="container">
-
-    <div ng-if="model.error" class="alert alert-danger">
-        {{model.error}}
+    <div>
+        <button ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Save & Return</button>
+        <button ng-click="model.returnToSchedule()" type="button" class="btn btn-warning">Cancel</button>
     </div>
-
-    <ul class="list-group security-data">
-        <li class="list-group-item">
-            <a class="no-color bold">Name</a>
-            <a class="pull-right no-color">{{model.fund.name}}</a>
-        </li>
-        <li ng-if="model.fund.description" class="list-group-item">
-            <a class="no-color bold">Description</a><br>
-            <a class="no-color">{{model.fund.description}}</a>
-        </li>
-        <li class="list-group-item">
-            <a class="no-color bold">Investors</a>
-            <a class="pull-right no-color">{{model.fund.investors.length}}</a>
-        </li>
-        <li class="list-group-item">
-            <a class="no-color bold">Manager</a>
-            <a href="#/user/{{model.manager._id}}" class="pull-right">{{model.manager.username}}</a>
-        </li>
-    </ul>
-
-    <ul class="list-group security-data">
-        <li ng-if="model.securities.length > 0" class="list-group-item">
-            <a class="no-color bold">Security</a>
-            <a class="pull-right no-color">Percent Change</a>
-        </li>
-        <li ng-repeat="security in model.securities" class="list-group-item">
-            <a href="#/user/{{model.uid}}/fund/{{model.fid}}/security/{{security._id}}">{{security.symbol}}</a>
-            <a class="pull-right" ng-class="{'red-text': (security.percentChange.substring(0, security.percentChange.length - 1) < 0),
-            'green-text': (security.percentChange.substring(0, security.percentChange.length - 1) > 0),
-            'black-text': (security.percentChange.substring(0, security.percentChange.length - 1) == 0)}">
-                {{security.percentChange}}
-            </a>
-        </li>
-    </ul>
-
-    <a ng-if="model.loggedInUser && model.loggedInUser.isManager === false && !model.isInvestedInThisFund" class="btn btn-primary btn-block"
-       ng-click="model.invest()">Invest</a>
-    <a ng-if="model.loggedInUser && model.loggedInUser.isManager === false && model.isInvestedInThisFund" class="btn btn-danger btn-block"
-       ng-click="model.divest()">Divest</a>
-
 </div>
-
-<nav class="navbar navbar-default navbar-fixed-bottom">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <p class="navbar-text pull-right">
-                <a href="#/user/{{model.loggedInUser._id}}">
-                    <span class="glyphicon glyphicon-user"/>
-                </a>
-            </p>
-        </div>
-    </div>
-</nav>
