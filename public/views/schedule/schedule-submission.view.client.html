@@ -1,56 +1,33 @@
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <p class="navbar-text pull-left">
-                <a back class="navbar-link">
-                    <span class="glyphicon glyphicon-chevron-left"/>
-                </a>
-            </p>
-            <a class="navbar-brand">
-                Schedule
-            </a>
-            <p class="navbar-text pull-right">
-                <a ng-if="model.loggedInUser && model.loggedInUser._id === model.uid && model.user.isManager" href="#/user/{{model.uid}}/fund/{{model.fid}}/security/add" class="navbar-link">
-                    <span class="glyphicon glyphicon-search"/>
-                </a>
-            </p>
-        </div>
-    </div>
-</nav>
-
 <div class="container">
+    <h1 class="margin-bottom-20">
+        Department Term Scheduler—Office of the Registrar
+    </h1>
 
     <div ng-if="model.error" class="alert alert-danger">
         {{model.error}}
     </div>
 
-    <ul class="list-group">
-        <li ng-if="model.securities.length === 0" class="list-group-item">
-            <a class="no-color">No securities found</a>
-        </li>
-        <li ng-if="model.securities.length > 0" class="list-group-item">
-            <a class="no-color bold">Security</a>
-            <a class="pull-right no-color">Percent Change</a>
-        </li>
-        <li ng-repeat="security in model.securities" class="list-group-item">
-            <a href="#/user/{{model.uid}}/fund/{{model.fid}}/security/{{security._id}}">{{security.symbol}}</a>
-            <a class="pull-right" ng-class="{'red-text': (security.percentChange.substring(0, security.percentChange.length - 1) < 0),
-            'green-text': (security.percentChange.substring(0, security.percentChange.length - 1) > 0),
-            'black-text': (security.percentChange.substring(0, security.percentChange.length - 1) == 0)}">
-                {{security.percentChange}}
-            </a>
-        </li>
-    </ul>
-</div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Class Name</th>
+                <th>Meeting Time</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
 
-<nav class="navbar navbar-default navbar-fixed-bottom">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <p class="navbar-text pull-right">
-                <a href="#/user/{{model.loggedInUser._id}}">
-                    <span class="glyphicon glyphicon-user"/>
-                </a>
-            </p>
-        </div>
-    </div>
-</nav>
+        <tbody>
+            <tr ng-repeat="class in model.schedule">
+                <td>{{class.subjectCode}} {{class.courseNumber}}</td>
+                <td>{{class.shortTitle}}</td>
+                <td>{{class.meetingDays}} {{class.meetingStart.slice(0, class.meetingStart.length - 2)}}:{{class.meetingStart.slice(class.meetingStart.length - 2)}}–{{class.meetingEnd.slice(0, class.meetingEnd.length - 2)}}:{{class.meetingEnd.slice(class.meetingEnd.length - 2)}}</td>
+                <td>
+                    <a href="#/class-detail">More Info</a>
+                </td>
+                <td><a><i class="fa fa-trash" aria-hidden="true" ng-click="model.deleteClass(class)"></i></a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
