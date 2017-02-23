@@ -11,7 +11,9 @@
         <tbody>
         <tr>
             <td>Title</td>
-            <td ng-if="model.addClass">{{model.class.shortTitle}}</td>
+            <td ng-if="model.addClass">
+                <input ng-model="model.class.courseNumber"></input>
+            </td>
             <td ng-if="model.editClass">{{model.class.shortTitle}}</td>
         </tr>
         <tr>

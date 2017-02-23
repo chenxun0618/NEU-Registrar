@@ -10,12 +10,15 @@
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
 
         function init() {
+            if ($routeParams.crn === "_") {
+                $routeParams.crn = "";
+            }
             vm.crn = $routeParams.crn;
             vm.addClass = !vm.crn;
             vm.editClass = !!vm.crn;
 
             if (vm.editClass) {
-                vm.class = ClassService.getClassByCRN(vm.crn); // find in session state instead for now
+                vm.class = findClassInSessionState(vm.crn); // find in session state instead for now
             } else {
                 vm.class = {};
             }
@@ -52,8 +55,31 @@
         }
 
         function saveAndReturnToSchedule() {
-            // iterate through session state to find thing, or if add mode, append to end
+            var schedule = JSON.parse(sessionStorage.schedule);
+            if (vm.addClass) {
+                schedule.push(vm.class);
+            } else {
+                editOldClass(schedule[vm.class.sessionStateIndex], vm.class);
+            }
+            sessionStorage.schedule = JSON.stringify(schedule);
             $location.url("/schedule-submission");
+        }
+
+        function findClassInSessionState(crn) {
+            var schedule = JSON.parse(sessionStorage.schedule);
+            for (var x = 0; x < schedule.length; x++) {
+                var current = schedule[x];
+                if (current.crn === crn) {
+                    current.sessionStateIndex = x;
+                    return current;
+                }
+            }
+        }
+
+        function editOldClass(oldClass, newClass) {
+            oldClass.meetingDays = newClass.meetingDays;
+            oldClass.meetingStart = newClass.meetingStart;
+            oldClass.meetingEnd = newClass.meetingEnd;
         }
 
         init();

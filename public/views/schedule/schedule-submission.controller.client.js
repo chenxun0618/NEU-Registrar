@@ -34,7 +34,6 @@
             }
         }
 
-
         function getScheduleForTerm(term) {
             vm.schedule = ScheduleService.getScheduleByTerm(term);
         }
@@ -49,7 +48,7 @@
         function navigateToClassDetail(crn) {
             sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
             sessionStorage.schedule = JSON.stringify(vm.schedule);
-            $location.url("/class-detail/" + (crn ? crn : "0"));
+            $location.url("/class-detail/" + (crn ? crn : "_"));
         }
 
         init();
