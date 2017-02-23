@@ -40,6 +40,10 @@
             timesOfDay = [];
             var count = 0;
             for (var x = 0; x < 2400; x += 5) {
+                if (x % 100 == 60) {
+                    x += 35;
+                    continue;
+                }
                 var str = ("000" + x);
                 var str2 = str.slice(str.length - 4, str.length - 2) + ":" + str.slice(str.length - 2);
                 timesOfDay[count] = str2;
@@ -57,6 +61,7 @@
         function saveAndReturnToSchedule() {
             var schedule = JSON.parse(sessionStorage.schedule);
             if (vm.addClass) {
+                vm.class.crn = "" + Math.floor(Math.random() * 10000); // dummy for now
                 schedule.push(vm.class);
             } else {
                 editOldClass(schedule[vm.class.sessionStateIndex], vm.class);
