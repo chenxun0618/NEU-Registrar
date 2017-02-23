@@ -1,0 +1,66 @@
+<div class="container">
+    <h1 class="margin-bottom-20">
+        {{model.addClass ? "Add Class" : "Edit Class"}}
+    </h1>
+
+    <div ng-if="model.error" class="alert alert-danger">
+        {{model.error}}
+    </div>
+
+    <table class="table narrow">
+        <tbody>
+        <tr>
+            <td>Title</td>
+            <td ng-if="model.addClass">
+                <input ng-model="model.class.shortTitle"></input>
+            </td>
+            <td ng-if="model.editClass">{{model.class.shortTitle}}</td>
+        </tr>
+        <tr>
+            <td>Subject Code</td>
+            <td ng-if="model.addClass">
+                <select ng-model="model.class.subjectCode">
+                    <option ng-repeat="option in model.allSubjectCodes" value="{{option}}">{{option}}</option>
+                </select>
+            </td>
+            <td ng-if="model.editClass">{{model.class.subjectCode}}</td>
+        </tr>
+        <tr>
+            <td>Course No.</td>
+            <td ng-if="model.addClass">
+                <input ng-model="model.class.courseNumber"></input>
+            </td>
+            <td ng-if="model.editClass">{{model.class.courseNumber}}</td>
+        </tr>
+        <tr>
+            <td>Meeting Days</td>
+            <td>
+                <select ng-model="model.class.meetingDays">
+                    <option ng-repeat="option in model.allMeetingDays" value="{{option}}">{{option}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Meeting Start</td>
+            <td>
+                <select ng-model="model.class.meetingStart">
+                    <option ng-repeat="option in model.allMeetingStartTimes" value="{{option}}">{{option}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Meeting End</td>
+            <td>
+                <select ng-model="model.class.meetingEnd">
+                    <option ng-repeat="option in model.allMeetingEndTimes" value="{{option}}">{{option}}</option>
+                </select>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div>
+        <button ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Save & Return</button>
+        <button ng-click="model.returnToSchedule()" type="button" class="btn btn-warning">Cancel</button>
+    </div>
+</div>

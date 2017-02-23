@@ -1,0 +1,33 @@
+.margin-bottom-20 {
+    margin-bottom: 40px;
+}
+
+body {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.error {
+    border: .5px solid red;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.float-right {
+    float: right;
+}
+
+.narrow {
+    width: 70%;
+}
