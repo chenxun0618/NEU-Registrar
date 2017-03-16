@@ -41,17 +41,7 @@
             vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
 
             //this will be replaced with data from previous semester
-            vm.allMeetingStartTimes = [];
-            var count = 0;
-            for (var x = 6; x < 22; x += 1) {
-                for (var y = 0; y < 60; y += 5) {
-                    var hour = ("0" + x).slice(-2);
-                    var minute = ("0" + y).slice(-2);
-                    vm.allMeetingStartTimes[count] = hour + ":" + minute;
-                    count++;
-                }
-            }
-
+            vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
             vm.allMeetingEndTimes = updateEndingTimes();
         }
 
