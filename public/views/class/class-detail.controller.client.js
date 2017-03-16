@@ -36,22 +36,8 @@
             vm.allWaitlist = ClassService.getAllWaitlist();
             vm.allDoNotPublish = ClassService.getAllDoNotPublish();
             vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
-
-            timesOfDay = [];
-            var count = 0;
-            for (var x = 0; x < 2400; x += 5) {
-                if (x % 100 == 60) {
-                    x += 35;
-                    continue;
-                }
-                var str = ("000" + x);
-                var str2 = str.slice(str.length - 4, str.length - 2) + ":" + str.slice(str.length - 2);
-                timesOfDay[count] = str2;
-                count++;
-            }
-
-            vm.allMeetingStartTimes = timesOfDay;
-            vm.allMeetingEndTimes = timesOfDay;
+            vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
+            vm.allMeetingEndTimes = vm.allMeetingStartTimes;
         }
 
         function returnToSchedule() {
