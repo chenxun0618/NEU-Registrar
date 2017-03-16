@@ -10,13 +10,6 @@
     <table class="table narrow">
         <tbody>
         <tr>
-            <td>Title</td>
-            <td ng-if="model.addClass">
-                <input ng-model="model.class.shortTitle"></input>
-            </td>
-            <td ng-if="model.editClass">{{model.class.shortTitle}}</td>
-        </tr>
-        <tr>
             <td>Subject Code</td>
             <td ng-if="model.addClass">
                 <select ng-model="model.class.subjectCode" ng-options="option for option in model.allSubjectCodes">
@@ -30,6 +23,60 @@
                 <input ng-model="model.class.courseNumber"></input>
             </td>
             <td ng-if="model.editClass">{{model.class.courseNumber}}</td>
+        </tr>
+        <tr>
+            <td>Title</td>
+            <td>
+                <input ng-model="model.class.shortTitle" size="25"></input>
+            </td>
+        </tr>
+        <tr>
+            <td>Honors</td>
+            <td>
+                <select ng-model="model.class.honors">
+                    <option></option>
+                    <option value="Y">Y</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Campus</td>
+            <td>
+                <select ng-model="model.class.campus" ng-options="option for option in model.allCampuses">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Instructional Method</td>
+            <td>
+                <select ng-model="model.class.instructionalMethod"
+                        ng-options="option for option in model.allInstructionalMethods">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Enrollment Maximum</td>
+            <td>
+                <input type="number" ng-model="model.class.enrollmentMax">
+            </td>
+        </tr>
+        <tr>
+            <td>Waitlist</td>
+            <td>
+                <select ng-model="model.class.waitlist">
+                    <option></option>
+                    <option value="Y">Y</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Do Not Publish</td>
+            <td>
+                <select ng-model="model.class.doNotPublish">
+                    <option></option>
+                    <option value="Y">Y</option>
+                </select>
+            </td>
         </tr>
         <tr>
             <td>Meeting Days</td>
