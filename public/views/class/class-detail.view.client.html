@@ -19,8 +19,7 @@
         <tr>
             <td>Subject Code</td>
             <td ng-if="model.addClass">
-                <select ng-model="model.class.subjectCode">
-                    <option ng-repeat="option in model.allSubjectCodes" value="{{option}}">{{option}}</option>
+                <select ng-model="model.class.subjectCode" ng-options="option for option in model.allSubjectCodes">
                 </select>
             </td>
             <td ng-if="model.editClass">{{model.class.subjectCode}}</td>
@@ -35,25 +34,39 @@
         <tr>
             <td>Meeting Days</td>
             <td>
-                <select ng-model="model.class.meetingDays">
-                    <option ng-repeat="option in model.allMeetingDays" value="{{option}}">{{option}}</option>
+                <select ng-model="model.class.meetingDays"
+                        ng-options="option for option in model.allMeetingDays"
+                        ng-change="model.updateOnChangeOfTime()">
                 </select>
             </td>
         </tr>
         <tr>
             <td>Meeting Start</td>
             <td>
-                <select ng-model="model.class.meetingStart">
-                    <option ng-repeat="option in model.allMeetingStartTimes" value="{{option}}">{{option}}</option>
+                <select ng-model="model.class.meetingStart"
+                        ng-options="option for option in model.allMeetingStartTimes"
+                        ng-change="model.updateOnChangeOfTime()">
                 </select>
             </td>
         </tr>
         <tr>
             <td>Meeting End</td>
             <td>
-                <select ng-model="model.class.meetingEnd">
-                    <option ng-repeat="option in model.allMeetingEndTimes" value="{{option}}">{{option}}</option>
+                <select ng-model="model.class.meetingEnd"
+                        ng-options="option for option in model.allMeetingEndTimes"
+                        ng-change="model.updateOnChangeOfTime()">
                 </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" ng-show="model.isPeakPeriod">
+                <p class="text-warning">Time selected is during peak period(MWR 9:15-15:25, TF 9:50-15:25)
+                    , please process with caution.</p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" ng-hide="model.isPeakPeriod">
+                <br>
             </td>
         </tr>
         </tbody>
