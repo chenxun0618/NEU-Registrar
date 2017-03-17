@@ -7,7 +7,7 @@
         {{model.error}}
     </div>
 
-    <form name="myForm">
+    <form name="getSchedules">
         <label for="scheduleSelect"> Schedule: </label>
         <select name="scheduleSelect" id="scheduleSelect" ng-model="model.selectedTerm">
             <option ng-repeat="option in model.submittedSchedules" value="{{option.term}}">{{option.term}}</option>
@@ -22,7 +22,6 @@
                 <th>Class Name</th>
                 <th>Meeting Time</th>
                 <th></th>
-                <th></th>
             </tr>
         </thead>
 
@@ -32,15 +31,14 @@
                 <td>{{class.shortTitle}}</td>
                 <td>{{class.meetingDays}} {{class.meetingStart.slice(0, class.meetingStart.length - 3)}}:{{class.meetingStart.slice(class.meetingStart.length - 2)}}–{{class.meetingEnd.slice(0, class.meetingEnd.length - 3)}}:{{class.meetingEnd.slice(class.meetingEnd.length - 2)}}</td>
                 <td>
-                    <a ng-click="model.navigateToClassDetail(class.crn)">More Info</a>
+                    <a ng-click="model.navigateToClassDetail(class.crn)">Edit</a>
                 </td>
-                <td><a><i class="fa fa-trash" aria-hidden="true" ng-click="model.deleteClass(class)"></i></a></td>
             </tr>
         </tbody>
     </table>
 
     <div class="float-right">
-        <button ng-click="model.navigateToClassDetail()" ng-show="model.schedule" type="button" class="btn btn-success">Add Class</button>
+        <button ng-click="model.navigateToAddClass()" ng-show="model.schedule" type="button" class="btn btn-success">Add Class</button>
         <button ng-click="model.submitSchedule()" ng-show="model.schedule" type="button" class="btn btn-primary">Submit</button>
     </div>
 </div>
