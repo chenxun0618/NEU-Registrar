@@ -1,2 +1,5 @@
 .DS_Store
 .idea
+
+tests/_output/*
+tests/_output/*
