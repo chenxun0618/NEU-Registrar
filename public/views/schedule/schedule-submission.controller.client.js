@@ -6,7 +6,6 @@
     function ScheduleSubmissionController($location, $routeParams, ClassService, ScheduleService) {
         var vm = this;
 
-        vm.deleteClass = deleteClass;
         vm.getScheduleForTerm = getScheduleForTerm;
         vm.submitSchedule = submitSchedule;
         vm.navigateToClassDetail = navigateToClassDetail;
@@ -18,19 +17,6 @@
             if (sessionStorage.selectedTerm) {
                 vm.selectedTerm = JSON.parse(sessionStorage.selectedTerm);
                 vm.schedule = JSON.parse(sessionStorage.schedule);
-            }
-        }
-
-        function deleteClass(classToDelete) {
-
-            var r = confirm("Are you sure you want to remove this class from this schedule?");
-            if (r == true) {
-                for (var x = 0; x < vm.schedule.length; x++) {
-                    if (vm.schedule[x].crn === classToDelete.crn) {
-                        vm.schedule.splice(x, 1);
-                        return;
-                    }
-                }
             }
         }
 

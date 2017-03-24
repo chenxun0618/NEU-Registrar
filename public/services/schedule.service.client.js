@@ -42,7 +42,8 @@
                     doNotPublish: "N",
                     specialApprovals: "A",
                     comment: "",
-                    honors: "Y"
+                    honors: "Y",
+                    cancel: "N"
                 },
                 {
                     college: "BA",
@@ -64,7 +65,7 @@
                     meetingStart: "09:50",
                     meetingEnd: "11:30",
                     campus: "BOS",
-                    primaryInstructor: "001303805",
+                    primaryInstructor: "001303804",
                     secondaryInstructors: [],
                     enrollmentMax: "45",
                     waitlist: "N",
@@ -72,7 +73,8 @@
                     doNotPublish: "N",
                     specialApprovals: "",
                     comment: "",
-                    honors: "N"
+                    honors: "N",
+                    cancel: "N"
                 },
                 {
                     college: "BA",
@@ -94,7 +96,7 @@
                     meetingStart: "13:35",
                     meetingEnd: "14:40",
                     campus: "BOS",
-                    primaryInstructor: "004203134",
+                    primaryInstructor: "001303804",
                     secondaryInstructors: [],
                     enrollmentMax: "80",
                     waitlist: "Y",
@@ -102,7 +104,8 @@
                     doNotPublish: "N",
                     specialApprovals: "A",
                     comment: "",
-                    honors: "Y"
+                    honors: "Y",
+                    cancel: "N"
                 },
                 {
                     college: "BA",
@@ -132,7 +135,8 @@
                     doNotPublish: "N",
                     specialApprovals: "A",
                     comment: "",
-                    honors: "Y"
+                    honors: "Y",
+                    cancel: "N"
                 },
                 {
                     college: "BA",
@@ -162,7 +166,8 @@
                     doNotPublish: "N",
                     specialApprovals: "A",
                     comment: "",
-                    honors: "Y"
+                    honors: "Y",
+                    cancel: "N"
                 },
                 {
                     college: "BA",
@@ -192,7 +197,8 @@
                     doNotPublish: "N",
                     specialApprovals: "A",
                     comment: "",
-                    honors: "Y"
+                    honors: "Y",
+                    cancel: "N"
                 },
             ];
 

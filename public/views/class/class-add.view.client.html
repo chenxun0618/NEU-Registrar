@@ -11,11 +11,18 @@
         <tbody>
         <tr>
             <td>Subject Code</td>
-            <td>{{model.class.subjectCode}}</td>
+            <td ng-if="model.addClass">
+                <select ng-model="model.class.subjectCode" ng-options="option for option in model.allSubjectCodes">
+                </select>
+            </td>
+            <td ng-if="model.editClass">{{model.class.subjectCode}}</td>
         </tr>
         <tr>
             <td>Course No.</td>
-            <td>{{model.class.courseNumber}}</td>
+            <td ng-if="model.addClass">
+                <input ng-model="model.class.courseNumber"></input>
+            </td>
+            <td ng-if="model.editClass">{{model.class.courseNumber}}</td>
         </tr>
         <tr>
             <td>Title</td>
@@ -24,19 +31,10 @@
             </td>
         </tr>
         <tr>
-            <td>Cancel Class?</td>
-            <td>
-                <select ng-model="model.class.cancel">
-                    <option value="N">N</option>
-                    <option value="Y">Y</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
             <td>Honors</td>
             <td>
                 <select ng-model="model.class.honors">
-                    <option value="N">N</option>
+                    <option></option>
                     <option value="Y">Y</option>
                 </select>
             </td>
@@ -59,14 +57,14 @@
         <tr>
             <td>Enrollment Maximum</td>
             <td>
-                <input ng-model="model.class.enrollmentMax">
+                <input type="number" ng-model="model.class.enrollmentMax">
             </td>
         </tr>
         <tr>
             <td>Waitlist</td>
             <td>
                 <select ng-model="model.class.waitlist">
-                    <option value="N">N</option>
+                    <option></option>
                     <option value="Y">Y</option>
                 </select>
             </td>
@@ -75,7 +73,7 @@
             <td>Do Not Publish</td>
             <td>
                 <select ng-model="model.class.doNotPublish">
-                    <option value="N">N</option>
+                    <option></option>
                     <option value="Y">Y</option>
                 </select>
             </td>
@@ -109,28 +107,13 @@
         </tr>
         <tr>
             <td colspan="2" ng-show="model.isPeakPeriod">
-                <p class="text-warning">Time selected is during peak period(MWR 9:15-15:25, TF 9:50-15:25). Please proceed with caution.</p>
+                <p class="text-warning">Time selected is during peak period(MWR 9:15-15:25, TF 9:50-15:25)
+                    , please process with caution.</p>
             </td>
         </tr>
         <tr>
             <td colspan="2" ng-hide="model.isPeakPeriod">
                 <br>
-            </td>
-        </tr>
-        <tr>
-            <td>Primary Instructor</td>
-            <td>
-                <select ng-model="model.class.primaryInstructor"
-                        ng-options="option for option in model.allPrimaryInstructors">
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Special Approvals</td>
-            <td>
-                <select ng-model="model.class.specialApprovals"
-                        ng-options="option for option in model.allSpecialApprovals">
-                </select>
             </td>
         </tr>
         </tbody>

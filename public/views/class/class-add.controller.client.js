@@ -17,7 +17,14 @@
                 $routeParams.crn = "";
             }
             vm.crn = $routeParams.crn;
-            vm.class = findClassInSessionState(vm.crn); // find in session state instead for now
+            vm.addClass = !vm.crn;
+            vm.editClass = !!vm.crn;
+
+            if (vm.editClass) {
+                vm.class = findClassInSessionState(vm.crn); // find in session state instead for now
+            } else {
+                vm.class = {};
+            }
 
             vm.allSubjectCodes = ClassService.getAllSubjectCodes();
             vm.allCRNs = ClassService.getAllCRNs();
@@ -32,8 +39,6 @@
             vm.allWaitlist = ClassService.getAllWaitlist();
             vm.allDoNotPublish = ClassService.getAllDoNotPublish();
             vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
-            vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
-            vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
 
             //this will be replaced with data from previous semester
             vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
@@ -46,7 +51,12 @@
 
         function saveAndReturnToSchedule() {
             var schedule = JSON.parse(sessionStorage.schedule);
-            editOldClass(schedule[vm.class.sessionStateIndex], vm.class);
+            if (vm.addClass) {
+                vm.class.crn = "" + Math.floor(Math.random() * 10000); // dummy for now
+                schedule.push(vm.class);
+            } else {
+                editOldClass(schedule[vm.class.sessionStateIndex], vm.class);
+            }
             sessionStorage.schedule = JSON.stringify(schedule);
             $location.url("/schedule-submission");
         }
