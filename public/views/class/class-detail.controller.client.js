@@ -32,8 +32,8 @@
             vm.allWaitlist = ClassService.getAllWaitlist();
             vm.allDoNotPublish = ClassService.getAllDoNotPublish();
             vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
-            vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
-            vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
+            vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors(); // modify to set "selected" here TODO
+            vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors(); // modify to set "selected" here TODO
 
             //this will be replaced with data from previous semester
             vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();

@@ -184,7 +184,16 @@
         }
 
         function getAllPrimaryInstructors() {
-            return ["001108105", "001303804", "001185012", "001185029", "001175829", "001173901", "001196823", "001185030", "001182629", "001141259", "001141251", "001146227"];
+            return [
+                {nuid: "001101241", name: "Bob"},
+                {nuid: "001106284", name: "Sam"},
+                {nuid: "001303804", name: "Jon"},
+                {nuid: "001109448", name: "Joe"},
+                {nuid: "001105252", name: "Zach"},
+                {nuid: "001106462", name: "Matt"},
+                {nuid: "001102523", name: "Mark"},
+                {nuid: "001109266", name: "Bill"}
+            ];
         }
 
         function getAllSecondaryInstructors() {
@@ -214,7 +223,7 @@
                 meetingStart: "13:35",
                 meetingEnd: "14:40",
                 campus: "BOS",
-                primaryInstructor: "001303804",
+                primaryInstructor: {nuid: "001303804", name: "Jon"},
                 secondaryInstructors: [],
                 enrollmentMax: 40,
                 waitlist: "Y",

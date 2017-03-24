@@ -120,9 +120,28 @@
         <tr>
             <td>Primary Instructor</td>
             <td>
-                <select ng-model="model.class.primaryInstructor"
-                        ng-options="option for option in model.allPrimaryInstructors">
-                </select>
+                <div
+                        isteven-multi-select
+                        input-model="model.allPrimaryInstructors"
+                        output-model="model.class.primaryInstructor"
+                        button-label="nuid name"
+                        item-label="nuid name"
+                        tick-property="ticked"
+                        selection-mode="single">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Secondary Instructor</td>
+            <td>
+                <div
+                        isteven-multi-select
+                        input-model="model.allSecondaryInstructors"
+                        output-model="model.class.secondaryInstructors"
+                        button-label="nuid name"
+                        item-label="nuid name"
+                        tick-property="ticked">
+                </div>
             </td>
         </tr>
         <tr>
