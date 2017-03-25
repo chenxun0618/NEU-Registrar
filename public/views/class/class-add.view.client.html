@@ -4,7 +4,7 @@
 
 <div class="container">
     <h1 class="margin-bottom-20">
-        Edit Class
+        Add Class
     </h1>
 
     <div ng-if="model.error" class="alert alert-danger">
@@ -12,6 +12,34 @@
     </div>
 
     <table class="table narrow">
+        <tbody>
+        <tr>
+            <td>Subject Code</td>
+            <td>
+                <select class="select2" ng-model="model.selectedSubjectCode">
+                    <option ng-repeat="option in model.allSubjectCodes">{{option}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Course Number</td>
+            <td>
+                <input id="courseNumber" ng-model="model.selectedCourseNumber" maxlength="4" type="text" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="button" class="btn btn-success"
+                        ng-click="model.getMostRecentCourseData(model.selectedSubjectCode, model.selectedCourseNumber)">
+                    Load Most Recent Data
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table ng-show="model.class" class="table narrow">
         <tbody>
         <tr>
             <td>Course</td>
@@ -23,7 +51,7 @@
         </tr>
         <tr>
             <td>CRN</td>
-            <td>{{model.crn}}</td>
+            <td>{{model.class.crn}}</td>
         </tr>
         <tr>
             <td>Title</td>
@@ -132,8 +160,8 @@
         </tbody>
     </table>
 
-    <div>
-        <button ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Save & Return</button>
+    <div ng-if="model.class">
+        <button ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Add to Schedule</button>
         <button ng-click="model.returnToSchedule()" type="button" class="btn btn-warning">Cancel</button>
     </div>
 </div>

@@ -1,17 +1,15 @@
 (function () {
     angular
         .module("NEURegistrar")
-        .controller("ClassDetailController", ClassDetailController);
+        .controller("ClassAddController", ClassAddController);
 
-    function ClassDetailController($location, $routeParams, ClassService, ScheduleService) {
+    function ClassAddController($location, ClassService, ScheduleService) {
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
+        vm.getMostRecentCourseData = getMostRecentCourseData;
 
         function init() {
-            vm.crn = $routeParams.crn;
-            vm.class = findClassInSessionState(vm.crn); // find in session state for now until I figure out how to pass the specified course to this controller
-
             vm.allSubjectCodes = ClassService.getAllSubjectCodes();
             vm.allCRNs = ClassService.getAllCRNs();
             vm.currentTerm = ClassService.getCurrentTerm();
@@ -35,26 +33,25 @@
             vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
         }
 
+        function getMostRecentCourseData(subjectCode, courseNumber) {
+            vm.reloaded = (vm.reloaded === undefined) ? false : true;
+            if (!vm.reloaded) {
+                vm.class = ClassService.getMostRecentCourseData(subjectCode, courseNumber);
+            } else {
+                vm.class = {}; // fix this bug: does not reload select2s
+                vm.class = ClassService.getMostRecentCourseData(subjectCode, courseNumber);
+            }
+        }
+
         function returnToSchedule() {
             $location.url("/schedule-submission");
         }
 
         function saveAndReturnToSchedule() {
             var schedule = JSON.parse(sessionStorage.schedule);
-            schedule[vm.class.sessionStateIndex] = vm.class;
+            schedule.push(vm.class);
             sessionStorage.schedule = JSON.stringify(schedule);
             $location.url("/schedule-submission");
-        }
-
-        function findClassInSessionState(crn) {
-            var schedule = JSON.parse(sessionStorage.schedule);
-            for (var x = 0; x < schedule.length; x++) {
-                var current = schedule[x];
-                if (current.crn === crn) {
-                    current.sessionStateIndex = x;
-                    return current;
-                }
-            }
         }
 
         init();
