@@ -223,7 +223,7 @@
                 meetingStart: "13:35",
                 meetingEnd: "14:40",
                 campus: "BOS",
-                primaryInstructor: {nuid: "001303804", name: "Jon"},
+                primaryInstructor: "001303804",
                 secondaryInstructors: [],
                 enrollmentMax: 40,
                 waitlist: "Y",

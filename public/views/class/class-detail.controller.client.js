@@ -3,21 +3,26 @@
         .module("NEURegistrar")
         .controller("ClassDetailController", ClassDetailController);
 
-    function ClassDetailController($location, $routeParams, ClassService, ScheduleService) {
+    function ClassDetailController($location, $routeParams, ClassService, ScheduleService, $scope) {
+
+        $scope.data = {
+            model: 'myString',
+            availableOptions: [
+                {value: 'myString', name: 'string'},
+                {value: 1, name: 'integer'},
+                {value: true, name: 'boolean'},
+                {value: {prop: 'value'}, name: 'object'},
+                {value: ['a'], name: 'array'}
+            ]
+        };
 
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
-        vm.isPeakPeriod = isPeakPeriod;
-        vm.updateEndingTimes = updateEndingTimes;
-        vm.updateOnChangeOfTime = updateOnChangeOfTime;
 
         function init() {
-            if ($routeParams.crn === "_") {
-                $routeParams.crn = "";
-            }
             vm.crn = $routeParams.crn;
-            vm.class = findClassInSessionState(vm.crn); // find in session state instead for now
+            vm.class = findClassInSessionState(vm.crn); // find in session state for now until I figure out how to pass the specified course to this controller
 
             vm.allSubjectCodes = ClassService.getAllSubjectCodes();
             vm.allCRNs = ClassService.getAllCRNs();
@@ -32,12 +37,12 @@
             vm.allWaitlist = ClassService.getAllWaitlist();
             vm.allDoNotPublish = ClassService.getAllDoNotPublish();
             vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
-            vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors(); // modify to set "selected" here TODO
-            vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors(); // modify to set "selected" here TODO
 
-            //this will be replaced with data from previous semester
+            vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
+            vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
+
             vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
-            vm.allMeetingEndTimes = updateEndingTimes();
+            vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
         }
 
         function returnToSchedule() {
@@ -46,7 +51,7 @@
 
         function saveAndReturnToSchedule() {
             var schedule = JSON.parse(sessionStorage.schedule);
-            editOldClass(schedule[vm.class.sessionStateIndex], vm.class);
+            schedule[vm.class.sessionStateIndex] = vm.class;
             sessionStorage.schedule = JSON.stringify(schedule);
             $location.url("/schedule-submission");
         }
@@ -60,44 +65,6 @@
                     return current;
                 }
             }
-        }
-
-        function editOldClass(oldClass, newClass) {
-            oldClass.meetingDays = newClass.meetingDays;
-            oldClass.meetingStart = newClass.meetingStart;
-            oldClass.meetingEnd = newClass.meetingEnd;
-        }
-
-        function isPeakPeriod(time) {
-            if (vm.class.meetingDays == "M" || vm.class.meetingDays == "W" || vm.class.meetingDays == "R" ||
-                vm.class.meetingDays == "MW" || vm.class.meetingDays == "MWR") {
-                if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
-                    (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
-                    (time.slice(0, 2) == 9 && time.slice(-2) >= 15)) {
-                    return 1;
-                }
-            }
-            if (vm.class.meetingDays == "T" || vm.class.meetingDays == "F" || vm.class.meetingDays == "TF") {
-                if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
-                    (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
-                    (time.slice(0, 2) == 9 && time.slice(-2) >= 50)) {
-                    return 1;
-                }
-            }
-            return 0;
-        }
-
-        function updateEndingTimes() {
-            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingStart);
-            var classMinDuration = 30;
-            var classMaxDuration = 180;
-            vm.allMeetingEndTimes = vm.allMeetingStartTimes
-                .slice(startTimeIdx + classMinDuration / 5, startTimeIdx + classMaxDuration / 5);
-        }
-
-        function updateOnChangeOfTime() {
-            updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingStart) || isPeakPeriod(vm.class.meetingEnd);
         }
 
         init();

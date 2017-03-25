@@ -1,3 +1,7 @@
+<script type="text/javascript">
+    $('select.select2').select2();
+</script>
+
 <div class="container">
     <h1 class="margin-bottom-20">
         {{model.addClass ? "Add Class" : "Edit Class"}}
@@ -10,12 +14,16 @@
     <table class="table narrow">
         <tbody>
         <tr>
-            <td>Subject Code</td>
-            <td>{{model.class.subjectCode}}</td>
+            <td>Course</td>
+            <td>{{model.class.subjectCode}} {{model.class.courseNumber}}</td>
         </tr>
         <tr>
-            <td>Course No.</td>
-            <td>{{model.class.courseNumber}}</td>
+            <td>Section</td>
+            <td>{{model.class.section}}</td>
+        </tr>
+        <tr>
+            <td>CRN</td>
+            <td>{{model.crn}}</td>
         </tr>
         <tr>
             <td>Title</td>
@@ -24,12 +32,44 @@
             </td>
         </tr>
         <tr>
-            <td>Cancel Class?</td>
+            <td>Meeting Times</td>
             <td>
-                <select ng-model="model.class.cancel">
-                    <option value="N">N</option>
-                    <option value="Y">Y</option>
+                <select ng-model="model.class.meetingDays"
+                        ng-options="option for option in model.allMeetingDays">
                 </select>
+
+                <select ng-model="model.class.meetingStart"
+                        ng-options="option for option in model.allMeetingStartTimes">
+                </select>
+                —
+                <select ng-model="model.class.meetingEnd"
+                        ng-options="option for option in model.allMeetingEndTimes">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Primary Instructor</td>
+            <td>
+                <select class="select2" ng-model="model.class.primaryInstructor">
+                    <option ng-repeat="option in model.allPrimaryInstructors" ng-value="option.nuid">{{option.nuid}} {{option.name}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+        <tr>
+            <td>Secondary Instructors</td>
+            <td>
+                <select class="select2" ng-model="model.class.secondaryInstructors" multiple="multiple">
+                    <option ng-repeat="option in model.allSecondaryInstructors" ng-value="option.nuid">{{option.nuid}} {{option.name}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+            <td>Enrollment Maximum</td>
+            <td>
+                <input ng-model="model.class.enrollmentMax">
             </td>
         </tr>
         <tr>
@@ -57,13 +97,7 @@
             </td>
         </tr>
         <tr>
-            <td>Enrollment Maximum</td>
-            <td>
-                <input ng-model="model.class.enrollmentMax">
-            </td>
-        </tr>
-        <tr>
-            <td>Waitlist</td>
+            <td>Enable Waitlist?</td>
             <td>
                 <select ng-model="model.class.waitlist">
                     <option value="N">N</option>
@@ -72,7 +106,15 @@
             </td>
         </tr>
         <tr>
-            <td>Do Not Publish</td>
+            <td>Special Approvals</td>
+            <td>
+                <select ng-model="model.class.specialApprovals"
+                        ng-options="option for option in model.allSpecialApprovals">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Remove from Banner?</td>
             <td>
                 <select ng-model="model.class.doNotPublish">
                     <option value="N">N</option>
@@ -81,75 +123,18 @@
             </td>
         </tr>
         <tr>
-            <td>Meeting Days</td>
+            <td>Cancel Class?</td>
             <td>
-                <select ng-model="model.class.meetingDays"
-                        ng-options="option for option in model.allMeetingDays"
-                        ng-change="model.updateOnChangeOfTime()">
+                <select ng-model="model.class.cancel">
+                    <option value="N">N</option>
+                    <option value="Y">Y</option>
                 </select>
             </td>
         </tr>
         <tr>
-            <td>Meeting Start</td>
+            <td>Comment</td>
             <td>
-                <select ng-model="model.class.meetingStart"
-                        ng-options="option for option in model.allMeetingStartTimes"
-                        ng-change="model.updateOnChangeOfTime()">
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Meeting End</td>
-            <td>
-                <select ng-model="model.class.meetingEnd"
-                        ng-options="option for option in model.allMeetingEndTimes"
-                        ng-change="model.updateOnChangeOfTime()">
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" ng-show="model.isPeakPeriod">
-                <p class="text-warning">Time selected is during peak period(MWR 9:15-15:25, TF 9:50-15:25). Please proceed with caution.</p>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" ng-hide="model.isPeakPeriod">
-                <br>
-            </td>
-        </tr>
-        <tr>
-            <td>Primary Instructor</td>
-            <td>
-                <div
-                        isteven-multi-select
-                        input-model="model.allPrimaryInstructors"
-                        output-model="model.class.primaryInstructor"
-                        button-label="nuid name"
-                        item-label="nuid name"
-                        tick-property="ticked"
-                        selection-mode="single">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>Secondary Instructor</td>
-            <td>
-                <div
-                        isteven-multi-select
-                        input-model="model.allSecondaryInstructors"
-                        output-model="model.class.secondaryInstructors"
-                        button-label="nuid name"
-                        item-label="nuid name"
-                        tick-property="ticked">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>Special Approvals</td>
-            <td>
-                <select ng-model="model.class.specialApprovals"
-                        ng-options="option for option in model.allSpecialApprovals">
-                </select>
+                <textarea ng-model="model.class.comment"/>
             </td>
         </tr>
         </tbody>
