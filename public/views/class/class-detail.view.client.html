@@ -35,18 +35,18 @@
             <td>Meeting Times</td>
             <td>
                 <select ng-model="model.class.meetingDays"
-                        ng-options="option for option in model.allMeetingDays
-			ng-change="model.updateOnChangeOfTime()">
+                        ng-options="option for option in model.allMeetingDays"
+                        ng-change="model.updateOnChangeOfTime(0)">
                 </select>
 
                 <select ng-model="model.class.meetingStart"
-                        ng-options="option for option in model.allMeetingStartTimes
-			ng-change="model.updateOnChangeOfTime()">
+                        ng-options="option for option in model.allMeetingStartTimes"
+                        ng-change="model.updateOnChangeOfTime(1)">
                 </select>
                 —
                 <select ng-model="model.class.meetingEnd"
-                        ng-options="option for option in model.allMeetingEndTimes
-			ng-change="model.updateOnChangeOfTime()">
+                        ng-options="option for option in model.allMeetingEndTimes"
+                        ng-change="model.updateOnChangeOfTime(0)">
                 </select>
             </td>
         </tr>
@@ -54,7 +54,9 @@
             <td>Primary Instructor</td>
             <td>
                 <select class="select2" ng-model="model.class.primaryInstructor">
-                    <option ng-repeat="option in model.allPrimaryInstructors" ng-value="option.nuid">{{option.nuid}} {{option.name}}</option>
+                    <option ng-repeat="option in model.allPrimaryInstructors" ng-value="option.nuid">{{option.nuid}}
+                        {{option.name}}
+                    </option>
                 </select>
             </td>
         </tr>
@@ -63,7 +65,9 @@
             <td>Secondary Instructors</td>
             <td>
                 <select class="select2" ng-model="model.class.secondaryInstructors" multiple="multiple">
-                    <option ng-repeat="option in model.allSecondaryInstructors" ng-value="option.nuid">{{option.nuid}} {{option.name}}</option>
+                    <option ng-repeat="option in model.allSecondaryInstructors" ng-value="option.nuid">{{option.nuid}}
+                        {{option.name}}
+                    </option>
                 </select>
             </td>
         </tr>
@@ -134,8 +138,8 @@
         </tr>
         </tbody>
     </table>
-    <div id="toast" ng-click="model.hideToastMessage()">
-        Time selected is during peak period <b>MWR 9:15-15:25, TF 9:50-15:25</b>
+    <div id="toast" ng-click="model.toastMessage(0)">
+        Time selected is during peak hours <b>MWR 9:15-15:25, TF 9:50-15:25</b>
         , please process with caution.
     </div>
     <div>

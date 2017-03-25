@@ -10,7 +10,7 @@
         vm.isPeakPeriod = isPeakPeriod;
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
-        vm.hideToastMessage = hideToastMessage;
+        vm.toastMessage = toastMessage;
 
         function init() {
             vm.crn = $routeParams.crn;
@@ -61,21 +61,21 @@
             }
         }
 
-        function showToastMessage() {
+        function toastMessage(show) {
             var x = document.getElementById("toast");
-            x.className = "show";
-            setTimeout(function () {
-                x.className = x.className.replace("show", "");
-            }, 6000);
-        }
-
-        function hideToastMessage() {
-            var x = document.getElementById("toast");
-            x.className = "";
+            if (show) {
+                x.className = "show";
+                setTimeout(function () {
+                    x.className = "";
+                }, 6000);
+            } else {
+                x.className = "";
+            }
         }
 
         function isPeakPeriod(time) {
             var isPeakPeriod = 0;
+            var x = document.getElementById("toast");
             if (vm.class.meetingDays === "M" || vm.class.meetingDays === "W" || vm.class.meetingDays === "R" ||
                 vm.class.meetingDays === "MW" || vm.class.meetingDays === "MWR") {
                 if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
@@ -91,8 +91,10 @@
                     isPeakPeriod = 1;
                 }
             }
-            if (isPeakPeriod)
-                showToastMessage();
+            if (isPeakPeriod) {
+                if (x.className !== "show")
+                    toastMessage(1);
+            }
             return isPeakPeriod;
         }
 
@@ -104,8 +106,9 @@
                 .slice(startTimeIdx + classMinDuration / 5, startTimeIdx + classMaxDuration / 5 + 1);
         }
 
-        function updateOnChangeOfTime() {
-            updateEndingTimes();
+        function updateOnChangeOfTime(isMeetingStart) {
+            if (isMeetingStart)
+                updateEndingTimes();
             vm.isPeakPeriod = isPeakPeriod(vm.class.meetingStart) || isPeakPeriod(vm.class.meetingEnd);
         }
 
