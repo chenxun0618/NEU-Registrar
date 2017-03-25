@@ -6,10 +6,12 @@
     function ClassService($http) {
 
         var api = {
+            getClassByCRN: getClassByCRN,
+            getCurrentTerm: getCurrentTerm,
+            getMostRecentCourseData: getMostRecentCourseData,
             getAllSubjectCodes: getAllSubjectCodes,
             getAllSubmittedSchedules: getAllSubmittedSchedules,
             getAllCRNs: getAllCRNs,
-            getCurrentTerm: getCurrentTerm,
             getAllStatuses: getAllStatuses,
             getAllPartOfTerms: getAllPartOfTerms,
             getAllInstructionalMethods: getAllInstructionalMethods,
@@ -22,7 +24,6 @@
             getAllHonors: getAllHonors,
             getAllCancel: getAllCancel,
             getAllSpecialApprovals: getAllSpecialApprovals,
-            getClassByCRN: getClassByCRN,
             getAllTimeIntervals: getAllTimeIntervals,
             getAllPrimaryInstructors: getAllPrimaryInstructors,
             getAllSecondaryInstructors: getAllSecondaryInstructors
@@ -212,6 +213,49 @@
                 subjectName: "Accounting",
                 term: "201810",
                 courseNumber: "1225",
+                section: "03",
+                crn: crn,
+                // status: "A", ------ unnecessary?
+                partOfTerm: "1",
+                shortTitle: "Principles of Accounting",
+                instructionalMethod: "TR",
+                creditHour: 4,
+                meetingDays: "MWR",
+                meetingStart: "13:35",
+                meetingEnd: "14:40",
+                campus: "BOS",
+                primaryInstructor: "001303804",
+                secondaryInstructors: [],
+                enrollmentMax: 40,
+                waitlist: "Y",
+                waitlistNumber: 5,
+                doNotPublish: "N",
+                specialApprovals: "A",
+                comment: "",
+                honors: "Y",
+                cancel: "N"
+            };
+        }
+
+        function getMostRecentCourseData(subjectCode, courseNumber) {
+
+            // dummy for now
+            var crn = "" + Math.floor(Math.random() * 10) + "" +
+                Math.floor(Math.random() * 10) + "" +
+                Math.floor(Math.random() * 10) + "" +
+                Math.floor(Math.random() * 10) + "" +
+                Math.floor(Math.random() * 10);
+
+            // dummy data for now
+            return {
+                college: "BA",
+                collegeName: "D'Amore-McKim School of Business",
+                departmentCode: "ACCT",
+                departmentName: "Accounting",
+                subjectCode: subjectCode,
+                subjectName: "Accounting",
+                term: "201810",
+                courseNumber: courseNumber,
                 section: "03",
                 crn: crn,
                 // status: "A", ------ unnecessary?

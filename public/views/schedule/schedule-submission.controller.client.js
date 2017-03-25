@@ -9,6 +9,7 @@
         vm.getScheduleForTerm = getScheduleForTerm;
         vm.submitSchedule = submitSchedule;
         vm.navigateToClassDetail = navigateToClassDetail;
+        vm.navigateToAddClass = navigateToAddClass;
 
         function init() {
             vm.subjectCodes = ClassService.getAllSubjectCodes();
@@ -34,7 +35,13 @@
         function navigateToClassDetail(crn) {
             sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
             sessionStorage.schedule = JSON.stringify(vm.schedule);
-            $location.url("/class-detail/" + (crn ? crn : "_"));
+            $location.url("/class-detail/" + crn);
+        }
+
+        function navigateToAddClass() {
+            sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
+            sessionStorage.schedule = JSON.stringify(vm.schedule);
+            $location.url("/class-add/");
         }
 
         init();
