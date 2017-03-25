@@ -11,6 +11,7 @@
         vm.isPeakPeriod = isPeakPeriod;
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
+        vm.hideToastMessage = hideToastMessage;
 
         function init() {
             if ($routeParams.crn === "_") {
@@ -78,31 +79,47 @@
             oldClass.meetingEnd = newClass.meetingEnd;
         }
 
+        function showToastMessage() {
+            var x = document.getElementById("toast");
+            x.className = "show";
+            setTimeout(function () {
+                x.className = x.className.replace("show", "");
+            }, 6000);
+        }
+
+        function hideToastMessage() {
+            var x = document.getElementById("toast");
+            x.className = "";
+        }
+
         function isPeakPeriod(time) {
-            if (vm.class.meetingDays == "M" || vm.class.meetingDays == "W" || vm.class.meetingDays == "R" ||
-                vm.class.meetingDays == "MW" || vm.class.meetingDays == "MWR") {
+            var isPeakPeriod = 0;
+            if (vm.class.meetingDays === "M" || vm.class.meetingDays === "W" || vm.class.meetingDays === "R" ||
+                vm.class.meetingDays === "MW" || vm.class.meetingDays === "MWR") {
                 if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
                     (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
                     (time.slice(0, 2) == 9 && time.slice(-2) >= 15)) {
-                    return 1;
+                    isPeakPeriod = 1;
                 }
             }
-            if (vm.class.meetingDays == "T" || vm.class.meetingDays == "F" || vm.class.meetingDays == "TF") {
+            if (vm.class.meetingDays === "T" || vm.class.meetingDays === "F" || vm.class.meetingDays === "TF") {
                 if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
                     (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
                     (time.slice(0, 2) == 9 && time.slice(-2) >= 50)) {
-                    return 1;
+                    isPeakPeriod = 1;
                 }
             }
-            return 0;
+            if (isPeakPeriod)
+                showToastMessage();
+            return isPeakPeriod;
         }
 
         function updateEndingTimes() {
             var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingStart);
-            var classMinDuration = 30;
-            var classMaxDuration = 180;
+            var classMinDuration = 65;
+            var classMaxDuration = 210;
             vm.allMeetingEndTimes = vm.allMeetingStartTimes
-                .slice(startTimeIdx + classMinDuration / 5, startTimeIdx + classMaxDuration / 5);
+                .slice(startTimeIdx + classMinDuration / 5, startTimeIdx + classMaxDuration / 5 + 1);
         }
 
         function updateOnChangeOfTime() {

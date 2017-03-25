@@ -27,7 +27,7 @@
         <tr>
             <td>Title</td>
             <td>
-                <input ng-model="model.class.shortTitle" size="25"></input>
+                <input ng-model="model.class.shortTitle"></input>
             </td>
         </tr>
         <tr>
@@ -105,20 +105,12 @@
                 </select>
             </td>
         </tr>
-        <tr>
-            <td colspan="2" ng-show="model.isPeakPeriod">
-                <p class="text-warning">Time selected is during peak period(MWR 9:15-15:25, TF 9:50-15:25)
-                    , please process with caution.</p>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" ng-hide="model.isPeakPeriod">
-                <br>
-            </td>
-        </tr>
         </tbody>
     </table>
-
+    <div id="toast" ng-click="model.hideToastMessage()">
+        Time selected is during peak period <b>MWR 9:15-15:25, TF 9:50-15:25</b>
+        , please process with caution.
+    </div>
     <div>
         <button ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Save & Return</button>
         <button ng-click="model.returnToSchedule()" type="button" class="btn btn-warning">Cancel</button>

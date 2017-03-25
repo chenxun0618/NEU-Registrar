@@ -193,9 +193,8 @@
                     specialApprovals: "A",
                     comment: "",
                     honors: "Y"
-                },
+                }
             ];
-
         }
 
         function submitSchedule(schedule) {
