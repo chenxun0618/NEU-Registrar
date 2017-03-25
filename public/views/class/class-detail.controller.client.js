@@ -4,7 +4,6 @@
         .controller("ClassDetailController", ClassDetailController);
 
     function ClassDetailController($location, $routeParams, ClassService, ScheduleService) {
-
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
@@ -14,18 +13,8 @@
         vm.hideToastMessage = hideToastMessage;
 
         function init() {
-            if ($routeParams.crn === "_") {
-                $routeParams.crn = "";
-            }
             vm.crn = $routeParams.crn;
-            vm.addClass = !vm.crn;
-            vm.editClass = !!vm.crn;
-
-            if (vm.editClass) {
-                vm.class = findClassInSessionState(vm.crn); // find in session state instead for now
-            } else {
-                vm.class = {};
-            }
+            vm.class = findClassInSessionState(vm.crn); // find in session state for now until I figure out how to pass the specified course to this controller
 
             vm.allSubjectCodes = ClassService.getAllSubjectCodes();
             vm.allCRNs = ClassService.getAllCRNs();
@@ -39,11 +28,15 @@
             vm.allSections = ClassService.getAllSections();
             vm.allWaitlist = ClassService.getAllWaitlist();
             vm.allDoNotPublish = ClassService.getAllDoNotPublish();
+            vm.allCancel = ClassService.getAllCancel();
+            vm.allHonors = ClassService.getAllHonors();
             vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
 
-            //this will be replaced with data from previous semester
+            vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
+            vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
+
             vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
-            vm.allMeetingEndTimes = updateEndingTimes();
+            vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
         }
 
         function returnToSchedule() {
@@ -52,12 +45,7 @@
 
         function saveAndReturnToSchedule() {
             var schedule = JSON.parse(sessionStorage.schedule);
-            if (vm.addClass) {
-                vm.class.crn = "" + Math.floor(Math.random() * 10000); // dummy for now
-                schedule.push(vm.class);
-            } else {
-                editOldClass(schedule[vm.class.sessionStateIndex], vm.class);
-            }
+            schedule[vm.class.sessionStateIndex] = vm.class;
             sessionStorage.schedule = JSON.stringify(schedule);
             $location.url("/schedule-submission");
         }
@@ -71,12 +59,6 @@
                     return current;
                 }
             }
-        }
-
-        function editOldClass(oldClass, newClass) {
-            oldClass.meetingDays = newClass.meetingDays;
-            oldClass.meetingStart = newClass.meetingStart;
-            oldClass.meetingEnd = newClass.meetingEnd;
         }
 
         function showToastMessage() {
