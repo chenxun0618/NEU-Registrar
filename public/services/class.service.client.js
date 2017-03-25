@@ -20,7 +20,7 @@
             getAllWaitlist: getAllWaitlist,
             getAllDoNotPublish: getAllDoNotPublish,
             getAllHonors: getAllHonors,
-            getAllCancel: getAllCancel(),
+            getAllCancel: getAllCancel,
             getAllSpecialApprovals: getAllSpecialApprovals,
             getClassByCRN: getClassByCRN,
             getAllTimeIntervals: getAllTimeIntervals,

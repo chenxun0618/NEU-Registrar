@@ -1,3 +1,3 @@
 (function () {
-    angular.module("NEURegistrar", ["ngRoute", "isteven-multi-select"]);
+    angular.module("NEURegistrar", ["ngRoute"]);
 })();

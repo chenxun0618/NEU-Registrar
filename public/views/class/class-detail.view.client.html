@@ -4,7 +4,7 @@
 
 <div class="container">
     <h1 class="margin-bottom-20">
-        {{model.addClass ? "Add Class" : "Edit Class"}}
+        Edit Class
     </h1>
 
     <div ng-if="model.error" class="alert alert-danger">
@@ -75,9 +75,7 @@
         <tr>
             <td>Honors</td>
             <td>
-                <select ng-model="model.class.honors">
-                    <option value="N">N</option>
-                    <option value="Y">Y</option>
+                <select ng-model="model.class.honors" ng-options="option for option in model.allHonors">
                 </select>
             </td>
         </tr>
@@ -99,9 +97,7 @@
         <tr>
             <td>Enable Waitlist?</td>
             <td>
-                <select ng-model="model.class.waitlist">
-                    <option value="N">N</option>
-                    <option value="Y">Y</option>
+                <select ng-model="model.class.waitlist" ng-options="option for option in model.allWaitlist">
                 </select>
             </td>
         </tr>
@@ -116,18 +112,14 @@
         <tr>
             <td>Remove from Banner?</td>
             <td>
-                <select ng-model="model.class.doNotPublish">
-                    <option value="N">N</option>
-                    <option value="Y">Y</option>
+                <select ng-model="model.class.doNotPublish" ng-options="option for option in model.allDoNotPublish">
                 </select>
             </td>
         </tr>
         <tr>
             <td>Cancel Class?</td>
             <td>
-                <select ng-model="model.class.cancel">
-                    <option value="N">N</option>
-                    <option value="Y">Y</option>
+                <select ng-model="model.class.cancel" ng-options="option for option in model.allCancel">
                 </select>
             </td>
         </tr>

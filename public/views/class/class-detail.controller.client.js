@@ -3,19 +3,7 @@
         .module("NEURegistrar")
         .controller("ClassDetailController", ClassDetailController);
 
-    function ClassDetailController($location, $routeParams, ClassService, ScheduleService, $scope) {
-
-        $scope.data = {
-            model: 'myString',
-            availableOptions: [
-                {value: 'myString', name: 'string'},
-                {value: 1, name: 'integer'},
-                {value: true, name: 'boolean'},
-                {value: {prop: 'value'}, name: 'object'},
-                {value: ['a'], name: 'array'}
-            ]
-        };
-
+    function ClassDetailController($location, $routeParams, ClassService, ScheduleService) {
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
@@ -36,6 +24,8 @@
             vm.allSections = ClassService.getAllSections();
             vm.allWaitlist = ClassService.getAllWaitlist();
             vm.allDoNotPublish = ClassService.getAllDoNotPublish();
+            vm.allCancel = ClassService.getAllCancel();
+            vm.allHonors = ClassService.getAllHonors();
             vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
 
             vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();

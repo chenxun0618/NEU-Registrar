@@ -199,7 +199,7 @@
                     comment: "",
                     honors: "Y",
                     cancel: "N"
-                },
+                }
             ];
 
         }
