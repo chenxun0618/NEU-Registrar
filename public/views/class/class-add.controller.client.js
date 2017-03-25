@@ -38,7 +38,7 @@
             if (!vm.reloaded) {
                 vm.class = ClassService.getMostRecentCourseData(subjectCode, courseNumber);
             } else {
-                vm.class = {}; // fix this bug -- does not reload select2s
+                vm.class = {}; // fix this bug: does not reload select2s
                 vm.class = ClassService.getMostRecentCourseData(subjectCode, courseNumber);
             }
         }
