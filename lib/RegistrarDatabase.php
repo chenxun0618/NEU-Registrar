@@ -2,17 +2,17 @@
     class RegistrarDatabase {
         protected $conn;
 
+        /**
+         * Constructor for RegistrarDatabase object.
+         */
         public function __construct() {
             if (!isset($this->conn)) {
                 // loads configuration file as an array
                 $config = parse_ini_file('../config/config.ini');
 
                 $this->conn = new mysqli('localhost', $config['username'], $config['password'], $config['db_name']);
-                //echo "\nSuccessfully connected!";
                 if ($this->conn->connect_errno > 0) {
-                    echo die("Error with connection");
-                    fwrite(STDERR, "MySQL connection error: " . $this->conn->connect_error);
-                    exit(1);
+                    throw new Exception("Error with databse connection: " . $this->conn->conect_error);
                 }
             } else {
                 echo die("Error with connection");
@@ -21,22 +21,30 @@
             }
         }
 
+        /**
+         * Deconstructor for RegistrarDatabase object.
+         */
         public function __destruct() {
             $this->conn->close();
         }
 
-        public function queryTable($table) {
+        /**
+         * Makes a "select all" query to the given table.
+         *
+         * @param string $table     the table to query on
+         * @return array            the rows results from the query as JSON
+         */
+        public function selectAllQuery($table) {
             $resultsArr = array();
             $fieldsArr = array();
             $rowObj = array();
+            // SQL statement for select all
             $query = <<<SQL
                 SELECT * FROM $table;
 SQL;
 
             if (!$result = $this->conn->query($query)) {
-                echo die("Error with query" . $this->conn->error);
-                fwrite(STDERR, "Error with query: " . $this->conn->error);
-                exit(1);
+                throw new Exception("Error with query: " . $this->conn->error);
             }
 
             if ($table !== '') {
@@ -50,7 +58,7 @@ SQL;
                 // loops through rows in table
                 while ($row = $result->fetch_assoc()) {
                     // loops through fields found in table
-                    for ($i = 0; $i <= sizeof($fieldsArr); $i++) {
+                    for ($i = 0; $i <= count($fieldsArr); $i++) {
                         $rowObj[(string) $fieldsArr[$i]] = $row[(string) $fieldsArr[$i]];
                     }
 
@@ -58,8 +66,8 @@ SQL;
                     $resultsArr[] = $rowObj;
                 }
             } else {
-                echo die("\nNot gtvinsm");
-                fwrite(STDERR, "Not the expected table.");
+                echo die("Table name is empty.");
+                fwrite(STDERR, "Table name is empty.");
                 exit(1);
             }
 

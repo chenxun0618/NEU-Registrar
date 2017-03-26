@@ -1,6 +1,6 @@
 <?php
     include 'RegistrarDatabase.php';
-    
+
     if (isset($_GET['table'])) {
         $table = $_GET['table'];
     } else {
@@ -8,5 +8,5 @@
     }
 
     $db = new RegistrarDatabase;
-    echo $db->queryTable($table);
+    echo $db->selectAllQuery($table);
 ?>
