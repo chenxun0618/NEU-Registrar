@@ -35,6 +35,8 @@
             var r = confirm("Are you sure you want to submit this schedule?");
             if (r == true) {
                 ScheduleService.submitSchedule(vm.schedule);
+                sessionStorage.clear();
+                $location.url("/submitted/");
             }
         }
 
