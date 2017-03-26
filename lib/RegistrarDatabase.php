@@ -8,7 +8,7 @@
                 $config = parse_ini_file('../config/config.ini');
 
                 $this->conn = new mysqli('localhost', $config['username'], $config['password'], $config['db_name']);
-                echo "\nSuccessfully connected!";
+                //echo "\nSuccessfully connected!";
                 if ($this->conn->connect_errno > 0) {
                     echo die("Error with connection");
                     fwrite(STDERR, "MySQL connection error: " . $this->conn->connect_error);
@@ -26,7 +26,9 @@
         }
 
         public function queryTable($table) {
-            $results_arr = array();
+            $resultsArr = array();
+            $fieldsArr = array();
+            $rowObj = array();
             $query = <<<SQL
                 SELECT * FROM $table;
 SQL;
@@ -37,11 +39,23 @@ SQL;
                 exit(1);
             }
 
-            if ($table == 'gtvinsm') {
+            if ($table !== '') {
+                // loops through field names in table
+                while ($field = $result->fetch_field()) {
+                    if ($field->name !== "" && $field->name !== NULL) {
+                        $fieldsArr[] = $field->name;
+                    }
+                }
+
+                // loops through rows in table
                 while ($row = $result->fetch_assoc()) {
-                    $rowObj->code = $row['GTVINSM_CODE'];
-                    $rowObj->desc = $row['GTVINSM_DESC'];
-                    $results_arr[] = $rowObj;
+                    // loops through fields found in table
+                    for ($i = 0; $i <= sizeof($fieldsArr); $i++) {
+                        $rowObj[(string) $fieldsArr[$i]] = $row[(string) $fieldsArr[$i]];
+                    }
+
+                    // pushes row object to the results array
+                    $resultsArr[] = $rowObj;
                 }
             } else {
                 echo die("\nNot gtvinsm");
@@ -49,7 +63,7 @@ SQL;
                 exit(1);
             }
 
-            return json_encode($results_arr);
+            return json_encode($resultsArr);
         }
     }
 ?>
