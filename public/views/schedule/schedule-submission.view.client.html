@@ -6,15 +6,18 @@
     <div ng-if="model.error" class="alert alert-danger">
         {{model.error}}
     </div>
-
+    <span class="search-box">
+        <input style="float: right" type="text" id="filterText" ng-model="filterText"
+               placeholder="Search a class number, class name...">
+    </span>
+    <br>
     <form name="getSchedules">
         <label for="scheduleSelect"> Schedule: </label>
         <select name="scheduleSelect" id="scheduleSelect" ng-model="model.selectedTerm"
                 ng-options="option.term_readable for option in model.schedules track by option.term+option.status">
-        </select>
+        </select> &nbsp
         <a ng-click="model.getScheduleForTerm(model.selectedTerm)">GO</a>
     </form>
-
     <table ng-show="model.schedule" class="table">
         <thead>
             <tr>
@@ -26,7 +29,7 @@
         </thead>
 
         <tbody>
-            <tr ng-repeat="class in model.schedule">
+            <tr ng-repeat="class in model.schedule | filterClass:filterText">
                 <td>{{class.subjectCode}} {{class.courseNumber}}</td>
                 <td>{{class.shortTitle}}</td>
                 <td>{{class.meetingDays}} {{class.meetingStart.slice(0, class.meetingStart.length - 3)}}:{{class.meetingStart.slice(class.meetingStart.length - 2)}}–{{class.meetingEnd.slice(0, class.meetingEnd.length - 3)}}:{{class.meetingEnd.slice(class.meetingEnd.length - 2)}}</td>
