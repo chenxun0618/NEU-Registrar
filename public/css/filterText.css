@@ -1,0 +1,16 @@
+#filterText {
+    background: url('../images/search_icon.png') no-repeat 4px 2px;
+    width: 35%;
+    font-size: 14px;
+    padding: 8px 20px 8px 40px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+#filterText:focus {
+    outline: none;
+    border: 2px solid #93baf1;
+    /*box-shadow: 0 0 10px #9ecaed;*/
+}

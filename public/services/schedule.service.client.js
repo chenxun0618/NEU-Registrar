@@ -203,7 +203,6 @@
                     cancel: "N"
                 }
             ];
-
         }
 
         function submitSchedule(schedule) {
