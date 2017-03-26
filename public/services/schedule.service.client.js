@@ -7,7 +7,9 @@
 
         var api = {
             getScheduleByTerm: getScheduleByTerm,
-            submitSchedule: submitSchedule
+            submitSchedule: submitSchedule,
+            getAllSchedules: getAllSchedules,
+            getAllNonApprovedSchedules: getAllNonApprovedSchedules
         };
 
         function getScheduleByTerm(term) {
@@ -206,6 +208,51 @@
 
         function submitSchedule(schedule) {
             // communicate with web service
+        }
+
+        // based on logged in user's nuid, gets the appropriate list of schedule metadata in descending order
+        function getAllSchedules(nuid) {
+
+            // dummy data for now
+            return [
+                {
+                    term: "201810",
+                    term_readable: "Spring 2018",
+                    status: "S",
+                    submitter_nuid: "001104152",
+                    submitter_name: "John Smith",
+                    timestamp: "20170324122500"
+                },
+                {
+                    term: "201720",
+                    term_readable: "Summer 1 2017",
+                    status: "A"
+                },
+                {
+                    term: "201721",
+                    term_readable: "Summer 2 2017",
+                    status: "A"
+                },
+                {
+                    term: "201730",
+                    term_readable: "Fall 2017",
+                    status: "A"
+                }
+            ];
+        }
+
+        // same as above, but only gets stuff that hasn't been approved yet (draft or submitted)
+        function getAllNonApprovedSchedules(nuid) {
+            return [
+                {
+                    term: "201810",
+                    term_readable: "Spring 2018",
+                    status: "S",
+                    submitter_nuid: "001104152",
+                    submitter_name: "John Smith",
+                    timestamp: "20170324122500"
+                },
+            ];
         }
 
         return api;

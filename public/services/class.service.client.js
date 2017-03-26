@@ -10,7 +10,6 @@
             getCurrentTerm: getCurrentTerm,
             getMostRecentCourseData: getMostRecentCourseData,
             getAllSubjectCodes: getAllSubjectCodes,
-            getAllSubmittedSchedules: getAllSubmittedSchedules,
             getAllCRNs: getAllCRNs,
             getAllStatuses: getAllStatuses,
             getAllPartOfTerms: getAllPartOfTerms,
@@ -28,97 +27,6 @@
             getAllPrimaryInstructors: getAllPrimaryInstructors,
             getAllSecondaryInstructors: getAllSecondaryInstructors
         };
-
-        function getAllSubmittedSchedules() {
-
-            // dummy data for now
-            return [
-                {
-                    term: "Spring 2014",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Summer 1 2014",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Summer 2 2014",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Fall 2014",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Spring 2015",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Summer 1 2015",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Summer 2 2015",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Fall 2015",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Spring 2016",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Summer 1 2016",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Summer 2 2016",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Fall 2016",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Spring 2017",
-                    submitter: "001104152",
-                    draft: false,
-                    schedule: []
-                },
-                {
-                    term: "Summer 1 2017",
-                    submitter: "001104152",
-                    draft: true,
-                    schedule: []
-                }
-            ];
-        }
 
         function getAllSubjectCodes() {
             return ["ACCT", "CS", "DS", "IS", "MATH", "PHYS", "PSYC"];

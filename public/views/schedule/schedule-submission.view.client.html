@@ -9,8 +9,8 @@
 
     <form name="getSchedules">
         <label for="scheduleSelect"> Schedule: </label>
-        <select name="scheduleSelect" id="scheduleSelect" ng-model="model.selectedTerm">
-            <option ng-repeat="option in model.submittedSchedules" value="{{option.term}}">{{option.term}}</option>
+        <select name="scheduleSelect" id="scheduleSelect" ng-model="model.selectedTerm"
+                ng-options="option.term_readable for option in model.schedules track by option.term+option.status">
         </select>
         <a ng-click="model.getScheduleForTerm(model.selectedTerm)">GO</a>
     </form>

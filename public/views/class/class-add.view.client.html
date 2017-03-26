@@ -79,7 +79,7 @@
             <td>Primary Instructor</td>
             <td>
                 <select class="select2" ng-model="model.class.primaryInstructor">
-                    <option ng-repeat="option in model.allPrimaryInstructors" ng-value="option.nuid">{{option.nuid}} {{option.name}}</option>
+                    <option ng-repeat="option in model.allPrimaryInstructors track by option.nuid" ng-value="option.nuid">{{option.nuid}} {{option.name}}</option>
                 </select>
             </td>
         </tr>
