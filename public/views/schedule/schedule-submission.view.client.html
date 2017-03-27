@@ -6,7 +6,7 @@
     <div ng-if="model.error" class="alert alert-danger">
         {{model.error}}
     </div>
-    <span class="search-box">
+    <span ng-show="model.schedule" class="search-box">
         <input style="float: right" type="text" id="filterText" ng-model="filterText"
                placeholder="Search a class number, class name...">
     </span>
@@ -15,33 +15,63 @@
         <label for="scheduleSelect"> Schedule: </label>
         <select name="scheduleSelect" id="scheduleSelect" ng-model="model.selectedTerm"
                 ng-options="option.term_readable for option in model.schedules track by option.term+option.status">
-        </select> &nbsp
+        </select> &nbsp;
         <a ng-click="model.getScheduleForTerm(model.selectedTerm)">GO</a>
     </form>
     <table ng-show="model.schedule" class="table">
         <thead>
-            <tr>
-                <th>Code</th>
-                <th>Class Name</th>
-                <th>Meeting Time</th>
-                <th></th>
-            </tr>
+        <tr>
+            <th>Code</th>
+            <th>Class Name</th>
+            <th>Meeting Time</th>
+            <th></th>
+        </tr>
         </thead>
 
         <tbody>
-            <tr ng-repeat="class in model.schedule | filterClass:filterText">
-                <td>{{class.subjectCode}} {{class.courseNumber}}</td>
-                <td>{{class.shortTitle}}</td>
-                <td>{{class.meetingDays}} {{class.meetingStart.slice(0, class.meetingStart.length - 3)}}:{{class.meetingStart.slice(class.meetingStart.length - 2)}}–{{class.meetingEnd.slice(0, class.meetingEnd.length - 3)}}:{{class.meetingEnd.slice(class.meetingEnd.length - 2)}}</td>
-                <td>
-                    <a ng-click="model.navigateToClassDetail(class.crn)">Edit</a>
-                </td>
-            </tr>
+        <tr ng-class="{'deleted': (class.metadata && class.metadata.deleted), 'added': (class.metadata && class.metadata.added), 'modified': (class.metadata && !class.metadata.deleted && !class.metadata.added && class.metadata.modified)}"
+            ng-repeat="class in model.schedule | filterClass:filterText">
+            <td>{{class.subjectCode}} {{class.courseNumber}}</td>
+            <td>{{class.shortTitle}}</td>
+            <td>{{class.meetingDays}} {{class.meetingStart.slice(0, class.meetingStart.length -
+                3)}}:{{class.meetingStart.slice(class.meetingStart.length - 2)}}–{{class.meetingEnd.slice(0,
+                class.meetingEnd.length - 3)}}:{{class.meetingEnd.slice(class.meetingEnd.length - 2)}}
+            </td>
+            <td>
+                <a ng-click="model.navigateToClassDetail(class.crn)">Edit</a>
+            </td>
+        </tr>
         </tbody>
     </table>
 
+    <div ng-show="model.schedule" class="color-legend">
+        <div class="color-legend-item">
+            <div class="color-box added"/>
+            <div class="text-box">Added</div>
+        </div>
+        <div class="color-legend-item">
+            <div class="color-box modified"/>
+            <div class="text-box">Modified</div>
+        </div>
+        <div class="color-legend-item">
+            <div class="color-box deleted"/>
+            <div class="text-box">Deleted</div>
+        </div>
+        <div class="color-legend-item">
+            <div class="color-box" style="background-color: white;"/>
+            <div class="text-box">Unmodified</div>
+        </div>
+    </div>
+
     <div class="float-right">
-        <button ng-click="model.navigateToAddClass()" ng-show="model.schedule" type="button" class="btn btn-success">Add Class</button>
-        <button ng-click="model.submitSchedule()" ng-show="model.schedule" type="button" class="btn btn-primary">Submit</button>
+        <button ng-click="model.navigateToAddClass()" ng-show="model.schedule" type="button" class="btn btn-info">Add
+            Class
+        </button>
+        <button ng-click="model.saveSchedule()" ng-show="model.schedule" type="button" class="btn btn-success">
+            Save
+        </button>
+        <button ng-click="model.submitSchedule()" ng-show="model.schedule" type="button" class="btn btn-primary">
+            Submit
+        </button>
     </div>
 </div>

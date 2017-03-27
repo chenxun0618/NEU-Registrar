@@ -52,6 +52,8 @@
         }
 
         function saveAndReturnToSchedule() {
+            vm.class.metadata = vm.class.metadata || {};
+            vm.class.metadata.added = true;
             var schedule = JSON.parse(sessionStorage.schedule);
             schedule.push(vm.class);
             sessionStorage.schedule = JSON.stringify(schedule);

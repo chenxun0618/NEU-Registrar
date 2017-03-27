@@ -44,6 +44,10 @@
         }
 
         function saveAndReturnToSchedule() {
+            vm.class.metadata = vm.class.metadata || {};
+            vm.class.metadata.modified = ScheduleService.isClassModified(vm.class);
+            vm.class.metadata.deleted = (vm.class.cancel === "Y");
+
             var schedule = JSON.parse(sessionStorage.schedule);
             schedule[vm.class.sessionStateIndex] = vm.class;
             sessionStorage.schedule = JSON.stringify(schedule);
