@@ -11,6 +11,8 @@
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
         vm.toastMessage = toastMessage;
+        vm.arraysEqual = arraysEqual;
+        vm.instructorNamesFromNuids = instructorNamesFromNuids;
 
         function init() {
             vm.crn = $routeParams.crn;
@@ -114,6 +116,37 @@
             if (isMeetingStart)
                 updateEndingTimes();
             vm.isPeakPeriod = isPeakPeriod(vm.class.meetingStart) || isPeakPeriod(vm.class.meetingEnd);
+        }
+
+        function arraysEqual(a, b) {
+            if (a === b) return true;
+            if (a == null || b == null) return false;
+            if (a.length != b.length) return false;
+
+            for (var i = 0; i < a.length; ++i) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+
+        function instructorNamesFromNuids(instructors, nuids) {
+            var names = [];
+            for (var x = 0; x < nuids.length; x++) {
+                var instructorNuid = nuids[x];
+                for (var y = 0; y < instructors.length; y++) {
+                    if (instructorNuid === instructors[y].nuid) {
+                        names.push(instructors[y].name);
+                    }
+                }
+            }
+
+            if (names.length === 0) {
+                return "(none)";
+            } else if (names.length == 1) {
+                return names[0];
+            } else {
+                return names;
+            }
         }
 
         init();

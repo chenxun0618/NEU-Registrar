@@ -140,7 +140,7 @@
                 campus: "BOS",
                 primaryInstructor: "001303804",
                 secondaryInstructors: [],
-                enrollmentMax: 40,
+                enrollmentMax: "40",
                 waitlist: "Y",
                 waitlistNumber: 5,
                 doNotPublish: "N",

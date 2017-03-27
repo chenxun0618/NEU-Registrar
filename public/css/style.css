@@ -61,7 +61,7 @@ div.color-box {
     border: 1px solid #000;
 }
 
-div.color-legend div.text-box {
+div.text-box {
     position: relative;
     top: -2px;
 }
@@ -76,9 +76,22 @@ div.color-legend .add-class-button {
 }
 
 .modified {
-    background-color: #fffca9;
+    background-color: #FCF8E4;
 }
 
 .deleted {
     background-color: #ffb1b6;
+}
+
+.unmodified {
+    background-color: white;
+}
+
+.changedFrom {
+    font-style: italic;
+    color: #c8c8c8;
+}
+
+div.color-legend2 {
+    padding-top: 0px;
 }
