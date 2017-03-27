@@ -41,9 +41,11 @@
             vm.reloaded = (vm.reloaded === undefined) ? false : true;
             if (!vm.reloaded) {
                 vm.class = ClassService.getMostRecentCourseData(subjectCode, courseNumber);
+                vm.class.old = angular.copy(vm.class);
             } else {
                 vm.class = {}; // fix this bug: does not reload select2s
                 vm.class = ClassService.getMostRecentCourseData(subjectCode, courseNumber);
+                vm.class.old = angular.copy(vm.class);
             }
         }
 
@@ -54,6 +56,7 @@
         function saveAndReturnToSchedule() {
             vm.class.metadata = vm.class.metadata || {};
             vm.class.metadata.added = true;
+            vm.class.metadata.modified = ScheduleService.isClassModified(vm.class);
             var schedule = JSON.parse(sessionStorage.schedule);
             schedule.push(vm.class);
             sessionStorage.schedule = JSON.stringify(schedule);

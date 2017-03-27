@@ -29,7 +29,7 @@
         </thead>
 
         <tbody>
-        <tr ng-class="{'deleted': (class.metadata && class.metadata.deleted), 'added': (class.metadata && class.metadata.added), 'modified': (class.metadata && !class.metadata.deleted && !class.metadata.added && class.metadata.modified)}"
+        <tr ng-class="{'added': (class.metadata && class.metadata.added), 'deleted': (class.metadata && !class.metadata.added && class.metadata.deleted), 'modified': (class.metadata && !class.metadata.deleted && !class.metadata.added && class.metadata.modified)}"
             ng-repeat="class in model.schedule | filterClass:filterText">
             <td>{{class.subjectCode}} {{class.courseNumber}}</td>
             <td>{{class.shortTitle}}</td>
