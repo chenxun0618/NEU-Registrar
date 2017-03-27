@@ -17,7 +17,7 @@ a:hover {
 }
 
 .hidden {
-    visibility: collapse;
+    visibility: hidden;
 }
 
 .bold {
