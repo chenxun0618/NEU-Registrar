@@ -36,3 +36,49 @@ textarea {
     width: 300px;
     height: 120px;
 }
+
+table {
+    padding-bottom: 5px;
+}
+
+div.color-legend {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 15px;
+}
+
+div.color-legend div {
+    display: inline-block;
+}
+
+div.color-legend-item {
+    padding-right: 40px;
+}
+
+div.color-box {
+    width: 15px;
+    height: 15px;
+    border: 1px solid #000;
+}
+
+div.color-legend div.text-box {
+    position: relative;
+    top: -2px;
+}
+
+div.color-legend .add-class-button {
+    position: relative;
+    top: -8px;
+}
+
+.added {
+    background-color: lightgreen;
+}
+
+.modified {
+    background-color: #fffca9;
+}
+
+.deleted {
+    background-color: #ffb1b6;
+}

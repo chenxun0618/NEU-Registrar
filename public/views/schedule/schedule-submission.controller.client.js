@@ -13,7 +13,7 @@
 
         function init() {
             vm.subjectCodes = ClassService.getAllSubjectCodes();
-            vm.submittedSchedules = ClassService.getAllSubmittedSchedules();
+            vm.schedules = ScheduleService.getAllSchedules();
 
             if (sessionStorage.selectedTerm) {
                 vm.selectedTerm = JSON.parse(sessionStorage.selectedTerm);
@@ -22,13 +22,25 @@
         }
 
         function getScheduleForTerm(term) {
-            vm.schedule = ScheduleService.getScheduleByTerm(term);
+            var r = true;
+            if (vm.schedule) {
+                r = confirm("Are you sure you want to load new schedule? You will lose your progress.");
+            }
+            if (r == true || !vm.schedule) {
+                vm.schedule = ScheduleService.getScheduleByTerm(term);
+            }
+        }
+
+        function saveSchedule() {
+            ScheduleService.saveSchedule(vm.schedule);
         }
 
         function submitSchedule() {
             var r = confirm("Are you sure you want to submit this schedule?");
             if (r == true) {
                 ScheduleService.submitSchedule(vm.schedule);
+                sessionStorage.clear();
+                $location.url("/submitted/");
             }
         }
 
