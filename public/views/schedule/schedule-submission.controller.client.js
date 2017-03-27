@@ -22,13 +22,17 @@
         }
 
         function getScheduleForTerm(term) {
-            var r = false;
+            var r = true;
             if (vm.schedule) {
                 r = confirm("Are you sure you want to load new schedule? You will lose your progress.");
             }
             if (r == true || !vm.schedule) {
                 vm.schedule = ScheduleService.getScheduleByTerm(term);
             }
+        }
+
+        function saveSchedule() {
+            ScheduleService.saveSchedule(vm.schedule);
         }
 
         function submitSchedule() {
