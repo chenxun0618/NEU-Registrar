@@ -15,6 +15,14 @@
                 controller: "ClassDetailController",
                 controllerAs: "model"
             })
+            .when("/class-add/", {
+                templateUrl: "views/class/class-add.view.client.html",
+                controller: "ClassAddController",
+                controllerAs: "model"
+            })
+            .when("/submitted", {
+                templateUrl: "views/schedule/schedule-submission-done.view.client.html"
+            })
             .when("/", {
                 redirectTo: "/schedule-submission"
             })

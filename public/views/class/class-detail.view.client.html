@@ -1,6 +1,10 @@
+<script type="text/javascript">
+    $('select.select2').select2();
+</script>
+
 <div class="container">
     <h1 class="margin-bottom-20">
-        {{model.addClass ? "Add Class" : "Edit Class"}}
+        Edit Class
     </h1>
 
     <div ng-if="model.error" class="alert alert-danger">
@@ -10,54 +14,164 @@
     <table class="table narrow">
         <tbody>
         <tr>
+            <td>Course</td>
+            <td>{{model.class.subjectCode}} {{model.class.courseNumber}}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Section</td>
+            <td>{{model.class.section}}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>CRN</td>
+            <td>{{model.crn}}</td>
+            <td></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.shortTitle !== model.class.old.shortTitle)}">
             <td>Title</td>
-            <td ng-if="model.addClass">
+            <td>
                 <input ng-model="model.class.shortTitle"></input>
             </td>
-            <td ng-if="model.editClass">{{model.class.shortTitle}}</td>
+            <td><div ng-class="{hidden: (model.class.shortTitle === model.class.old.shortTitle)}" class="changedFrom">{{model.class.old.shortTitle}}</div></td>
         </tr>
-        <tr>
-            <td>Subject Code</td>
-            <td ng-if="model.addClass">
-                <select ng-model="model.class.subjectCode">
-                    <option ng-repeat="option in model.allSubjectCodes" value="{{option}}">{{option}}</option>
-                </select>
-            </td>
-            <td ng-if="model.editClass">{{model.class.subjectCode}}</td>
-        </tr>
-        <tr>
-            <td>Course No.</td>
-            <td ng-if="model.addClass">
-                <input ng-model="model.class.courseNumber"></input>
-            </td>
-            <td ng-if="model.editClass">{{model.class.courseNumber}}</td>
-        </tr>
-        <tr>
-            <td>Meeting Days</td>
+        <tr ng-class="{'modified': (model.class.meetingDays !== model.class.old.meetingDays || model.class.meetingStart !== model.class.old.meetingStart || model.class.meetingEnd !== model.class.old.meetingEnd)}">
+            <td>Meeting Times</td>
             <td>
-                <select ng-model="model.class.meetingDays">
-                    <option ng-repeat="option in model.allMeetingDays" value="{{option}}">{{option}}</option>
+                <select ng-model="model.class.meetingDays"
+                        ng-options="option for option in model.allMeetingDays"
+                        ng-change="model.updateOnChangeOfTime(0)">
+                </select>
+
+                <select ng-model="model.class.meetingStart"
+                        ng-options="option for option in model.allMeetingStartTimes"
+                        ng-change="model.updateOnChangeOfTime(1)">
+                </select>
+                —
+                <select ng-model="model.class.meetingEnd"
+                        ng-options="option for option in model.allMeetingEndTimes"
+                        ng-change="model.updateOnChangeOfTime(0)">
                 </select>
             </td>
+            <td><div ng-class="{hidden: (model.class.meetingDays === model.class.old.meetingDays || model.class.meetingStart !== model.class.old.meetingStart || model.class.meetingEnd !== model.class.old.meetingEnd)}" class="changedFrom">{{model.class.old.meetingDays + ", " + model.class.old.meetingStart + "—" + model.class.old.meetingEnd}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.primaryInstructor !== model.class.old.primaryInstructor)}">
+            <td>Primary Instructor</td>
+            <td>
+                <select class="select2" ng-model="model.class.primaryInstructor">
+                    <option ng-repeat="option in model.allPrimaryInstructors" ng-value="option.nuid">{{option.nuid}}
+                        {{option.name}}
+                    </option>
+                </select>
+            </td>
+            <td><div ng-class="{hidden: (model.class.primaryInstructor === model.class.old.primaryInstructor)}" class="changedFrom">{{model.instructorNamesFromNuids(model.allPrimaryInstructors, [model.class.old.primaryInstructor])}}</div></td>
         </tr>
         <tr>
-            <td>Meeting Start</td>
+        <tr ng-class="{'modified': !model.arraysEqual(model.class.secondaryInstructors, model.class.old.secondaryInstructors)}">
+            <td>Secondary Instructors</td>
             <td>
-                <select ng-model="model.class.meetingStart">
-                    <option ng-repeat="option in model.allMeetingStartTimes" value="{{option}}">{{option}}</option>
+                <select class="select2" ng-model="model.class.secondaryInstructors" multiple="multiple">
+                    <option ng-repeat="option in model.allSecondaryInstructors" ng-value="option.nuid">{{option.nuid}}
+                        {{option.name}}
+                    </option>
                 </select>
             </td>
+            <td><div ng-class="{hidden: model.arraysEqual(model.class.secondaryInstructors, model.class.old.secondaryInstructors)}" class="changedFrom">{{model.instructorNamesFromNuids(model.allSecondaryInstructors, model.class.old.secondaryInstructors)}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.enrollmentMax !== model.class.old.enrollmentMax)}">
+            <td>Enrollment Maximum</td>
+            <td>
+                <input ng-model="model.class.enrollmentMax">
+            </td>
+            <td><div ng-class="{hidden: (model.class.enrollmentMax === model.class.old.enrollmentMax)}" class="changedFrom">{{model.class.old.enrollmentMax}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.honors !== model.class.old.honors)}">
+            <td>Honors</td>
+            <td>
+                <select ng-model="model.class.honors" ng-options="option for option in model.allHonors">
+                </select>
+            </td>
+            <td><div ng-class="{hidden: (model.class.honors === model.class.old.honors)}" class="changedFrom">{{model.class.old.honors}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.campus !== model.class.old.campus)}">
+            <td>Campus</td>
+            <td>
+                <select ng-model="model.class.campus" ng-options="option for option in model.allCampuses">
+                </select>
+            </td>
+            <td><div ng-class="{hidden: (model.class.campus === model.class.old.campus)}" class="changedFrom">{{model.class.old.campus}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.instructionalMethod !== model.class.old.instructionalMethod)}">
+            <td>Instructional Method</td>
+            <td>
+                <select ng-model="model.class.instructionalMethod"
+                        ng-options="option for option in model.allInstructionalMethods">
+                </select>
+            </td>
+            <td><div ng-class="{hidden: (model.class.instructionalMethod === model.class.old.instructionalMethod)}" class="changedFrom">{{model.class.old.instructionalMethod}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.waitlist !== model.class.old.waitlist)}">
+            <td>Enable Waitlist?</td>
+            <td>
+                <select ng-model="model.class.waitlist" ng-options="option for option in model.allWaitlist">
+                </select>
+            </td>
+            <td><div ng-class="{hidden: (model.class.waitlist === model.class.old.waitlist)}" class="changedFrom">{{model.class.old.waitlist}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.specialApprovals !== model.class.old.specialApprovals)}">
+            <td>Special Approvals</td>
+            <td>
+                <select ng-model="model.class.specialApprovals"
+                        ng-options="option for option in model.allSpecialApprovals">
+                </select>
+            </td>
+            <td><div ng-class="{hidden: (model.class.specialApprovals === model.class.old.specialApprovals)}" class="changedFrom">{{model.class.old.specialApprovals}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.doNotPublish !== model.class.old.doNotPublish)}">
+            <td>Remove from Banner?</td>
+            <td>
+                <select ng-model="model.class.doNotPublish" ng-options="option for option in model.allDoNotPublish">
+                </select>
+            </td>
+            <td><div ng-class="{hidden: (model.class.doNotPublish === model.class.old.doNotPublish)}" class="changedFrom">{{model.class.old.doNotPublish}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.cancel !== model.class.old.cancel)}">
+            <td>Cancel Class?</td>
+            <td>
+                <select ng-model="model.class.cancel" ng-options="option for option in model.allCancel">
+                </select>
+            </td>
+            <td><div ng-class="{hidden: (model.class.cancel === model.class.old.cancel)}" class="changedFrom">{{model.class.old.cancel}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.comment !== model.class.old.comment)}">
+            <td>Comment</td>
+            <td>
+                <textarea ng-model="model.class.comment"/>
+            </td>
+            <td><div ng-class="{hidden: (model.class.comment === model.class.old.comment)}" class="changedFrom">{{model.class.old.comment}}</div></td>
         </tr>
         <tr>
-            <td>Meeting End</td>
+            <td></td>
             <td>
-                <select ng-model="model.class.meetingEnd">
-                    <option ng-repeat="option in model.allMeetingEndTimes" value="{{option}}">{{option}}</option>
-                </select>
+                <div class="color-legend color-legend2">
+                    <div class="color-legend-item">
+                        <div class="color-box modified"/>
+                        <div class="text-box">Modified data</div>
+                    </div>
+                    <div class="color-legend-item">
+                        <div class="color-box unmodified"/>
+                        <div class="text-box">Unmodified data</div>
+                    </div>
+                </div>
             </td>
+            <td class="changedFrom"><div class="text-box">Original data in italics</div></td>
         </tr>
         </tbody>
     </table>
+    <div id="toast" ng-click="model.toastMessage(0)">
+        Time selected is during peak hours <b>MWR 9:15-15:25, TF 9:50-15:25</b>
+        , please process with caution.
+    </div>
 
     <div>
         <button ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Save & Return</button>
