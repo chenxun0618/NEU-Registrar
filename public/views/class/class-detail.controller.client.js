@@ -11,6 +11,8 @@
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
         vm.toastMessage = toastMessage;
+        vm.arraysEqual = arraysEqual;
+        vm.instructorNamesFromNuids = instructorNamesFromNuids;
 
         function init() {
             vm.crn = $routeParams.crn;
@@ -77,18 +79,18 @@
             }
         }
 
-        function isPeakPeriod(time) {
+        function isPeakPeriod(day, time) {
             var isPeakPeriod = 0;
             var x = document.getElementById("toast");
-            if (vm.class.meetingDays === "M" || vm.class.meetingDays === "W" || vm.class.meetingDays === "R" ||
-                vm.class.meetingDays === "MW" || vm.class.meetingDays === "MWR") {
+            if (day === "M" || day === "W" || day === "R" ||
+                day === "MW" || day === "MWR") {
                 if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
                     (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
                     (time.slice(0, 2) == 9 && time.slice(-2) >= 15)) {
                     isPeakPeriod = 1;
                 }
             }
-            if (vm.class.meetingDays === "T" || vm.class.meetingDays === "F" || vm.class.meetingDays === "TF") {
+            if (day === "T" || day === "F" || day === "TF") {
                 if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
                     (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
                     (time.slice(0, 2) == 9 && time.slice(-2) >= 50)) {
@@ -113,7 +115,39 @@
         function updateOnChangeOfTime(isMeetingStart) {
             if (isMeetingStart)
                 updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingStart) || isPeakPeriod(vm.class.meetingEnd);
+            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingStart) ||
+                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEnd);
+        }
+
+        function arraysEqual(a, b) {
+            if (a === b) return true;
+            if (a == null || b == null) return false;
+            if (a.length != b.length) return false;
+
+            for (var i = 0; i < a.length; ++i) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+
+        function instructorNamesFromNuids(instructors, nuids) {
+            var names = [];
+            for (var x = 0; x < nuids.length; x++) {
+                var instructorNuid = nuids[x];
+                for (var y = 0; y < instructors.length; y++) {
+                    if (instructorNuid === instructors[y].nuid) {
+                        names.push(instructors[y].name);
+                    }
+                }
+            }
+
+            if (names.length === 0) {
+                return "(none)";
+            } else if (names.length == 1) {
+                return names[0];
+            } else {
+                return names;
+            }
         }
 
         init();

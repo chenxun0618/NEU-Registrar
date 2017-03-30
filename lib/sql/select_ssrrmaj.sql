@@ -1,0 +1,14 @@
+USE test_neu_registrar;
+
+DROP PROCEDURE IF EXISTS select_ssrrmaj;
+
+DELIMITER //
+
+CREATE PROCEDURE select_ssrrmaj()
+BEGIN
+	SELECT SSRRMAJ_TERM_CODE AS 'termCode', SSRRMAJ_CRN AS 'crn', SSRRMAJ_REC_TYPE AS 'recType', SSRRMAJ_MAJOR_IND AS 'classInd',
+		SSRRMAJ_MAJR_CODE AS 'classCode', SSRRMAJ_MAJR_DESC AS 'desc', SSRRMAJ_LFST_CODE AS 'lfstCode'
+    FROM ssrrmaj;
+END//
+
+DELIMITER ;
