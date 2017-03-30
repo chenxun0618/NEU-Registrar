@@ -75,18 +75,18 @@
             }
         }
 
-        function isPeakPeriod(time) {
+        function isPeakPeriod(day, time) {
             var isPeakPeriod = 0;
             var x = document.getElementById("toast");
-            if (vm.class.meetingDays === "M" || vm.class.meetingDays === "W" || vm.class.meetingDays === "R" ||
-                vm.class.meetingDays === "MW" || vm.class.meetingDays === "MWR") {
+            if (day === "M" || day === "W" || day === "R" ||
+                day === "MW" || day === "MWR") {
                 if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
                     (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
                     (time.slice(0, 2) == 9 && time.slice(-2) >= 15)) {
                     isPeakPeriod = 1;
                 }
             }
-            if (vm.class.meetingDays === "T" || vm.class.meetingDays === "F" || vm.class.meetingDays === "TF") {
+            if (day === "T" || day === "F" || day === "TF") {
                 if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
                     (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
                     (time.slice(0, 2) == 9 && time.slice(-2) >= 50)) {
@@ -111,7 +111,8 @@
         function updateOnChangeOfTime(isMeetingStart) {
             if (isMeetingStart)
                 updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingStart) || isPeakPeriod(vm.class.meetingEnd);
+            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingStart) ||
+                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEnd);
         }
 
         init();

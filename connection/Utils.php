@@ -1,7 +1,9 @@
 <?php
+
 /*
  * a utility class that contains all the framework functions
  */
+
 class Utils
 {
     protected $conn;
@@ -14,40 +16,26 @@ class Utils
         // If a connection has not been established yet, establish it
         if (!isset($this->conn)) {
             // Load configuration
-            $config = parse_ini_file('../config.ini');
-            $this->conn = new mysqli($config['hostname'], $config['username'], $config['password'], $config['database']);
+            $config = parse_ini_file('config.ini');
+            $this->conn = new mysqli($config['hostname'], $config['username'],
+                $config['password'], $config['database']);
         }
 
         // If connection was not established
-        if (!$this->conn)
+        if ($this->conn->connect_errno)
             die("Connection failed: " . $this->conn->connect_error);
     }
 
     /*
-     * connect to the database and construct a query
+     * close the connection to the database
      */
-    function query($query)
+    function __destruct()
     {
-        // Query the database
-        $result = $this->conn->query($query);
-
-        // If database cannot process the query
-        if (!$result) {
-            $this->conn->close();
-            die("Couldn't find the information: " . $this->conn->error);
-        }
-
-        // If there is no rows in the result
-        if (mysqli_num_rows($result) <= 0) {
-            $this->conn->close();
-            die("0 results");
-        }
-
-        return $result;
+        $this->conn->close();
     }
 
     /*
-     * get the value from front-end request
+     * get the value from front-end query
      */
     function get($val)
     {
@@ -58,10 +46,42 @@ class Utils
     }
 
     /*
-     * close the connection to the database
+     * construct a query with front-end input (stored procedures)
      */
-    function __destruct()
+    function construct_query()
     {
-        $this->conn->close();
+
+    }
+
+    /*
+     * perform a query on the database and return the result in JSON representation
+     */
+    function query($query)
+    {
+        // Query the database
+        $result = $this->conn->query($query);
+
+        // If database cannot process the query
+        if (!$result) {
+            $this->conn->close();
+            die("Couldn't find the information: " . $this->conn->connect_error);
+        }
+
+        // If there is no rows in the result
+        if ($result->num_rows <= 0) {
+            $this->conn->close();
+            die("0 results");
+        }
+
+        $array = array();
+        while ($row = $result->fetch_assoc()) {
+            $row_array = array();
+            foreach ($row as $key => $value) {
+                $row_array[$key] = $value;
+            }
+            array_push($array, $row_array);
+        }
+
+        return json_encode($array);
     }
 }
