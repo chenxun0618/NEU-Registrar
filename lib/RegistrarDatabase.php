@@ -12,7 +12,7 @@
 
                 $this->conn = new mysqli('localhost', $config['username'], $config['password'], $config['db_name']);
                 if ($this->conn->connect_errno > 0) {
-                    throw new Exception("Error with databse connection: " . $this->conn->conect_error);
+                    throw new Exception("Error with databse connection: " . $this->conn->connect_error);
                 }
             } else {
                 echo die("Error with connection");

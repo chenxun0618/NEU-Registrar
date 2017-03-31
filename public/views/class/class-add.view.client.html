@@ -51,7 +51,7 @@
         </tr>
         <tr>
             <td>CRN</td>
-            <td>{{model.class.crn}}</td>
+            <td class="changedFrom">(to be generated)</td>
         </tr>
         <tr>
             <td>Title</td>
@@ -163,8 +163,7 @@
         </tbody>
     </table>
     <div id="toast" ng-click="model.toastMessage(0)">
-        Time selected is during peak hours <b>MWR 9:15-15:25, TF 9:50-15:25</b>
-        , please process with caution.
+        Time selected is during peak hours <b>MWR 9:15-15:25, TF 9:50-15:25</b>, please proceed with caution.
     </div>
     <div ng-if="model.class">
         <button ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Add to Schedule</button>

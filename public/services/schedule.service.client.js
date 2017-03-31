@@ -3,15 +3,14 @@
         .module("NEURegistrar")
         .factory("ScheduleService", ScheduleService);
 
-    function ScheduleService($http) {
+    function ScheduleService(ClassService) {
 
         var api = {
             getScheduleByTerm: getScheduleByTerm,
             saveSchedule: saveSchedule,
             submitSchedule: submitSchedule,
             getAllSchedules: getAllSchedules,
-            getAllNonApprovedSchedules: getAllNonApprovedSchedules,
-            isClassModified: isClassModified
+            getAllNonApprovedSchedules: getAllNonApprovedSchedules
         };
 
         function getScheduleByTerm(term) {
@@ -392,65 +391,20 @@
                 }
             ];
 
-            findModifiedClasses(schedule);
+            preprocessClasses(schedule);
             return schedule;
         }
 
-        // marks all modified classes in a schedule as modified
-        // maybe DB does this?
-        function findModifiedClasses(schedule) {
-            for (var x = 0; x < schedule; x++) {
+        function preprocessClasses(schedule) {
+            for (var x = 0; x < schedule.length; x++) {
                 var currentClass = schedule[x];
+
+                // marks all modified classes in a schedule as modified
                 currentClass.metadata = currentClass.metadata || {};
-                currentClass.metadata.modified = true;
-            }
-        }
+                currentClass.metadata.modified = ClassService.isClassModified(currentClass);
 
-        // determines if a given class has been modified from its old data by examining all properties
-        function isClassModified(aClass) {
-            var modified = !(
-                (aClass.college === aClass.old.college) &&
-                (aClass.collegeName === aClass.old.collegeName) &&
-                (aClass.departmentCode === aClass.old.departmentCode) &&
-                (aClass.departmentName === aClass.old.departmentName) &&
-                (aClass.subjectCode === aClass.old.subjectCode) &&
-                (aClass.subjectName === aClass.old.subjectName) &&
-                (aClass.term === aClass.old.term) &&
-                (aClass.courseNumber === aClass.old.courseNumber) &&
-                (aClass.section === aClass.old.section) &&
-                (aClass.crn === aClass.old.crn) &&
-                (aClass.partOfTerm === aClass.old.partOfTerm) &&
-                (aClass.shortTitle === aClass.old.shortTitle) &&
-                (aClass.instructionalMethod === aClass.old.instructionalMethod) &&
-                (aClass.creditHour === aClass.old.creditHour) &&
-                (aClass.meetingDays === aClass.old.meetingDays) &&
-                (aClass.meetingStart === aClass.old.meetingStart) &&
-                (aClass.meetingEnd === aClass.old.meetingEnd) &&
-                (aClass.campus === aClass.old.campus) &&
-                (aClass.primaryInstructor === aClass.old.primaryInstructor) &&
-                (aClass.enrollmentMax === aClass.old.enrollmentMax) &&
-                (aClass.waitlist === aClass.old.waitlist) &&
-                (aClass.waitlistNumber === aClass.old.waitlistNumber) &&
-                (aClass.doNotPublish === aClass.old.doNotPublish) &&
-                (aClass.specialApprovals === aClass.old.specialApprovals) &&
-                (aClass.comment === aClass.old.comment) &&
-                (aClass.honors === aClass.old.honors) &&
-                (aClass.cancel === aClass.old.cancel)
-            );
-
-            if (modified) {
-                return true;
-            } else {
-                if (aClass.secondaryInstructors.length !== aClass.old.secondaryInstructors.length) {
-                    return true;
-                } else {
-                    for (var x = 0; x < aClass.secondaryInstructors.length; x++) {
-                        if (aClass.secondaryInstructors[x] !== aClass.old.secondaryInstructors[x]) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
+                // generate unique id for each class for angular routing
+                currentClass.metadata.unique_id = ClassService.generateUniqueIdForClass(currentClass);
             }
         }
 

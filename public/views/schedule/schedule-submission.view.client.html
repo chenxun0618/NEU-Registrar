@@ -38,7 +38,7 @@
                 class.meetingEnd.length - 3)}}:{{class.meetingEnd.slice(class.meetingEnd.length - 2)}}
             </td>
             <td>
-                <a ng-click="model.navigateToClassDetail(class.crn)">Edit</a>
+                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">Edit</a>
             </td>
         </tr>
         </tbody>
