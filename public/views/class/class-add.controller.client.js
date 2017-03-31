@@ -15,7 +15,6 @@
 
         function init() {
             vm.allSubjectCodes = ClassService.getAllSubjectCodes();
-            vm.allCRNs = ClassService.getAllCRNs();
             vm.currentTerm = ClassService.getCurrentTerm();
             vm.allStatuses = ClassService.getAllStatuses();
             vm.allPartOfTerms = ClassService.getAllPartOfTerms();
@@ -54,13 +53,18 @@
         }
 
         function saveAndReturnToSchedule() {
-            vm.class.metadata = vm.class.metadata || {};
-            vm.class.metadata.added = true;
-            vm.class.metadata.modified = ScheduleService.isClassModified(vm.class);
+            prepareAddedClass(vm.class);
             var schedule = JSON.parse(sessionStorage.schedule);
             schedule.push(vm.class);
             sessionStorage.schedule = JSON.stringify(schedule);
             $location.url("/schedule-submission");
+        }
+
+        function prepareAddedClass(aClass) {
+            aClass.metadata = aClass.metadata || {};
+            aClass.metadata.added = true;
+            aClass.metadata.modified = ClassService.isClassModified(aClass);
+            aClass.metadata.unique_id = ClassService.generateUniqueIdForClass(aClass);
         }
 
         function toastMessage(show) {
