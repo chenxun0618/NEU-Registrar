@@ -8,7 +8,7 @@
         public function __construct() {
             if (!isset($this->conn)) {
                 // loads configuration file as an array
-                $config = parse_ini_file('../config/config.ini');
+                $config = parse_ini_file('config/config.ini');
 
                 $this->conn = new mysqli($config['host'], $config['username'], $config['password'], $config['db_name']);
                 if ($this->conn->connect_errno > 0) {
