@@ -15,11 +15,9 @@
         vm.instructorNamesFromNuids = instructorNamesFromNuids;
 
         function init() {
-            vm.crn = $routeParams.crn;
-            vm.class = findClassInSessionState(vm.crn); // find in session state for now until I figure out how to pass the specified course to this controller
+            vm.class = findClassInSessionState($routeParams.unique_id); // find in session state for now until I figure out how to pass the specified course to this controller
 
             vm.allSubjectCodes = ClassService.getAllSubjectCodes();
-            vm.allCRNs = ClassService.getAllCRNs();
             vm.currentTerm = ClassService.getCurrentTerm();
             vm.allStatuses = ClassService.getAllStatuses();
             vm.allPartOfTerms = ClassService.getAllPartOfTerms();
@@ -47,7 +45,7 @@
 
         function saveAndReturnToSchedule() {
             vm.class.metadata = vm.class.metadata || {};
-            vm.class.metadata.modified = ScheduleService.isClassModified(vm.class);
+            vm.class.metadata.modified = ClassService.isClassModified(vm.class);
             vm.class.metadata.deleted = (vm.class.cancel === "Y");
 
             var schedule = JSON.parse(sessionStorage.schedule);
@@ -56,11 +54,11 @@
             $location.url("/schedule-submission");
         }
 
-        function findClassInSessionState(crn) {
+        function findClassInSessionState(unique_id) {
             var schedule = JSON.parse(sessionStorage.schedule);
             for (var x = 0; x < schedule.length; x++) {
                 var current = schedule[x];
-                if (current.crn === crn) {
+                if (current.metadata.unique_id === unique_id) {
                     current.sessionStateIndex = x;
                     return current;
                 }

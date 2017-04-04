@@ -3,10 +3,11 @@
         .module("NEURegistrar")
         .controller("ScheduleSubmissionController", ScheduleSubmissionController);
 
-    function ScheduleSubmissionController($location, $routeParams, ClassService, ScheduleService) {
+    function ScheduleSubmissionController($location, ClassService, ScheduleService) {
         var vm = this;
 
         vm.getScheduleForTerm = getScheduleForTerm;
+        vm.saveSchedule = saveSchedule;
         vm.submitSchedule = submitSchedule;
         vm.navigateToClassDetail = navigateToClassDetail;
         vm.navigateToAddClass = navigateToAddClass;
@@ -44,10 +45,10 @@
             }
         }
 
-        function navigateToClassDetail(crn) {
+        function navigateToClassDetail(unique_class_id) {
             sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
             sessionStorage.schedule = JSON.stringify(vm.schedule);
-            $location.url("/class-detail/" + crn);
+            $location.url("/class-detail/" + unique_class_id);
         }
 
         function navigateToAddClass() {

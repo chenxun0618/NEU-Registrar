@@ -3,13 +3,12 @@
         .module("NEURegistrar")
         .factory("ClassService", ClassService);
 
-    function ClassService($http) {
+    function ClassService() {
 
         var api = {
             getCurrentTerm: getCurrentTerm,
             getMostRecentCourseData: getMostRecentCourseData,
             getAllSubjectCodes: getAllSubjectCodes,
-            getAllCRNs: getAllCRNs,
             getAllStatuses: getAllStatuses,
             getAllPartOfTerms: getAllPartOfTerms,
             getAllInstructionalMethods: getAllInstructionalMethods,
@@ -24,15 +23,13 @@
             getAllSpecialApprovals: getAllSpecialApprovals,
             getAllTimeIntervals: getAllTimeIntervals,
             getAllPrimaryInstructors: getAllPrimaryInstructors,
-            getAllSecondaryInstructors: getAllSecondaryInstructors
+            getAllSecondaryInstructors: getAllSecondaryInstructors,
+            generateUniqueIdForClass: generateUniqueIdForClass,
+            isClassModified: isClassModified
         };
 
         function getAllSubjectCodes() {
             return ["ACCT", "CS", "DS", "IS", "MATH", "PHYS", "PSYC"];
-        }
-
-        function getAllCRNs() {
-            return ["57182", "45124", "91752", "45188", "42144", "58225"];
         }
 
         function getCurrentTerm() {
@@ -110,13 +107,6 @@
 
         function getMostRecentCourseData(subjectCode, courseNumber) {
 
-            // dummy for now
-            var crn = "" + Math.floor(Math.random() * 10) + "" +
-                Math.floor(Math.random() * 10) + "" +
-                Math.floor(Math.random() * 10) + "" +
-                Math.floor(Math.random() * 10) + "" +
-                Math.floor(Math.random() * 10);
-
             // dummy data for now
             return {
                 college: "BA",
@@ -128,7 +118,6 @@
                 term: "201810",
                 courseNumber: courseNumber,
                 section: "03",
-                crn: crn,
                 // status: "A", ------ unnecessary?
                 partOfTerm: "1",
                 shortTitle: "Principles of Accounting",
@@ -149,6 +138,58 @@
                 honors: "Y",
                 cancel: "N",
             };
+        }
+
+        function generateUniqueIdForClass(aClass) {
+            return (aClass.crn) || (aClass.term + aClass.subjectCode + aClass.courseNumber + aClass.section);
+        }
+
+        // determines if a given class has been modified from its old data by examining all properties
+        function isClassModified(aClass) {
+            var modified = !(
+                (aClass.college === aClass.old.college) &&
+                (aClass.collegeName === aClass.old.collegeName) &&
+                (aClass.departmentCode === aClass.old.departmentCode) &&
+                (aClass.departmentName === aClass.old.departmentName) &&
+                (aClass.subjectCode === aClass.old.subjectCode) &&
+                (aClass.subjectName === aClass.old.subjectName) &&
+                (aClass.term === aClass.old.term) &&
+                (aClass.courseNumber === aClass.old.courseNumber) &&
+                (aClass.section === aClass.old.section) &&
+                (aClass.crn === aClass.old.crn) &&
+                (aClass.partOfTerm === aClass.old.partOfTerm) &&
+                (aClass.shortTitle === aClass.old.shortTitle) &&
+                (aClass.instructionalMethod === aClass.old.instructionalMethod) &&
+                (aClass.creditHour === aClass.old.creditHour) &&
+                (aClass.meetingDays === aClass.old.meetingDays) &&
+                (aClass.meetingStart === aClass.old.meetingStart) &&
+                (aClass.meetingEnd === aClass.old.meetingEnd) &&
+                (aClass.campus === aClass.old.campus) &&
+                (aClass.primaryInstructor === aClass.old.primaryInstructor) &&
+                (aClass.enrollmentMax === aClass.old.enrollmentMax) &&
+                (aClass.waitlist === aClass.old.waitlist) &&
+                (aClass.waitlistNumber === aClass.old.waitlistNumber) &&
+                (aClass.doNotPublish === aClass.old.doNotPublish) &&
+                (aClass.specialApprovals === aClass.old.specialApprovals) &&
+                (aClass.comment === aClass.old.comment) &&
+                (aClass.honors === aClass.old.honors) &&
+                (aClass.cancel === aClass.old.cancel)
+            );
+
+            if (modified) {
+                return true;
+            } else {
+                if (aClass.secondaryInstructors.length !== aClass.old.secondaryInstructors.length) {
+                    return true;
+                } else {
+                    for (var x = 0; x < aClass.secondaryInstructors.length; x++) {
+                        if (aClass.secondaryInstructors[x] !== aClass.old.secondaryInstructors[x]) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
         }
 
         return api;
