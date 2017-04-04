@@ -1,5 +1,4 @@
 .DS_Store
 .idea
 test.html
-tests/_output/*
 config/config.ini
