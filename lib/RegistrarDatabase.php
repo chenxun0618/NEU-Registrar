@@ -100,9 +100,11 @@ SQL;
 
             try {
                 $result = mysqli_query($this->conn, $query);
+            // @codeCoverageIgnoreStart
             } catch (Exception $e) {
                 throw new mysqli_sql_exception("Error with query: " . $e);
             }
+            // @codeCoverageIgnoreEnd
 
             // loops through field names in table
             while ($field = mysqli_fetch_field($result)) {
@@ -147,9 +149,11 @@ SQL;
 
             try {
                 $result = mysqli_query($this->conn, $query);
+            // @codeCoverageIgnoreStart
             } catch (Exception $e) {
                 throw new mysqli_sql_exception("Error with query: " . $e);
             }
+            // @codeCoverageIgnoreStart
 
             // loops through rows in table
             while ($row = mysqli_fetch_assoc($result)) {
