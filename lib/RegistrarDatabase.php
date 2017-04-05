@@ -153,7 +153,7 @@ SQL;
             } catch (Exception $e) {
                 throw new mysqli_sql_exception("Error with query: " . $e);
             }
-            // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreEnd
 
             // loops through rows in table
             while ($row = mysqli_fetch_assoc($result)) {
