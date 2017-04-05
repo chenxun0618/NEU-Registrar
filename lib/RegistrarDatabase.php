@@ -9,7 +9,7 @@
          */
         public function __construct() {
             // loads configuration file as an array
-            $config = parse_ini_file('/home/matt/Documents/CS4500/Project/NEU-Registrar/config/config.ini');
+            $config = parse_ini_file('config/config.ini');
             $this->databaseConnect($config['host'], $config['username'], $config['password'], $config['db_name']);
             $this->host = $config['host'];
             $this->dbName = $config['db_name'];
