@@ -9,6 +9,8 @@
         vm.getScheduleForTerm = getScheduleForTerm;
         vm.saveSchedule = saveSchedule;
         vm.submitSchedule = submitSchedule;
+        vm.rejectSchedule = rejectSchedule;
+        vm.approveSchedule = approveSchedule;
         vm.navigateToClassDetail = navigateToClassDetail;
         vm.navigateToAddClass = navigateToAddClass;
 
@@ -48,6 +50,24 @@
                 ScheduleService.submitSchedule(vm.schedule);
                 $window.sessionStorage.clear();
                 $location.url("/submitted/");
+            }
+        }
+
+        function rejectSchedule() {
+            var rejection_message = prompt("Enter a reason for the rejection (optional):", "");
+            if (rejection_message !== null) {
+                ScheduleService.rejectSchedule(vm.schedule, rejection_message);
+                $window.sessionStorage.schedule = JSON.stringify(null);
+                $location.url("/schedule-submission/");
+            }
+        }
+
+        function approveSchedule() {
+            var r = confirm("Are you sure you want to approve this schedule?");
+            if (r == true) {
+                ScheduleService.approveSchedule(vm.schedule);
+                $window.sessionStorage.schedule = JSON.stringify(null);
+                $location.url("/schedule-submission/");
             }
         }
 

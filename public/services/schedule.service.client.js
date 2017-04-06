@@ -9,6 +9,8 @@
             getScheduleByTerm: getScheduleByTerm,
             saveSchedule: saveSchedule,
             submitSchedule: submitSchedule,
+            rejectSchedule: rejectSchedule,
+            approveSchedule: approveSchedule,
             getAllSchedules: getAllSchedules,
             getAllNonApprovedSchedules: getAllNonApprovedSchedules
         };
@@ -413,6 +415,15 @@
         }
 
         function submitSchedule(schedule) {
+            // communicate with web service
+        }
+
+        function rejectSchedule(schedule, rejection_message) {
+            schedule.rejection_message = rejection_message;
+            // communicate with web service
+        }
+
+        function approveSchedule(schedule) {
             // communicate with web service
         }
 
