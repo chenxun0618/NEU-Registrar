@@ -3,7 +3,7 @@
         .module("NEURegistrar")
         .controller("ClassAddController", ClassAddController);
 
-    function ClassAddController($location, ClassService, ScheduleService) {
+    function ClassAddController($location, $window, ClassService, ScheduleService) {
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
@@ -14,26 +14,32 @@
         vm.toastMessage = toastMessage;
 
         function init() {
-            vm.allSubjectCodes = ClassService.getAllSubjectCodes();
-            vm.currentTerm = ClassService.getCurrentTerm();
-            vm.allStatuses = ClassService.getAllStatuses();
-            vm.allPartOfTerms = ClassService.getAllPartOfTerms();
-            vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
-            vm.allMeetingDays = ClassService.getAllMeetingDays();
-            vm.allCreditHours = ClassService.getAllCreditHours();
-            vm.allCampuses = ClassService.getAllCampuses();
-            vm.allSections = ClassService.getAllSections();
-            vm.allWaitlist = ClassService.getAllWaitlist();
-            vm.allDoNotPublish = ClassService.getAllDoNotPublish();
-            vm.allCancel = ClassService.getAllCancel();
-            vm.allHonors = ClassService.getAllHonors();
-            vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
 
-            vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
-            vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
+            if (!vm.loggedInUser) {
+                $location.url("/login");
+            } else {
+                vm.allSubjectCodes = ClassService.getAllSubjectCodes();
+                vm.currentTerm = ClassService.getCurrentTerm();
+                vm.allStatuses = ClassService.getAllStatuses();
+                vm.allPartOfTerms = ClassService.getAllPartOfTerms();
+                vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
+                vm.allMeetingDays = ClassService.getAllMeetingDays();
+                vm.allCreditHours = ClassService.getAllCreditHours();
+                vm.allCampuses = ClassService.getAllCampuses();
+                vm.allSections = ClassService.getAllSections();
+                vm.allWaitlist = ClassService.getAllWaitlist();
+                vm.allDoNotPublish = ClassService.getAllDoNotPublish();
+                vm.allCancel = ClassService.getAllCancel();
+                vm.allHonors = ClassService.getAllHonors();
+                vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
 
-            vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
-            vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+                vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
+                vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
+
+                vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
+                vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+            }
         }
 
         function getMostRecentCourseData(subjectCode, courseNumber) {
@@ -54,9 +60,9 @@
 
         function saveAndReturnToSchedule() {
             prepareAddedClass(vm.class);
-            var schedule = JSON.parse(sessionStorage.schedule);
+            var schedule = JSON.parse($window.sessionStorage.schedule);
             schedule.push(vm.class);
-            sessionStorage.schedule = JSON.stringify(schedule);
+            $window.sessionStorage.schedule = JSON.stringify(schedule);
             $location.url("/schedule-submission");
         }
 

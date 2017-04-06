@@ -2,6 +2,14 @@
     margin-bottom: 20px;
 }
 
+.margin-bottom-30 {
+    margin-bottom: 30px;
+}
+
+.margin-right-10 {
+    margin-right: 10px;
+}
+
 body {
     padding-top: 30px;
     padding-bottom: 60px;
@@ -76,7 +84,7 @@ div.color-legend .add-class-button {
 }
 
 .modified {
-    background-color: #FCF8E4;
+    background-color: #fff4c6;
 }
 
 .deleted {

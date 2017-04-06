@@ -5,6 +5,11 @@
 
     function Config($routeProvider) {
         $routeProvider
+            .when("/login", {
+                templateUrl: "views/user/login.view.client.html",
+                controller: "LoginController",
+                controllerAs: "model"
+            })
             .when("/schedule-submission", {
                 templateUrl: "views/schedule/schedule-submission.view.client.html",
                 controller: "ScheduleSubmissionController",
@@ -24,10 +29,10 @@
                 templateUrl: "views/schedule/schedule-submission-done.view.client.html"
             })
             .when("/", {
-                redirectTo: "/schedule-submission"
+                redirectTo: "/login"
             })
             .otherwise({
-                redirectTo: "/schedule-submission"
+                redirectTo: "/login"
             });
     }
 })();

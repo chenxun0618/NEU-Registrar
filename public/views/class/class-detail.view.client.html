@@ -31,7 +31,7 @@
         <tr ng-class="{'modified': (model.class.shortTitle !== model.class.old.shortTitle)}">
             <td>Title</td>
             <td>
-                <input ng-model="model.class.shortTitle"></input>
+                <input type="text" ng-model="model.class.shortTitle"></input>
             </td>
             <td><div ng-class="{hidden: (model.class.shortTitle === model.class.old.shortTitle)}" class="changedFrom">{{model.class.old.shortTitle}}</div></td>
         </tr>
