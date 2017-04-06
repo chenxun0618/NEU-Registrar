@@ -3,7 +3,7 @@
         .module("NEURegistrar")
         .controller("ClassDetailController", ClassDetailController);
 
-    function ClassDetailController($location, $routeParams, ClassService, ScheduleService) {
+    function ClassDetailController($location, $window, $routeParams, ClassService, ScheduleService) {
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
@@ -15,28 +15,34 @@
         vm.instructorNamesFromNuids = instructorNamesFromNuids;
 
         function init() {
-            vm.class = findClassInSessionState($routeParams.unique_id); // find in session state for now until I figure out how to pass the specified course to this controller
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
 
-            vm.allSubjectCodes = ClassService.getAllSubjectCodes();
-            vm.currentTerm = ClassService.getCurrentTerm();
-            vm.allStatuses = ClassService.getAllStatuses();
-            vm.allPartOfTerms = ClassService.getAllPartOfTerms();
-            vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
-            vm.allMeetingDays = ClassService.getAllMeetingDays();
-            vm.allCreditHours = ClassService.getAllCreditHours();
-            vm.allCampuses = ClassService.getAllCampuses();
-            vm.allSections = ClassService.getAllSections();
-            vm.allWaitlist = ClassService.getAllWaitlist();
-            vm.allDoNotPublish = ClassService.getAllDoNotPublish();
-            vm.allCancel = ClassService.getAllCancel();
-            vm.allHonors = ClassService.getAllHonors();
-            vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
+            if (!vm.loggedInUser) {
+                $location.url("/login");
+            } else {
+                vm.class = findClassInSessionState($routeParams.unique_id); // find in session state for now until I figure out how to pass the specified course to this controller
 
-            vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
-            vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
+                vm.allSubjectCodes = ClassService.getAllSubjectCodes();
+                vm.currentTerm = ClassService.getCurrentTerm();
+                vm.allStatuses = ClassService.getAllStatuses();
+                vm.allPartOfTerms = ClassService.getAllPartOfTerms();
+                vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
+                vm.allMeetingDays = ClassService.getAllMeetingDays();
+                vm.allCreditHours = ClassService.getAllCreditHours();
+                vm.allCampuses = ClassService.getAllCampuses();
+                vm.allSections = ClassService.getAllSections();
+                vm.allWaitlist = ClassService.getAllWaitlist();
+                vm.allDoNotPublish = ClassService.getAllDoNotPublish();
+                vm.allCancel = ClassService.getAllCancel();
+                vm.allHonors = ClassService.getAllHonors();
+                vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
 
-            vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
-            vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+                vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
+                vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
+
+                vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
+                vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+            }
         }
 
         function returnToSchedule() {
@@ -48,14 +54,14 @@
             vm.class.metadata.modified = ClassService.isClassModified(vm.class);
             vm.class.metadata.deleted = (vm.class.cancel === "Y");
 
-            var schedule = JSON.parse(sessionStorage.schedule);
+            var schedule = JSON.parse($window.sessionStorage.schedule);
             schedule[vm.class.sessionStateIndex] = vm.class;
-            sessionStorage.schedule = JSON.stringify(schedule);
+            $window.sessionStorage.schedule = JSON.stringify(schedule);
             $location.url("/schedule-submission");
         }
 
         function findClassInSessionState(unique_id) {
-            var schedule = JSON.parse(sessionStorage.schedule);
+            var schedule = JSON.parse($window.sessionStorage.schedule);
             for (var x = 0; x < schedule.length; x++) {
                 var current = schedule[x];
                 if (current.metadata.unique_id === unique_id) {

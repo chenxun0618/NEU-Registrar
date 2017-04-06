@@ -1,0 +1,26 @@
+<div class="container">
+    <h1 class="margin-bottom-30">
+        Department Term Scheduler—Office of the Registrar
+    </h1>
+
+    <div ng-if="model.error" class="alert alert-danger">
+        {{model.error}}
+    </div>
+
+    <div class="margin-bottom-20">
+        <div class="margin-bottom-20">
+            <span class="margin-right-10"> Email: </span>
+            <input autocorrect="off" type="text" ng-model="email" ng-init="email='polevy.m@husky.neu.edu'"/>
+        </div>
+        <div>
+            <span class="margin-right-10"> NUID: </span>
+            <input autocorrect="off" type="password" ng-model="nuid" ng-init="nuid='111111111'"/>
+        </div>
+    </div>
+
+    <div>
+        <button ng-click="model.login(email, nuid)" type="button" class="btn btn-primary">
+            Login
+        </button>
+    </div>
+</div>

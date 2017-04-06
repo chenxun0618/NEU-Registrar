@@ -3,7 +3,7 @@
         .module("NEURegistrar")
         .controller("ScheduleSubmissionController", ScheduleSubmissionController);
 
-    function ScheduleSubmissionController($location, ClassService, ScheduleService) {
+    function ScheduleSubmissionController($location, $window, ClassService, ScheduleService) {
         var vm = this;
 
         vm.getScheduleForTerm = getScheduleForTerm;
@@ -13,12 +13,18 @@
         vm.navigateToAddClass = navigateToAddClass;
 
         function init() {
-            vm.subjectCodes = ClassService.getAllSubjectCodes();
-            vm.schedules = ScheduleService.getAllSchedules();
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
 
-            if (sessionStorage.selectedTerm) {
-                vm.selectedTerm = JSON.parse(sessionStorage.selectedTerm);
-                vm.schedule = JSON.parse(sessionStorage.schedule);
+            if (!vm.loggedInUser) {
+                $location.url("/login");
+            } else {
+                vm.subjectCodes = ClassService.getAllSubjectCodes();
+                vm.schedules = ScheduleService.getAllSchedules();
+
+                if ($window.sessionStorage.selectedTerm) {
+                    vm.selectedTerm = JSON.parse($window.sessionStorage.selectedTerm);
+                    vm.schedule = JSON.parse($window.sessionStorage.schedule);
+                }
             }
         }
 
@@ -40,20 +46,20 @@
             var r = confirm("Are you sure you want to submit this schedule?");
             if (r == true) {
                 ScheduleService.submitSchedule(vm.schedule);
-                sessionStorage.clear();
+                $window.sessionStorage.clear();
                 $location.url("/submitted/");
             }
         }
 
         function navigateToClassDetail(unique_class_id) {
-            sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
-            sessionStorage.schedule = JSON.stringify(vm.schedule);
+            $window.sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
+            $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $location.url("/class-detail/" + unique_class_id);
         }
 
         function navigateToAddClass() {
-            sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
-            sessionStorage.schedule = JSON.stringify(vm.schedule);
+            $window.sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
+            $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $location.url("/class-add/");
         }
 
