@@ -3,7 +3,7 @@
         .module("NEURegistrar")
         .controller("ClassAddController", ClassAddController);
 
-    function ClassAddController($location, ClassService, ScheduleService) {
+    function ClassAddController($location, $window, ClassService, ScheduleService) {
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
@@ -14,27 +14,32 @@
         vm.toastMessage = toastMessage;
 
         function init() {
-            vm.allSubjectCodes = ClassService.getAllSubjectCodes();
-            vm.allCRNs = ClassService.getAllCRNs();
-            vm.currentTerm = ClassService.getCurrentTerm();
-            vm.allStatuses = ClassService.getAllStatuses();
-            vm.allPartOfTerms = ClassService.getAllPartOfTerms();
-            vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
-            vm.allMeetingDays = ClassService.getAllMeetingDays();
-            vm.allCreditHours = ClassService.getAllCreditHours();
-            vm.allCampuses = ClassService.getAllCampuses();
-            vm.allSections = ClassService.getAllSections();
-            vm.allWaitlist = ClassService.getAllWaitlist();
-            vm.allDoNotPublish = ClassService.getAllDoNotPublish();
-            vm.allCancel = ClassService.getAllCancel();
-            vm.allHonors = ClassService.getAllHonors();
-            vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
 
-            vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
-            vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
+            if (!vm.loggedInUser) {
+                $location.url("/login");
+            } else {
+                vm.allSubjectCodes = ClassService.getAllSubjectCodes();
+                vm.currentTerm = ClassService.getCurrentTerm();
+                vm.allStatuses = ClassService.getAllStatuses();
+                vm.allPartOfTerms = ClassService.getAllPartOfTerms();
+                vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
+                vm.allMeetingDays = ClassService.getAllMeetingDays();
+                vm.allCreditHours = ClassService.getAllCreditHours();
+                vm.allCampuses = ClassService.getAllCampuses();
+                vm.allSections = ClassService.getAllSections();
+                vm.allWaitlist = ClassService.getAllWaitlist();
+                vm.allDoNotPublish = ClassService.getAllDoNotPublish();
+                vm.allCancel = ClassService.getAllCancel();
+                vm.allHonors = ClassService.getAllHonors();
+                vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
 
-            vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
-            vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+                vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
+                vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
+
+                vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
+                vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+            }
         }
 
         function getMostRecentCourseData(subjectCode, courseNumber) {
@@ -54,13 +59,18 @@
         }
 
         function saveAndReturnToSchedule() {
-            vm.class.metadata = vm.class.metadata || {};
-            vm.class.metadata.added = true;
-            vm.class.metadata.modified = ScheduleService.isClassModified(vm.class);
-            var schedule = JSON.parse(sessionStorage.schedule);
+            prepareAddedClass(vm.class);
+            var schedule = JSON.parse($window.sessionStorage.schedule);
             schedule.push(vm.class);
-            sessionStorage.schedule = JSON.stringify(schedule);
+            $window.sessionStorage.schedule = JSON.stringify(schedule);
             $location.url("/schedule-submission");
+        }
+
+        function prepareAddedClass(aClass) {
+            aClass.metadata = aClass.metadata || {};
+            aClass.metadata.added = true;
+            aClass.metadata.modified = ClassService.isClassModified(aClass);
+            aClass.metadata.unique_id = ClassService.generateUniqueIdForClass(aClass);
         }
 
         function toastMessage(show) {
@@ -75,18 +85,18 @@
             }
         }
 
-        function isPeakPeriod(time) {
+        function isPeakPeriod(day, time) {
             var isPeakPeriod = 0;
             var x = document.getElementById("toast");
-            if (vm.class.meetingDays === "M" || vm.class.meetingDays === "W" || vm.class.meetingDays === "R" ||
-                vm.class.meetingDays === "MW" || vm.class.meetingDays === "MWR") {
+            if (day === "M" || day === "W" || day === "R" ||
+                day === "MW" || day === "MWR") {
                 if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
                     (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
                     (time.slice(0, 2) == 9 && time.slice(-2) >= 15)) {
                     isPeakPeriod = 1;
                 }
             }
-            if (vm.class.meetingDays === "T" || vm.class.meetingDays === "F" || vm.class.meetingDays === "TF") {
+            if (day === "T" || day === "F" || day === "TF") {
                 if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
                     (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
                     (time.slice(0, 2) == 9 && time.slice(-2) >= 50)) {
@@ -111,7 +121,8 @@
         function updateOnChangeOfTime(isMeetingStart) {
             if (isMeetingStart)
                 updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingStart) || isPeakPeriod(vm.class.meetingEnd);
+            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingStart) ||
+                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEnd);
         }
 
         init();

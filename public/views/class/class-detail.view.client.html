@@ -25,13 +25,13 @@
         </tr>
         <tr>
             <td>CRN</td>
-            <td>{{model.crn}}</td>
+            <td ng-class="{changedFrom: !model.class.crn}">{{model.class.crn || "(to be generated)"}}</td>
             <td></td>
         </tr>
         <tr ng-class="{'modified': (model.class.shortTitle !== model.class.old.shortTitle)}">
             <td>Title</td>
             <td>
-                <input ng-model="model.class.shortTitle"></input>
+                <input type="text" ng-model="model.class.shortTitle"></input>
             </td>
             <td><div ng-class="{hidden: (model.class.shortTitle === model.class.old.shortTitle)}" class="changedFrom">{{model.class.old.shortTitle}}</div></td>
         </tr>
@@ -169,8 +169,7 @@
         </tbody>
     </table>
     <div id="toast" ng-click="model.toastMessage(0)">
-        Time selected is during peak hours <b>MWR 9:15-15:25, TF 9:50-15:25</b>
-        , please process with caution.
+        Time selected is during peak hours <b>MWR 9:15-15:25, TF 9:50-15:25</b>, please proceed with caution.
     </div>
 
     <div>

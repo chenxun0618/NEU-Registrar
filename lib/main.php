@@ -1,12 +1,12 @@
 <?php
     include 'RegistrarDatabase.php';
 
-    if (isset($_GET['table'])) {
-        $table = $_GET['table'];
+    if (isset($_GET['procedure'])) {
+        $sp = $_GET['procedure'];
     } else {
-        echo die('Error: "table" value not set.');
+        echo die('Error: "procedure" value not set.');
     }
 
     $db = new RegistrarDatabase;
-    echo $db->selectAllQuery($table);
+    echo $db->selectAllQuery($sp);
 ?>
