@@ -1,6 +1,6 @@
 <div class="container">
     <h1 class="margin-bottom-20">
-        Department Term Scheduler—Office of the Registrar
+        Semester Course Offerings—Office of the Registrar
     </h1>
 
     <div ng-if="model.error" class="alert alert-danger">
@@ -38,7 +38,7 @@
                 class.meetingEnd.length - 3)}}:{{class.meetingEnd.slice(class.meetingEnd.length - 2)}}
             </td>
             <td>
-                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">Edit</a>
+                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">{{model.loggedInUser.admin ? "View" : "Edit"}}</a>
             </td>
         </tr>
         </tbody>
@@ -64,14 +64,20 @@
     </div>
 
     <div class="float-right">
-        <button ng-click="model.navigateToAddClass()" ng-show="model.schedule" type="button" class="btn btn-info">Add
+        <button ng-click="model.navigateToAddClass()" ng-show="model.schedule && !model.loggedInUser.admin" type="button" class="btn btn-info">Add
             Class
         </button>
-        <button ng-click="model.saveSchedule()" ng-show="model.schedule" type="button" class="btn btn-success">
+        <button ng-click="model.saveSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button" class="btn btn-success">
             Save
         </button>
-        <button ng-click="model.submitSchedule()" ng-show="model.schedule" type="button" class="btn btn-primary">
+        <button ng-click="model.submitSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button" class="btn btn-primary">
             Submit
+        </button>
+        <button ng-click="model.rejectSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button" class="btn btn-danger">
+            Reject
+        </button>
+        <button ng-click="model.approveSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button" class="btn btn-success">
+            Approve
         </button>
     </div>
 </div>
