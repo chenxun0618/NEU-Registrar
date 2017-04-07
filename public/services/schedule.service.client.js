@@ -6,7 +6,7 @@
     function ScheduleService(ClassService) {
 
         var api = {
-            getScheduleByTerm: getScheduleByTerm,
+            getScheduleDetail: getScheduleDetail,
             saveSchedule: saveSchedule,
             submitSchedule: submitSchedule,
             rejectSchedule: rejectSchedule,
@@ -15,7 +15,7 @@
             getAllNonApprovedSchedules: getAllNonApprovedSchedules
         };
 
-        function getScheduleByTerm(term) {
+        function getScheduleDetail(schedule) {
 
             // dummy data for now
             var schedule = [

@@ -6,7 +6,7 @@
     function ScheduleSubmissionController($location, $window, ClassService, ScheduleService) {
         var vm = this;
 
-        vm.getScheduleForTerm = getScheduleForTerm;
+        vm.getScheduleDetail = getScheduleDetail;
         vm.saveSchedule = saveSchedule;
         vm.submitSchedule = submitSchedule;
         vm.rejectSchedule = rejectSchedule;
@@ -25,62 +25,83 @@
                 vm.subjectCodes = ClassService.getAllSubjectCodes();
                 vm.schedules = ScheduleService.getAllSchedules();
 
-                if ($window.sessionStorage.selectedTerm) {
-                    vm.selectedTerm = JSON.parse($window.sessionStorage.selectedTerm);
+                if ($window.sessionStorage.selectedSchedule) {
+                    vm.selectedSchedule = JSON.parse($window.sessionStorage.selectedSchedule);
                     vm.schedule = JSON.parse($window.sessionStorage.schedule);
                 }
             }
         }
 
-        function getScheduleForTerm(term) {
+        function getScheduleDetail(selectedSchedule) {
             var r = true;
             if (vm.schedule) {
                 r = confirm("Are you sure you want to load new schedule? Unsaved progress will be lost.");
             }
             if (r == true || !vm.schedule) {
-                vm.schedule = ScheduleService.getScheduleByTerm(term);
+                vm.schedule = ScheduleService.getScheduleDetail(selectedSchedule);
+                vm.error = "";
             }
         }
 
         function saveSchedule() {
-            ScheduleService.saveSchedule(vm.schedule);
+            if (vm.schedule && vm.schedule.length) {
+                ScheduleService.saveSchedule(vm.schedule);
+            } else {
+                vm.error = "No schedule found";
+                $window.scrollTo(0, 0);
+            }
         }
 
         function submitSchedule() {
             var r = confirm("Are you sure you want to submit this schedule?");
             if (r == true) {
-                ScheduleService.submitSchedule(vm.schedule);
-                $window.sessionStorage.clear();
-                $location.url("/submitted/");
+                if (vm.schedule && vm.schedule.length) {
+                    ScheduleService.submitSchedule(vm.schedule);
+                    $window.sessionStorage.clear();
+                    $location.url("/submitted/");
+                } else {
+                    vm.error = "No schedule found";
+                    $window.scrollTo(0, 0);
+                }
             }
         }
 
         function rejectSchedule() {
             var rejection_message = prompt("Enter a reason for the rejection (optional):", "");
             if (rejection_message !== null) {
-                ScheduleService.rejectSchedule(vm.schedule, rejection_message);
-                $window.sessionStorage.schedule = JSON.stringify(null);
-                $location.url("/schedule-submission/");
+                if (vm.schedule && vm.schedule.length) {
+                    ScheduleService.rejectSchedule(vm.schedule, rejection_message);
+                    $window.sessionStorage.schedule = JSON.stringify(null);
+                    $location.url("/schedule-submission/");
+                } else {
+                    vm.error = "No schedule found";
+                    $window.scrollTo(0, 0);
+                }
             }
         }
 
         function approveSchedule() {
             var r = confirm("Are you sure you want to approve this schedule?");
             if (r == true) {
-                ScheduleService.approveSchedule(vm.schedule);
-                $window.sessionStorage.schedule = JSON.stringify(null);
-                $location.url("/schedule-submission/");
+                if (vm.schedule && vm.schedule.length) {
+                    ScheduleService.approveSchedule(vm.schedule);
+                    $window.sessionStorage.schedule = JSON.stringify(null);
+                    $location.url("/schedule-submission/");
+                } else {
+                    vm.error = "No schedule found";
+                    $window.scrollTo(0, 0);
+                }
             }
         }
 
         function navigateToClassDetail(unique_class_id) {
-            $window.sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
+            $window.sessionStorage.selectedSchedule = JSON.stringify(vm.selectedSchedule);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $location.url("/class-detail/" + unique_class_id);
         }
 
         function navigateToAddClass() {
-            $window.sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
+            $window.sessionStorage.selectedSchedule = JSON.stringify(vm.selectedSchedule);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $location.url("/class-add/");
         }

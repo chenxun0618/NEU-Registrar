@@ -42,14 +42,12 @@
         }
 
         function getCourseDataFromCatalog(subjectCode, courseNumber) {
-            vm.reloaded = (vm.reloaded === undefined) ? false : true;
-            if (!vm.reloaded) {
-                vm.class = ClassService.getCourseDataFromCatalog(subjectCode, courseNumber);
-                vm.class.old = angular.copy(vm.class);
+            if (!(/^\d{4}$/.test(courseNumber))) { // 4 digit number
+                vm.error = "Invalid course number"
             } else {
-                vm.class = {}; // fix this bug: does not reload select2s
                 vm.class = ClassService.getCourseDataFromCatalog(subjectCode, courseNumber);
                 vm.class.old = angular.copy(vm.class);
+                vm.error = "";
             }
         }
 
