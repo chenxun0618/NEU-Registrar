@@ -11,7 +11,7 @@
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
         vm.toastMessage = toastMessage;
-        vm.arraysEqual = arraysEqual;
+        vm.arraysEqual = $window.arraysEqual;
         vm.instructorNamesFromNuids = instructorNamesFromNuids;
 
         function init() {
@@ -126,17 +126,6 @@
                 updateEndingTimes();
             vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingStart) ||
                 isPeakPeriod(vm.class.meetingDays, vm.class.meetingEnd);
-        }
-
-        function arraysEqual(a, b) {
-            if (a === b) return true;
-            if (a == null || b == null) return false;
-            if (a.length != b.length) return false;
-
-            for (var i = 0; i < a.length; ++i) {
-                if (a[i] !== b[i]) return false;
-            }
-            return true;
         }
 
         function instructorNamesFromNuids(instructors, nuids) {
