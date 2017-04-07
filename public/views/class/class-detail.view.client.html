@@ -79,12 +79,13 @@
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.instructorNamesFromNuids(model.allPrimaryInstructors, [model.class.primaryInstructor])}}
+                    {{model.extractTargetAttributes("name", "nuid", model.allPrimaryInstructors,
+                    [model.class.primaryInstructor])}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['primaryInstructor'])}"
-                     class="changedFrom">{{model.instructorNamesFromNuids(model.allPrimaryInstructors,
+                     class="changedFrom">{{model.extractTargetAttributes("name", "nuid", model.allPrimaryInstructors,
                     [model.class.old.primaryInstructor])}}
                 </div>
             </td>
@@ -102,13 +103,13 @@
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.instructorNamesFromNuids(model.allSecondaryInstructors,
-                    [model.class.secondaryInstructors])}}
+                    {{model.extractTargetAttributes("name", "nuid", model.allSecondaryInstructors,
+                    model.class.secondaryInstructors)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['secondaryInstructors'])}"
-                     class="changedFrom">{{model.instructorNamesFromNuids(model.allSecondaryInstructors,
+                     class="changedFrom">{{model.extractTargetAttributes("name", "nuid", model.allSecondaryInstructors,
                     model.class.old.secondaryInstructors)}}
                 </div>
             </td>
@@ -190,20 +191,33 @@
             <td>Major Restrictions</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
+                    <label class="margin-right-10">
+                        <input type="radio" ng-model="model.class.includeMajorRestrictions" ng-value="!!model">
+                        Include
+                    </label>
+                    <label>
+                        <input type="radio" ng-model="model.class.includeMajorRestrictions" ng-value="!model">
+                        Exclude
+                    </label><br/>
                     <select class="select2" ng-model="model.class.majorRestrictions" multiple="multiple">
-                        <option ng-repeat="option in model.allRestrictions.majorRestrictions" ng-value="option.majorCode">
+                        <option ng-repeat="option in model.allRestrictions.majorRestrictions"
+                                ng-value="option.majorCode">
                             {{option.majorCode + " " + option.majorDescription}}
                         </option>
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.instructorNamesFromNuids(model.allRestrictions.majorRestrictions,
+                    {{(model.class.includeMajorRestrictions ? "Include: " : "Exclude: ") +
+                    model.extractTargetAttributes("majorDescription", "majorCode",
+                    model.allRestrictions.majorRestrictions,
                     model.class.majorRestrictions)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['majorRestrictions', 'includeMajorRestrictions'])}"
-                     class="changedFrom">{{model.instructorNamesFromNuids(model.allRestrictions.majorRestrictions,
+                     class="changedFrom">{{(model.class.old.includeMajorRestrictions ? "Include: " : "Exclude: ") +
+                    model.extractTargetAttributes("majorDescription", "majorCode",
+                    model.allRestrictions.majorRestrictions,
                     model.class.old.majorRestrictions)}}
                 </div>
             </td>
@@ -212,6 +226,14 @@
             <td>Class Restrictions</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
+                    <label class="margin-right-10">
+                        <input type="radio" ng-model="model.class.includeClassRestrictions" ng-value="!!model">
+                        Include
+                    </label>
+                    <label>
+                        <input type="radio" ng-model="model.class.includeClassRestrictions" ng-value="!model">
+                        Exclude
+                    </label><br/>
                     <select class="select2" ng-model="model.class.classRestrictions" multiple="multiple">
                         <option ng-repeat="option in model.allRestrictions.classRestrictions"
                                 ng-value="option.classCode">
@@ -220,13 +242,17 @@
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.instructorNamesFromNuids(model.allRestrictions.classRestrictions,
+                    {{(model.class.includeClassRestrictions ? "Include: " : "Exclude: ") +
+                    model.extractTargetAttributes("classDescription", "classCode",
+                    model.allRestrictions.classRestrictions,
                     model.class.classRestrictions)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['classRestrictions', 'includeClassRestrictions'])}"
-                     class="changedFrom">{{model.instructorNamesFromNuids(model.allRestrictions.classRestrictions,
+                     class="changedFrom">{{(model.class.old.includeClassRestrictions ? "Include: " : "Exclude: ") +
+                    model.extractTargetAttributes("classDescription", "classCode",
+                    model.allRestrictions.classRestrictions,
                     model.class.old.classRestrictions)}}
                 </div>
             </td>
@@ -235,6 +261,14 @@
             <td>Level Restrictions</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
+                    <label class="margin-right-10">
+                        <input type="radio" ng-model="model.class.includeLevelRestrictions" ng-value="!!model">
+                        Include
+                    </label>
+                    <label>
+                        <input type="radio" ng-model="model.class.includeLevelRestrictions" ng-value="!model">
+                        Exclude
+                    </label><br/>
                     <select class="select2" ng-model="model.class.levelRestrictions" multiple="multiple">
                         <option ng-repeat="option in model.allRestrictions.levelRestrictions"
                                 ng-value="option.levelCode">
@@ -243,13 +277,17 @@
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.instructorNamesFromNuids(model.allRestrictions.levelRestrictions,
+                    {{(model.class.includeLevelRestrictions ? "Include: " : "Exclude: ") +
+                    model.extractTargetAttributes("levelDescription", "levelCode",
+                    model.allRestrictions.levelRestrictions,
                     model.class.levelRestrictions)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['levelRestrictions', 'includeLevelRestrictions'])}"
-                     class="changedFrom">{{model.instructorNamesFromNuids(model.allRestrictions.levelRestrictions,
+                     class="changedFrom">{{(model.class.old.includeLevelRestrictions ? "Include: " : "Exclude: ") +
+                    model.extractTargetAttributes("levelDescription", "levelCode",
+                    model.allRestrictions.levelRestrictions,
                     model.class.old.levelRestrictions)}}
                 </div>
             </td>
@@ -258,6 +296,14 @@
             <td>Program Restrictions</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
+                    <label class="margin-right-10">
+                        <input type="radio" ng-model="model.class.includeProgramRestrictions" ng-value="!!model">
+                        Include
+                    </label>
+                    <label>
+                        <input type="radio" ng-model="model.class.includeProgramRestrictions" ng-value="!model">
+                        Exclude
+                    </label><br/>
                     <select class="select2" ng-model="model.class.programRestrictions" multiple="multiple">
                         <option ng-repeat="option in model.allRestrictions.programRestrictions"
                                 ng-value="option.programCode">
@@ -266,13 +312,17 @@
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.instructorNamesFromNuids(model.allRestrictions.programRestrictions,
+                    {{(model.class.includeProgramRestrictions ? "Include: " : "Exclude: ") +
+                    model.extractTargetAttributes("programDescription", "programCode",
+                    model.allRestrictions.programRestrictions,
                     model.class.programRestrictions)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['programRestrictions', 'includeProgramRestrictions'])}"
-                     class="changedFrom">{{model.instructorNamesFromNuids(model.allRestrictions.programRestrictions,
+                     class="changedFrom">{{(model.class.old.includeProgramRestrictions ? "Include: " : "Exclude: ") +
+                    model.extractTargetAttributes("programDescription", "programCode",
+                    model.allRestrictions.programRestrictions,
                     model.class.old.programRestrictions)}}
                 </div>
             </td>
@@ -281,6 +331,14 @@
             <td>College Restrictions</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
+                    <label class="margin-right-10">
+                        <input type="radio" ng-model="model.class.includeCollegeRestrictions" ng-value="!!model">
+                        Include
+                    </label>
+                    <label>
+                        <input type="radio" ng-model="model.class.includeCollegeRestrictions" ng-value="!model">
+                        Exclude
+                    </label><br/>
                     <select class="select2" ng-model="model.class.collegeRestrictions" multiple="multiple">
                         <option ng-repeat="option in model.allRestrictions.collegeRestrictions"
                                 ng-value="option.collegeCode">
@@ -289,13 +347,17 @@
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.instructorNamesFromNuids(model.allRestrictions.collegeRestrictions,
+                    {{(model.class.includeCollegeRestrictions ? "Include: " : "Exclude: ") +
+                    model.extractTargetAttributes("collegeRestriction", "collegeCode",
+                    model.allRestrictions.collegeRestrictions,
                     model.class.collegeRestrictions)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['collegeRestrictions', 'includeCollegeRestrictions'])}"
-                     class="changedFrom">{{model.instructorNamesFromNuids(model.allRestrictions.collegeRestrictions,
+                     class="changedFrom">{{(model.class.old.includeCollegeRestrictions ? "Include: " : "Exclude: ") +
+                    model.extractTargetAttributes("collegeRestriction", "collegeCode",
+                    model.allRestrictions.collegeRestrictions,
                     model.class.old.collegeRestrictions)}}
                 </div>
             </td>
@@ -311,13 +373,15 @@
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.instructorNamesFromNuids(model.allBillingAttributes,
+                    {{model.extractTargetAttributes("billingAttributeDescription", "billingAttributeCode",
+                    model.allBillingAttributes,
                     model.class.billingAttributes)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['billingAttributes'])}"
-                     class="changedFrom">{{model.instructorNamesFromNuids(model.allBillingAttributes,
+                     class="changedFrom">{{model.extractTargetAttributes("billingAttributeDescription",
+                    "billingAttributeCode", model.allBillingAttributes,
                     model.class.old.billingAttributes)}}
                 </div>
             </td>
@@ -394,7 +458,7 @@
                     </div>
                 </div>
             </td>
-            <td class="changedFrom">
+            <td ng-class="{hidden: model.class.metadata && model.class.metadata.added}" class="changedFrom">
                 <div class="text-box">Last year's data in gray, if changed</div>
             </td>
         </tr>

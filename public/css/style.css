@@ -111,3 +111,7 @@ div.color-legend2 {
 .error-box {
     white-space: pre;
 }
+
+label {
+    font-weight:normal;
+}

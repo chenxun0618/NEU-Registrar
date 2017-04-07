@@ -11,7 +11,7 @@
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
         vm.toastMessage = toastMessage;
-        vm.instructorNamesFromNuids = instructorNamesFromNuids;
+        vm.extractTargetAttributes = extractTargetAttributes;
         vm.differentFromLastYear = differentFromLastYear;
 
         function init() {
@@ -125,26 +125,27 @@
                 isPeakPeriod(vm.class.meetingDays, vm.class.meetingEnd);
         }
 
-        function instructorNamesFromNuids(instructors, nuids) {
-            if (!instructors || !nuids) {
+        function extractTargetAttributes(targetAttribute, sourceAttribute, allData, localData) {
+            if (!allData || !localData) {
                 return null;
             }
-            var names = [];
-            for (var x = 0; x < nuids.length; x++) {
-                var instructorNuid = nuids[x];
-                for (var y = 0; y < instructors.length; y++) {
-                    if (instructorNuid === instructors[y].nuid) {
-                        names.push(instructors[y].name);
+
+            var targetData = [];
+            for (var x = 0; x < localData.length; x++) {
+                var localDataSourceAttribute = localData[x];
+                for (var y = 0; y < allData.length; y++) {
+                    if (localDataSourceAttribute === allData[y][sourceAttribute]) {
+                        targetData.push(allData[y][targetAttribute]);
                     }
                 }
             }
 
-            if (names.length === 0) {
+            if (targetData.length === 0) {
                 return "(none)";
-            } else if (names.length == 1) {
-                return names[0];
+            } else if (targetData.length == 1) {
+                return targetData[0];
             } else {
-                return names;
+                return targetData.join(", ");
             }
         }
 

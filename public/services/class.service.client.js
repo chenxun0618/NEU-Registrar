@@ -181,6 +181,7 @@
             aClass.honors = "N";
             aClass.doNotPublish = "N";
             aClass.cancel = "N";
+            aClass.comment = "";
         }
 
         function generateUniqueIdForClass(aClass) {

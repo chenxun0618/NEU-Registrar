@@ -135,6 +135,14 @@
         <tr>
             <td>Major Restrictions</td>
             <td>
+                <label class="margin-right-10">
+                    <input type="radio" ng-model="model.class.includeMajorRestrictions" ng-value="!!model">
+                    Include
+                </label>
+                <label>
+                    <input type="radio" ng-model="model.class.includeMajorRestrictions" ng-value="!model">
+                    Exclude
+                </label><br/>
                 <select class="select2" ng-model="model.class.majorRestrictions" multiple="multiple">
                     <option ng-repeat="option in model.allRestrictions.majorRestrictions" ng-value="option.majorCode">
                         {{option.majorCode + " " + option.majorDescription}}
@@ -145,6 +153,14 @@
         <tr>
             <td>Class Restrictions</td>
             <td>
+                <label class="margin-right-10">
+                    <input type="radio" ng-model="model.class.includeClassRestrictions" ng-value="!!model">
+                    Include
+                </label>
+                <label>
+                    <input type="radio" ng-model="model.class.includeClassRestrictions" ng-value="!model">
+                    Exclude
+                </label><br/>
                 <select class="select2" ng-model="model.class.classRestrictions" multiple="multiple">
                     <option ng-repeat="option in model.allRestrictions.classRestrictions" ng-value="option.classCode">
                         {{option.classCode + " " + option.classDescription}}
@@ -155,6 +171,14 @@
         <tr>
             <td>Level Restrictions</td>
             <td>
+                <label class="margin-right-10">
+                    <input type="radio" ng-model="model.class.includeLevelRestrictions" ng-value="!!model">
+                    Include
+                </label>
+                <label>
+                    <input type="radio" ng-model="model.class.includeLevelRestrictions" ng-value="!model">
+                    Exclude
+                </label><br/>
                 <select class="select2" ng-model="model.class.levelRestrictions" multiple="multiple">
                     <option ng-repeat="option in model.allRestrictions.levelRestrictions" ng-value="option.levelCode">
                         {{option.levelCode + " " + option.levelDescription}}
@@ -165,6 +189,14 @@
         <tr>
             <td>Program Restrictions</td>
             <td>
+                <label class="margin-right-10">
+                    <input type="radio" ng-model="model.class.includeProgramRestrictions" ng-value="!!model">
+                    Include
+                </label>
+                <label>
+                    <input type="radio" ng-model="model.class.includeProgramRestrictions" ng-value="!model">
+                    Exclude
+                </label><br/>
                 <select class="select2" ng-model="model.class.programRestrictions" multiple="multiple">
                     <option ng-repeat="option in model.allRestrictions.programRestrictions" ng-value="option.programCode">
                         {{option.programCode + " " + option.programDescription}}
@@ -175,6 +207,14 @@
         <tr>
             <td>College Restrictions</td>
             <td>
+                <label class="margin-right-10">
+                    <input type="radio" ng-model="model.class.includeCollegeRestrictions" ng-value="!!model">
+                    Include
+                </label>
+                <label>
+                    <input type="radio" ng-model="model.class.includeCollegeRestrictions" ng-value="!model">
+                    Exclude
+                </label><br/>
                 <select class="select2" ng-model="model.class.collegeRestrictions" multiple="multiple">
                     <option ng-repeat="option in model.allRestrictions.collegeRestrictions" ng-value="option.collegeCode">
                         {{option.collegeCode + " " + option.collegeDescription}}
