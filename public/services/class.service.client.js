@@ -7,7 +7,7 @@
 
         var api = {
             getCurrentTerm: getCurrentTerm,
-            getMostRecentCourseData: getMostRecentCourseData,
+            getCourseDataFromCatalog: getCourseDataFromCatalog,
             getAllSubjectCodes: getAllSubjectCodes,
             getAllStatuses: getAllStatuses,
             getAllPartOfTerms: getAllPartOfTerms,
@@ -16,7 +16,6 @@
             getAllMeetingDays: getAllMeetingDays,
             getAllCampuses: getAllCampuses,
             getAllSections: getAllSections,
-            getAllWaitlist: getAllWaitlist,
             getAllDoNotPublish: getAllDoNotPublish,
             getAllHonors: getAllHonors,
             getAllCancel: getAllCancel,
@@ -25,7 +24,8 @@
             getAllPrimaryInstructors: getAllPrimaryInstructors,
             getAllSecondaryInstructors: getAllSecondaryInstructors,
             generateUniqueIdForClass: generateUniqueIdForClass,
-            isClassModified: isClassModified
+            isClassModified: isClassModified,
+            getInvalidClassReasons: getInvalidClassReasons
         };
 
         function getAllSubjectCodes() {
@@ -62,10 +62,6 @@
 
         function getAllSections() {
             return ["01", "02", "03", "04"];
-        }
-
-        function getAllWaitlist() {
-            return ["Y", "N"];
         }
 
         function getAllDoNotPublish() {
@@ -105,7 +101,7 @@
             return getAllPrimaryInstructors();
         }
 
-        function getMostRecentCourseData(subjectCode, courseNumber) {
+        function getCourseDataFromCatalog(subjectCode, courseNumber) {
 
             // dummy data for now
             return {
@@ -129,9 +125,8 @@
                 campus: "BOS",
                 primaryInstructor: "001303804",
                 secondaryInstructors: [],
-                enrollmentMax: "40",
-                waitlist: "Y",
-                waitlistNumber: 5,
+                enrollmentMax: 40,
+                waitlistCapacity: 5,
                 doNotPublish: "N",
                 specialApprovals: "A",
                 comment: "",
@@ -167,8 +162,7 @@
                 (aClass.campus === aClass.old.campus) &&
                 (aClass.primaryInstructor === aClass.old.primaryInstructor) &&
                 (aClass.enrollmentMax === aClass.old.enrollmentMax) &&
-                (aClass.waitlist === aClass.old.waitlist) &&
-                (aClass.waitlistNumber === aClass.old.waitlistNumber) &&
+                (aClass.waitlistCapacity === aClass.old.waitlistCapacity) &&
                 (aClass.doNotPublish === aClass.old.doNotPublish) &&
                 (aClass.specialApprovals === aClass.old.specialApprovals) &&
                 (aClass.comment === aClass.old.comment) &&
@@ -190,6 +184,61 @@
                     return false;
                 }
             }
+        }
+
+        function getInvalidClassReasons(aClass) {
+            var invalidReasons = [];
+
+            if (!getAllSubjectCodes().includes(aClass.subjectCode)) {
+                invalidReasons.push("Invalid subject code");
+            }
+            if (!aClass.term) {
+                invalidReasons.push("Invalid term");
+            }
+            if (!aClass.courseNumber || !(typeof aClass.courseNumber === "string") || !(aClass.courseNumber.length === 4)) {
+                invalidReasons.push("Invalid course number");
+            }
+            if (!aClass.shortTitle) {
+                invalidReasons.push("Invalid title");
+            }
+            if (!getAllInstructionalMethods().includes(aClass.instructionalMethod)) {
+                invalidReasons.push("Invalid instructional method");
+            }
+            if (!aClass.meetingDays) {
+                invalidReasons.push("Invalid meeting days");
+            }
+            if (!aClass.meetingStart || (aClass.meetingStart > aClass.meetingEnd)) {
+                invalidReasons.push("Invalid meeting start time");
+            }
+            if (!aClass.meetingEnd || (aClass.meetingStart > aClass.meetingEnd)) {
+                invalidReasons.push("Invalid meeting end time");
+            }
+            if (!getAllCampuses().includes(aClass.campus)) {
+                invalidReasons.push("Invalid campus code");
+            }
+            if (!aClass.primaryInstructor) {
+                invalidReasons.push("Invalid primary instructor");
+            }
+            if (!aClass.enrollmentMax || !(typeof aClass.enrollmentMax === 'number') || !(aClass.enrollmentMax > 0)) {
+                invalidReasons.push("Invalid enrollment maximum");
+            }
+            if (!(typeof aClass.waitlistCapacity === 'number' && aClass.waitlistCapacity >= 0)) {
+                invalidReasons.push("Invalid waitlist capacity");
+            }
+            if (!getAllDoNotPublish().includes(aClass.doNotPublish)) {
+                invalidReasons.push("Invalid publish indicator");
+            }
+            if (!getAllSpecialApprovals().includes(aClass.specialApprovals)) {
+                invalidReasons.push("Invalid special approval indicator");
+            }
+            if (!getAllHonors().includes(aClass.honors)) {
+                invalidReasons.push("Invalid honors indicator");
+            }
+            if (!getAllCancel().includes(aClass.cancel)) {
+                invalidReasons.push("Invalid cancel indicator");
+            }
+
+            return invalidReasons;
         }
 
         return api;

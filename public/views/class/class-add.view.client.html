@@ -7,9 +7,7 @@
         Add Class
     </h1>
 
-    <div ng-if="model.error" class="alert alert-danger">
-        {{model.error}}
-    </div>
+    <div ng-if="model.error" class="alert alert-danger error-box">{{model.error}}</div>
 
     <table class="table narrow">
         <tbody>
@@ -24,14 +22,14 @@
         <tr>
             <td>Course Number</td>
             <td>
-                <input id="courseNumber" ng-model="model.selectedCourseNumber" maxlength="4" type="text" />
+                <input id="courseNumber" ng-model="model.selectedCourseNumber" maxlength="4" type="text"/>
             </td>
         </tr>
         <tr>
             <td></td>
             <td>
                 <button type="button" class="btn btn-success"
-                        ng-click="model.getMostRecentCourseData(model.selectedSubjectCode, model.selectedCourseNumber)">
+                        ng-click="model.getCourseDataFromCatalog(model.selectedSubjectCode, model.selectedCourseNumber)">
                     Load Catalog Data
                 </button>
             </td>
@@ -82,7 +80,9 @@
             <td>Primary Instructor</td>
             <td>
                 <select class="select2" ng-model="model.class.primaryInstructor">
-                    <option ng-repeat="option in model.allPrimaryInstructors track by option.nuid" ng-value="option.nuid">{{option.nuid}} {{option.name}}</option>
+                    <option ng-repeat="option in model.allPrimaryInstructors track by option.nuid"
+                            ng-value="option.nuid">{{option.nuid}} {{option.name}}
+                    </option>
                 </select>
             </td>
         </tr>
@@ -91,7 +91,9 @@
             <td>Secondary Instructors</td>
             <td>
                 <select class="select2" ng-model="model.class.secondaryInstructors" multiple="multiple">
-                    <option ng-repeat="option in model.allSecondaryInstructors" ng-value="option.nuid">{{option.nuid}} {{option.name}}</option>
+                    <option ng-repeat="option in model.allSecondaryInstructors" ng-value="option.nuid">{{option.nuid}}
+                        {{option.name}}
+                    </option>
                 </select>
             </td>
         </tr>
@@ -100,7 +102,7 @@
         <tr>
             <td>Enrollment Maximum</td>
             <td>
-                <input ng-model="model.class.enrollmentMax">
+                <input type="number" min="1" step="1" ng-model="model.class.enrollmentMax"/>
             </td>
         </tr>
         <tr>
@@ -126,10 +128,9 @@
             </td>
         </tr>
         <tr>
-            <td>Enable Waitlist?</td>
+            <td>Waitlist Capacity</td>
             <td>
-                <select ng-model="model.class.waitlist" ng-options="option for option in model.allWaitlist">
-                </select>
+                <input ng-model="model.class.waitlistCapacity" type="number" min="1" step="1"/>
             </td>
         </tr>
         <tr>
@@ -166,7 +167,8 @@
         Time selected is during peak hours <b>MWR 9:15-15:25, TF 9:50-15:25</b>, please proceed with caution.
     </div>
     <div ng-if="model.class">
-        <button ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Add to Schedule</button>
+        <button ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Add to Schedule
+        </button>
         <button ng-click="model.returnToSchedule()" type="button" class="btn btn-warning">Cancel</button>
     </div>
 </div>

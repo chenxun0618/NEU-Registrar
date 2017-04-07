@@ -3,9 +3,8 @@
         Semester Course Offerings—Office of the Registrar
     </h1>
 
-    <div ng-if="model.error" class="alert alert-danger">
-        {{model.error}}
-    </div>
+    <div ng-if="model.error" class="alert alert-danger error-box">{{model.error}}</div>
+
     <span ng-show="model.schedule" class="search-box">
         <input style="float: right" type="text" id="filterText" ng-model="filterText"
                placeholder="Search a class number, class name...">
@@ -13,16 +12,16 @@
     <br>
     <form name="getSchedules">
         <label for="scheduleSelect"> Schedule: </label>
-        <select name="scheduleSelect" id="scheduleSelect" ng-model="model.selectedTerm"
-                ng-options="option.term_readable for option in model.schedules track by option.term+option.status">
-        </select> &nbsp;
-        <a ng-click="model.getScheduleForTerm(model.selectedTerm)">GO</a>
+        <select name="scheduleSelect" id="scheduleSelect" ng-model="model.selectedSchedule"
+                ng-options="model.getScheduleSummaryLine(option) for option in model.schedules track by option.departmentCode+option.term"
+                ng-change="model.getScheduleDetail(model.selectedSchedule)">
+        </select>
     </form>
     <table ng-show="model.schedule" class="table">
         <thead>
         <tr>
-            <th>Code</th>
-            <th>Class Name</th>
+            <th>Course No.</th>
+            <th>Title</th>
             <th>Meeting Time</th>
             <th></th>
         </tr>
@@ -38,7 +37,8 @@
                 class.meetingEnd.length - 3)}}:{{class.meetingEnd.slice(class.meetingEnd.length - 2)}}
             </td>
             <td>
-                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">{{model.loggedInUser.admin ? "View" : "Edit"}}</a>
+                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">{{model.loggedInUser.admin ? "View"
+                    : "Edit"}}</a>
             </td>
         </tr>
         </tbody>
@@ -55,7 +55,7 @@
         </div>
         <div class="color-legend-item">
             <div class="color-box deleted"/>
-            <div class="text-box">Deleted</div>
+            <div class="text-box">Cancelled</div>
         </div>
         <div class="color-legend-item">
             <div class="color-box unmodified"/>
@@ -64,19 +64,24 @@
     </div>
 
     <div class="float-right">
-        <button ng-click="model.navigateToAddClass()" ng-show="model.schedule && !model.loggedInUser.admin" type="button" class="btn btn-info">Add
+        <button ng-click="model.navigateToAddClass()" ng-show="model.schedule && !model.loggedInUser.admin"
+                type="button" class="btn btn-info">Add
             Class
         </button>
-        <button ng-click="model.saveSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button" class="btn btn-success">
+        <button ng-click="model.saveSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button"
+                class="btn btn-success">
             Save
         </button>
-        <button ng-click="model.submitSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button" class="btn btn-primary">
+        <button ng-click="model.submitSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button"
+                class="btn btn-primary">
             Submit
         </button>
-        <button ng-click="model.rejectSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button" class="btn btn-danger">
+        <button ng-click="model.rejectSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button"
+                class="btn btn-danger">
             Reject
         </button>
-        <button ng-click="model.approveSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button" class="btn btn-success">
+        <button ng-click="model.approveSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button"
+                class="btn btn-success">
             Approve
         </button>
     </div>

@@ -4,12 +4,10 @@
 
 <div class="container">
     <h1 class="margin-bottom-20">
-        Edit Class
+        {{model.loggedInUser.admin ? "Class Detail" : "Edit Class"}}
     </h1>
 
-    <div ng-if="model.error" class="alert alert-danger">
-        {{model.error}}
-    </div>
+    <div ng-if="model.error" class="alert alert-danger error-box">{{model.error}}</div>
 
     <table class="table narrow">
         <tbody>
@@ -31,10 +29,14 @@
         <tr ng-class="{'modified': (model.class.shortTitle !== model.class.old.shortTitle)}">
             <td>Title</td>
             <td>
-                <input ng-if="!model.loggedInUser.admin" type="text" ng-model="model.class.shortTitle" />
+                <input ng-if="!model.loggedInUser.admin" type="text" ng-model="model.class.shortTitle"/>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.shortTitle}}</div>
             </td>
-            <td><div ng-class="{hidden: (model.class.shortTitle === model.class.old.shortTitle)}" class="changedFrom">{{model.class.old.shortTitle}}</div></td>
+            <td>
+                <div ng-class="{hidden: (model.class.shortTitle === model.class.old.shortTitle)}" class="changedFrom">
+                    {{model.class.old.shortTitle}}
+                </div>
+            </td>
         </tr>
         <tr ng-class="{'modified': (model.class.meetingDays !== model.class.old.meetingDays || model.class.meetingStart !== model.class.old.meetingStart || model.class.meetingEnd !== model.class.old.meetingEnd)}">
             <td>Meeting Times</td>
@@ -59,7 +61,12 @@
                     {{model.class.meetingDays + ", " + model.class.meetingStart + "—" + model.class.meetingEnd}}
                 </div>
             </td>
-            <td><div ng-class="{hidden: (model.class.meetingDays === model.class.old.meetingDays && model.class.meetingStart === model.class.old.meetingStart && model.class.meetingEnd === model.class.old.meetingEnd)}" class="changedFrom">{{model.class.old.meetingDays + ", " + model.class.old.meetingStart + "—" + model.class.old.meetingEnd}}</div></td>
+            <td>
+                <div ng-class="{hidden: (model.class.meetingDays === model.class.old.meetingDays && model.class.meetingStart === model.class.old.meetingStart && model.class.meetingEnd === model.class.old.meetingEnd)}"
+                     class="changedFrom">{{model.class.old.meetingDays + ", " + model.class.old.meetingStart + "—" +
+                    model.class.old.meetingEnd}}
+                </div>
+            </td>
         </tr>
         <tr ng-class="{'modified': (model.class.primaryInstructor !== model.class.old.primaryInstructor)}">
             <td>Primary Instructor</td>
@@ -71,9 +78,16 @@
                         </option>
                     </select>
                 </div>
-                <div ng-show="model.loggedInUser.admin" class="italics">{{model.instructorNamesFromNuids(model.allPrimaryInstructors, [model.class.primaryInstructor])}}</div>
+                <div ng-show="model.loggedInUser.admin" class="italics">
+                    {{model.instructorNamesFromNuids(model.allPrimaryInstructors, [model.class.primaryInstructor])}}
+                </div>
             </td>
-            <td><div ng-class="{hidden: (model.class.primaryInstructor === model.class.old.primaryInstructor)}" class="changedFrom">{{model.instructorNamesFromNuids(model.allPrimaryInstructors, [model.class.old.primaryInstructor])}}</div></td>
+            <td>
+                <div ng-class="{hidden: (model.class.primaryInstructor === model.class.old.primaryInstructor)}"
+                     class="changedFrom">{{model.instructorNamesFromNuids(model.allPrimaryInstructors,
+                    [model.class.old.primaryInstructor])}}
+                </div>
+            </td>
         </tr>
         <tr>
         <tr ng-class="{'modified': !model.arraysEqual(model.class.secondaryInstructors, model.class.old.secondaryInstructors)}">
@@ -81,40 +95,64 @@
             <td>
                 <div ng-show="!model.loggedInUser.admin">
                     <select class="select2" ng-model="model.class.secondaryInstructors" multiple="multiple">
-                        <option ng-repeat="option in model.allSecondaryInstructors" ng-value="option.nuid">{{option.nuid}}
+                        <option ng-repeat="option in model.allSecondaryInstructors" ng-value="option.nuid">
+                            {{option.nuid}}
                             {{option.name}}
                         </option>
                     </select>
                 </div>
-                <div ng-show="model.loggedInUser.admin" class="italics">{{model.instructorNamesFromNuids(model.allSecondaryInstructors, [model.class.secondaryInstructors])}}</div>
+                <div ng-show="model.loggedInUser.admin" class="italics">
+                    {{model.instructorNamesFromNuids(model.allSecondaryInstructors,
+                    [model.class.secondaryInstructors])}}
+                </div>
             </td>
-            <td><div ng-class="{hidden: model.arraysEqual(model.class.secondaryInstructors, model.class.old.secondaryInstructors)}" class="changedFrom">{{model.instructorNamesFromNuids(model.allSecondaryInstructors, model.class.old.secondaryInstructors)}}</div></td>
+            <td>
+                <div ng-class="{hidden: model.arraysEqual(model.class.secondaryInstructors, model.class.old.secondaryInstructors)}"
+                     class="changedFrom">{{model.instructorNamesFromNuids(model.allSecondaryInstructors,
+                    model.class.old.secondaryInstructors)}}
+                </div>
+            </td>
         </tr>
         <tr ng-class="{'modified': (model.class.enrollmentMax !== model.class.old.enrollmentMax)}">
             <td>Enrollment Maximum</td>
             <td>
-                <input ng-if="!model.loggedInUser.admin" ng-model="model.class.enrollmentMax">
+                <input ng-if="!model.loggedInUser.admin" ng-model="model.class.enrollmentMax" type="number" min="1"
+                       step="1"/>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.enrollmentMax}}</div>
             </td>
-            <td><div ng-class="{hidden: (model.class.enrollmentMax === model.class.old.enrollmentMax)}" class="changedFrom">{{model.class.old.enrollmentMax}}</div></td>
+            <td>
+                <div ng-class="{hidden: (model.class.enrollmentMax === model.class.old.enrollmentMax)}"
+                     class="changedFrom">{{model.class.old.enrollmentMax}}
+                </div>
+            </td>
         </tr>
         <tr ng-class="{'modified': (model.class.honors !== model.class.old.honors)}">
             <td>Honors</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.honors" ng-options="option for option in model.allHonors">
+                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.honors"
+                        ng-options="option for option in model.allHonors">
                 </select>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.honors}}</div>
             </td>
-            <td><div ng-class="{hidden: (model.class.honors === model.class.old.honors)}" class="changedFrom">{{model.class.old.honors}}</div></td>
+            <td>
+                <div ng-class="{hidden: (model.class.honors === model.class.old.honors)}" class="changedFrom">
+                    {{model.class.old.honors}}
+                </div>
+            </td>
         </tr>
         <tr ng-class="{'modified': (model.class.campus !== model.class.old.campus)}">
             <td>Campus</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.campus" ng-options="option for option in model.allCampuses">
+                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.campus"
+                        ng-options="option for option in model.allCampuses">
                 </select>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.campus}}</div>
             </td>
-            <td><div ng-class="{hidden: (model.class.campus === model.class.old.campus)}" class="changedFrom">{{model.class.old.campus}}</div></td>
+            <td>
+                <div ng-class="{hidden: (model.class.campus === model.class.old.campus)}" class="changedFrom">
+                    {{model.class.old.campus}}
+                </div>
+            </td>
         </tr>
         <tr ng-class="{'modified': (model.class.instructionalMethod !== model.class.old.instructionalMethod)}">
             <td>Instructional Method</td>
@@ -125,16 +163,24 @@
                 </select>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.instructionalMethod}}</div>
             </td>
-            <td><div ng-class="{hidden: (model.class.instructionalMethod === model.class.old.instructionalMethod)}" class="changedFrom">{{model.class.old.instructionalMethod}}</div></td>
-        </tr>
-        <tr ng-class="{'modified': (model.class.waitlist !== model.class.old.waitlist)}">
-            <td>Enable Waitlist?</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.waitlist" ng-options="option for option in model.allWaitlist">
-                </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.waitlist}}</div>
+                <div ng-class="{hidden: (model.class.instructionalMethod === model.class.old.instructionalMethod)}"
+                     class="changedFrom">{{model.class.old.instructionalMethod}}
+                </div>
             </td>
-            <td><div ng-class="{hidden: (model.class.waitlist === model.class.old.waitlist)}" class="changedFrom">{{model.class.old.waitlist}}</div></td>
+        </tr>
+        <tr ng-class="{'modified': (model.class.waitlistCapacity !== model.class.old.waitlistCapacity)}">
+            <td>Waitlist Capacity</td>
+            <td>
+                <input ng-if="!model.loggedInUser.admin" ng-model="model.class.waitlistCapacity" type="number" min="0"
+                       step="1"/>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.waitlistCapacity}}</div>
+            </td>
+            <td>
+                <div ng-class="{hidden: (model.class.waitlistCapacity === model.class.old.waitlistCapacity)}"
+                     class="changedFrom">{{model.class.old.waitlistCapacity}}
+                </div>
+            </td>
         </tr>
         <tr ng-class="{'modified': (model.class.specialApprovals !== model.class.old.specialApprovals)}">
             <td>Special Approvals</td>
@@ -143,12 +189,19 @@
                         ng-model="model.class.specialApprovals"
                         ng-options="option for option in model.allSpecialApprovals">
                 </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.specialApprovals ? model.class.specialApprovals : "(none)"}}</div>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.specialApprovals ?
+                    model.class.specialApprovals : "(none)"}}
+                </div>
             </td>
-            <td><div ng-class="{hidden: (model.class.specialApprovals === model.class.old.specialApprovals)}" class="changedFrom">{{model.class.old.specialApprovals ? model.class.old.specialApprovals : "(none)"}}</div></td>
+            <td>
+                <div ng-class="{hidden: (model.class.specialApprovals === model.class.old.specialApprovals)}"
+                     class="changedFrom">{{model.class.old.specialApprovals ? model.class.old.specialApprovals :
+                    "(none)"}}
+                </div>
+            </td>
         </tr>
         <tr ng-class="{'modified': (model.class.doNotPublish !== model.class.old.doNotPublish)}">
-            <td>Remove from Banner?</td>
+            <td>Hide on Banner Schedule?</td>
             <td>
                 <select ng-if="!model.loggedInUser.admin"
                         ng-model="model.class.doNotPublish"
@@ -156,7 +209,11 @@
                 </select>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.doNotPublish}}</div>
             </td>
-            <td><div ng-class="{hidden: (model.class.doNotPublish === model.class.old.doNotPublish)}" class="changedFrom">{{model.class.old.doNotPublish}}</div></td>
+            <td>
+                <div ng-class="{hidden: (model.class.doNotPublish === model.class.old.doNotPublish)}"
+                     class="changedFrom">{{model.class.old.doNotPublish}}
+                </div>
+            </td>
         </tr>
         <tr ng-class="{'modified': (model.class.cancel !== model.class.old.cancel)}">
             <td>Cancel Class?</td>
@@ -167,15 +224,25 @@
                 </select>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.cancel}}</div>
             </td>
-            <td><div ng-class="{hidden: (model.class.cancel === model.class.old.cancel)}" class="changedFrom">{{model.class.old.cancel}}</div></td>
+            <td>
+                <div ng-class="{hidden: (model.class.cancel === model.class.old.cancel)}" class="changedFrom">
+                    {{model.class.old.cancel}}
+                </div>
+            </td>
         </tr>
         <tr ng-class="{'modified': (model.class.comment !== model.class.old.comment)}">
             <td>Comment</td>
             <td>
                 <textarea ng-if="!model.loggedInUser.admin" ng-model="model.class.comment"/>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.comment ? model.class.comment : "(none)"}}</div>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.comment ? model.class.comment :
+                    "(none)"}}
+                </div>
             </td>
-            <td><div ng-class="{hidden: (model.class.comment === model.class.old.comment)}" class="changedFrom">{{model.class.old.comment ? model.class.old.comment : "(none)"}}</div></td>
+            <td>
+                <div ng-class="{hidden: (model.class.comment === model.class.old.comment)}" class="changedFrom">
+                    {{model.class.old.comment ? model.class.old.comment : "(none)"}}
+                </div>
+            </td>
         </tr>
         <tr>
             <td></td>
@@ -191,7 +258,9 @@
                     </div>
                 </div>
             </td>
-            <td class="changedFrom"><div class="text-box">Last year's data in gray, if changed</div></td>
+            <td class="changedFrom">
+                <div class="text-box">Last year's data in gray, if changed</div>
+            </td>
         </tr>
         </tbody>
     </table>
