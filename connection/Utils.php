@@ -24,6 +24,8 @@ class Utils
         // If connection was not established
         if ($this->conn->connect_errno)
             die("Connection failed: " . $this->conn->connect_error);
+
+        echo "connection established\n";
     }
 
     /*
@@ -32,6 +34,7 @@ class Utils
     function __destruct()
     {
         $this->conn->close();
+        echo "connection closed\n";
     }
 
     /*
@@ -40,21 +43,33 @@ class Utils
     function get($val)
     {
         if (!isset($_GET[$val])) {
-            die($val . "is not valid");
+            die($val . " is not valid");
         }
         return $_GET[$val];
     }
 
     /*
-     * construct a query with front-end input (stored procedures)
+     * construct a query
      */
-    function construct_query()
+    function construct_query($query, $values)
     {
+        $stmt = $this->conn->prepare($query);
 
+        for ($i = 1; $i <= count($values); $i++) {
+            $stmt->bind_param($i, $values[$i]);
+        }
+
+        $result = $stmt->execute();
+
+        // If database cannot process the query
+        if (!$result)
+            die("Couldn't find the information: " . $this->conn->error);
+
+        return $result;
     }
 
     /*
-     * perform a query on the database and return the result in JSON representation
+     * perform a query on the database and return the retrieved data in an array
      */
     function query($query)
     {
@@ -62,16 +77,12 @@ class Utils
         $result = $this->conn->query($query);
 
         // If database cannot process the query
-        if (!$result) {
-            $this->conn->close();
-            die("Couldn't find the information: " . $this->conn->connect_error);
-        }
+        if (!$result)
+            die("Couldn't find the information: " . $this->conn->error . "\n");
 
         // If there is no rows in the result
-        if ($result->num_rows <= 0) {
-            $this->conn->close();
-            die("0 results");
-        }
+        if ($result->num_rows <= 0)
+            die("0 results\n");
 
         $array = array();
         while ($row = $result->fetch_assoc()) {
@@ -82,6 +93,9 @@ class Utils
             array_push($array, $row_array);
         }
 
-        return json_encode($array);
+        $result->close();
+        $this->conn->next_result();
+
+        return $array;
     }
 }
