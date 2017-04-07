@@ -8,6 +8,7 @@
         var api = {
             getCurrentTerm: getCurrentTerm,
             getAllSubjectCodes: getAllSubjectCodes,
+            getAllStatuses: getAllStatuses,
             getCourseDataFromCatalog: getCourseDataFromCatalog,
             getAllMeetingDays: getAllMeetingDays,
             getAllTimeIntervals: getAllTimeIntervals,
@@ -30,6 +31,10 @@
 
         function getAllSubjectCodes() {
             return ["ACCT", "CS", "DS", "IS", "MATH", "PHYS", "PSYC"];
+        }
+
+        function getAllStatuses() {
+            return ["A", "I", "C"];
         }
 
         function getAllMeetingDays() {
@@ -165,6 +170,7 @@
         }
 
         function fillDefaultData(aClass) {
+            aClass.status = "A";
             aClass.secondaryInstructors = [];
             aClass.majorRestrictions = [];
             aClass.classRestrictions = [];
@@ -192,6 +198,7 @@
         function isClassModified(aClass) {
             return (!aClass.old) || !(
                 (aClass.term === aClass.old.term) &&
+                (aClass.status === aClass.old.status) &&
                 (aClass.crn === aClass.old.crn) &&
                 (aClass.subjectCode === aClass.old.subjectCode) &&
                 (aClass.courseNumber === aClass.old.courseNumber) &&
@@ -231,6 +238,9 @@
 
             if (!aClass.term || !(/^\d{6}$/.test(aClass.term))) { // 6 digit number
                 invalidReasons.push("Invalid term: " + aClass.term);
+            }
+            if (!getAllStatuses().includes(aClass.status)) {
+                invalidReasons.push("Invalid status: " + aClass.status);
             }
             if (aClass.crn && !(/^\d{5}$/.test(aClass.crn))) { // 5 digit number
                 invalidReasons.push("Invalid CRN: " + aClass.crn);

@@ -108,13 +108,13 @@
 
         function getScheduleSummaryLine(schedule) {
             if (!schedule.status) {
-                return schedule.departmentCode + " (" + schedule.term_readable + ")";
+                return schedule.departmentCode;
             } else if (schedule.status === 'D') {
-                return schedule.departmentCode + " (" + schedule.term_readable + ") (draft)";
+                return schedule.departmentCode + " (draft)";
             } else if (schedule.status === 'S') {
-                return schedule.departmentCode + " (" + schedule.term_readable + ") (waiting approval)";
+                return schedule.departmentCode + " (waiting approval)";
             } else if (schedule.status === 'R') {
-                return schedule.departmentCode + " (" + schedule.term_readable + ") (rejected)";
+                return schedule.departmentCode + " (rejected)";
             }
         }
 
