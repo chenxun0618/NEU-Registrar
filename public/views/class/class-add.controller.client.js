@@ -3,7 +3,7 @@
         .module("NEURegistrar")
         .controller("ClassAddController", ClassAddController);
 
-    function ClassAddController($location, $window, ClassService, ScheduleService) {
+    function ClassAddController($location, $window, ClassService) {
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
@@ -21,16 +21,10 @@
             } else {
                 vm.allSubjectCodes = ClassService.getAllSubjectCodes();
                 vm.currentTerm = ClassService.getCurrentTerm();
-                vm.allStatuses = ClassService.getAllStatuses();
-                vm.allPartOfTerms = ClassService.getAllPartOfTerms();
                 vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
                 vm.allMeetingDays = ClassService.getAllMeetingDays();
-                vm.allCreditHours = ClassService.getAllCreditHours();
                 vm.allCampuses = ClassService.getAllCampuses();
-                vm.allSections = ClassService.getAllSections();
-                vm.allDoNotPublish = ClassService.getAllDoNotPublish();
-                vm.allCancel = ClassService.getAllCancel();
-                vm.allHonors = ClassService.getAllHonors();
+                vm.yesOrNo = ClassService.getYesOrNo();
                 vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
 
                 vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
@@ -38,6 +32,9 @@
 
                 vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
                 vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+
+                vm.allRestrictions = ClassService.getAllRestrictions();
+                vm.allBillingAttributes = ClassService.getAllBillingAttributes();
             }
         }
 
@@ -46,7 +43,6 @@
                 vm.error = "Invalid course number"
             } else {
                 vm.class = ClassService.getCourseDataFromCatalog(subjectCode, courseNumber);
-                vm.class.old = angular.copy(vm.class);
                 vm.error = "";
             }
         }
@@ -72,7 +68,6 @@
         function prepareAddedClass(aClass) {
             aClass.metadata = aClass.metadata || {};
             aClass.metadata.added = true;
-            aClass.metadata.modified = ClassService.isClassModified(aClass);
             aClass.metadata.unique_id = ClassService.generateUniqueIdForClass(aClass);
         }
 
@@ -89,6 +84,9 @@
         }
 
         function isPeakPeriod(day, time) {
+            if (!day || !time) {
+                return false;
+            }
             var isPeakPeriod = 0;
             var x = document.getElementById("toast");
             if (day === "M" || day === "W" || day === "R" ||
