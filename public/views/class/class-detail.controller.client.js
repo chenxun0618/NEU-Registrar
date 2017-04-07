@@ -11,8 +11,8 @@
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
         vm.toastMessage = toastMessage;
-        vm.arraysEqual = $window.arraysEqual;
         vm.instructorNamesFromNuids = instructorNamesFromNuids;
+        vm.differentFromLastYear = differentFromLastYear;
 
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
@@ -35,6 +35,9 @@
 
                 vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
                 vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+
+                vm.allRestrictions = ClassService.getAllRestrictions();
+                vm.allBillingAttributes = ClassService.getAllBillingAttributes();
             }
         }
 
@@ -143,6 +146,22 @@
             } else {
                 return names;
             }
+        }
+
+        function differentFromLastYear(attributes) {
+            for (var x = 0; x < attributes.length; x++) {
+                var attribute = attributes[x];
+                if (vm.class[attribute].constructor === Array) {
+                    if (vm.class.old && !arraysEqual(vm.class[attribute], vm.class.old[attribute])) {
+                        return true;
+                    }
+                } else {
+                    if (vm.class.old && vm.class[attribute] !== vm.class.old[attribute]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         init();

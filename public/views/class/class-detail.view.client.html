@@ -26,19 +26,19 @@
             <td ng-class="{changedFrom: !model.class.crn}">{{model.class.crn || "(to be generated)"}}</td>
             <td></td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.shortTitle !== model.class.old.shortTitle)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['shortTitle'])}">
             <td>Title</td>
             <td>
                 <input ng-if="!model.loggedInUser.admin" type="text" ng-model="model.class.shortTitle"/>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.shortTitle}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.shortTitle === model.class.old.shortTitle)}" class="changedFrom">
+                <div ng-class="{hidden: !model.differentFromLastYear(['shortTitle'])}" class="changedFrom">
                     {{model.class.old.shortTitle}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.meetingDays !== model.class.old.meetingDays || model.class.meetingStart !== model.class.old.meetingStart || model.class.meetingEnd !== model.class.old.meetingEnd)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['meetingDays', 'meetingStart', 'meetingEnd'])}">
             <td>Meeting Times</td>
             <td>
                 <div ng-if="!model.loggedInUser.admin">
@@ -62,13 +62,13 @@
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.meetingDays === model.class.old.meetingDays && model.class.meetingStart === model.class.old.meetingStart && model.class.meetingEnd === model.class.old.meetingEnd)}"
+                <div ng-class="{hidden: !model.differentFromLastYear(['meetingDays', 'meetingStart', 'meetingEnd'])}"
                      class="changedFrom">{{model.class.old.meetingDays + ", " + model.class.old.meetingStart + "—" +
                     model.class.old.meetingEnd}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.primaryInstructor !== model.class.old.primaryInstructor)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['primaryInstructor'])}">
             <td>Primary Instructor</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
@@ -83,14 +83,14 @@
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.primaryInstructor === model.class.old.primaryInstructor)}"
+                <div ng-class="{hidden: !model.differentFromLastYear(['primaryInstructor'])}"
                      class="changedFrom">{{model.instructorNamesFromNuids(model.allPrimaryInstructors,
                     [model.class.old.primaryInstructor])}}
                 </div>
             </td>
         </tr>
         <tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && !model.arraysEqual(model.class.secondaryInstructors, model.class.old.secondaryInstructors)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['secondaryInstructors'])}">
             <td>Secondary Instructors</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
@@ -107,13 +107,13 @@
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || model.arraysEqual(model.class.secondaryInstructors, model.class.old.secondaryInstructors)}"
+                <div ng-class="{hidden: !model.differentFromLastYear(['secondaryInstructors'])}"
                      class="changedFrom">{{model.instructorNamesFromNuids(model.allSecondaryInstructors,
                     model.class.old.secondaryInstructors)}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.enrollmentMax !== model.class.old.enrollmentMax)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['enrollmentMax'])}">
             <td>Enrollment Maximum</td>
             <td>
                 <input ng-if="!model.loggedInUser.admin" ng-model="model.class.enrollmentMax" type="number" min="1"
@@ -121,26 +121,25 @@
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.enrollmentMax}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.enrollmentMax === model.class.old.enrollmentMax)}"
+                <div ng-class="{hidden: !model.differentFromLastYear(['enrollmentMax'])}"
                      class="changedFrom">{{model.class.old.enrollmentMax}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.honors !== model.class.old.honors)}">
-            <td>Honors</td>
+        <tr ng-class="{'modified': model.differentFromLastYear(['waitlistCapacity'])}">
+            <td>Waitlist Capacity</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.honors"
-                        ng-options="option for option in model.yesOrNo">
-                </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.honors}}</div>
+                <input ng-if="!model.loggedInUser.admin" ng-model="model.class.waitlistCapacity" type="number" min="0"
+                       step="1"/>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.waitlistCapacity}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.honors === model.class.old.honors)}" class="changedFrom">
-                    {{model.class.old.honors}}
+                <div ng-class="{hidden: !model.differentFromLastYear(['waitlistCapacity'])}"
+                     class="changedFrom">{{model.class.old.waitlistCapacity}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.campus !== model.class.old.campus)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['campus'])}">
             <td>Campus</td>
             <td>
                 <select ng-if="!model.loggedInUser.admin" ng-model="model.class.campus"
@@ -149,12 +148,12 @@
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.campus}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.campus === model.class.old.campus)}" class="changedFrom">
+                <div ng-class="{hidden: !model.differentFromLastYear(['campus'])}" class="changedFrom">
                     {{model.class.old.campus}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.instructionalMethod !== model.class.old.instructionalMethod)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['instructionalMethod'])}">
             <td>Instructional Method</td>
             <td>
                 <select ng-if="!model.loggedInUser.admin"
@@ -164,25 +163,12 @@
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.instructionalMethod}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.instructionalMethod === model.class.old.instructionalMethod)}"
+                <div ng-class="{hidden: !model.differentFromLastYear(['instructionalMethod'])}"
                      class="changedFrom">{{model.class.old.instructionalMethod}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.waitlistCapacity !== model.class.old.waitlistCapacity)}">
-            <td>Waitlist Capacity</td>
-            <td>
-                <input ng-if="!model.loggedInUser.admin" ng-model="model.class.waitlistCapacity" type="number" min="0"
-                       step="1"/>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.waitlistCapacity}}</div>
-            </td>
-            <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.waitlistCapacity === model.class.old.waitlistCapacity)}"
-                     class="changedFrom">{{model.class.old.waitlistCapacity}}
-                </div>
-            </td>
-        </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.specialApprovals !== model.class.old.specialApprovals)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['specialApprovals'])}">
             <td>Special Approvals</td>
             <td>
                 <select ng-if="!model.loggedInUser.admin"
@@ -194,13 +180,163 @@
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.specialApprovals === model.class.old.specialApprovals)}"
+                <div ng-class="{hidden: !model.differentFromLastYear(['specialApprovals'])}"
                      class="changedFrom">{{model.class.old.specialApprovals ? model.class.old.specialApprovals :
                     "(none)"}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.doNotPublish !== model.class.old.doNotPublish)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['majorRestrictions', 'includeMajorRestrictions'])}">
+            <td>Major Restrictions</td>
+            <td>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" ng-model="model.class.majorRestrictions" multiple="multiple">
+                        <option ng-repeat="option in model.allRestrictions.majorRestrictions" ng-value="option.majorCode">
+                            {{option.majorCode + " " + option.majorDescription}}
+                        </option>
+                    </select>
+                </div>
+                <div ng-show="model.loggedInUser.admin" class="italics">
+                    {{model.instructorNamesFromNuids(model.allRestrictions.majorRestrictions,
+                    model.class.majorRestrictions)}}
+                </div>
+            </td>
+            <td>
+                <div ng-class="{hidden: !model.differentFromLastYear(['majorRestrictions', 'includeMajorRestrictions'])}"
+                     class="changedFrom">{{model.instructorNamesFromNuids(model.allRestrictions.majorRestrictions,
+                    model.class.old.majorRestrictions)}}
+                </div>
+            </td>
+        </tr>
+        <tr ng-class="{'modified': model.differentFromLastYear(['classRestrictions', 'includeClassRestrictions'])}">
+            <td>Class Restrictions</td>
+            <td>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" ng-model="model.class.classRestrictions" multiple="multiple">
+                        <option ng-repeat="option in model.allRestrictions.classRestrictions"
+                                ng-value="option.classCode">
+                            {{option.classCode + " " + option.classDescription}}
+                        </option>
+                    </select>
+                </div>
+                <div ng-show="model.loggedInUser.admin" class="italics">
+                    {{model.instructorNamesFromNuids(model.allRestrictions.classRestrictions,
+                    model.class.classRestrictions)}}
+                </div>
+            </td>
+            <td>
+                <div ng-class="{hidden: !model.differentFromLastYear(['classRestrictions', 'includeClassRestrictions'])}"
+                     class="changedFrom">{{model.instructorNamesFromNuids(model.allRestrictions.classRestrictions,
+                    model.class.old.classRestrictions)}}
+                </div>
+            </td>
+        </tr>
+        <tr ng-class="{'modified': model.differentFromLastYear(['levelRestrictions', 'includeLevelRestrictions'])}">
+            <td>Level Restrictions</td>
+            <td>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" ng-model="model.class.levelRestrictions" multiple="multiple">
+                        <option ng-repeat="option in model.allRestrictions.levelRestrictions"
+                                ng-value="option.levelCode">
+                            {{option.levelCode + " " + option.levelDescription}}
+                        </option>
+                    </select>
+                </div>
+                <div ng-show="model.loggedInUser.admin" class="italics">
+                    {{model.instructorNamesFromNuids(model.allRestrictions.levelRestrictions,
+                    model.class.levelRestrictions)}}
+                </div>
+            </td>
+            <td>
+                <div ng-class="{hidden: !model.differentFromLastYear(['levelRestrictions', 'includeLevelRestrictions'])}"
+                     class="changedFrom">{{model.instructorNamesFromNuids(model.allRestrictions.levelRestrictions,
+                    model.class.old.levelRestrictions)}}
+                </div>
+            </td>
+        </tr>
+        <tr ng-class="{'modified': model.differentFromLastYear(['programRestrictions', 'includeProgramRestrictions'])}">
+            <td>Program Restrictions</td>
+            <td>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" ng-model="model.class.programRestrictions" multiple="multiple">
+                        <option ng-repeat="option in model.allRestrictions.programRestrictions"
+                                ng-value="option.programCode">
+                            {{option.programCode + " " + option.programDescription}}
+                        </option>
+                    </select>
+                </div>
+                <div ng-show="model.loggedInUser.admin" class="italics">
+                    {{model.instructorNamesFromNuids(model.allRestrictions.programRestrictions,
+                    model.class.programRestrictions)}}
+                </div>
+            </td>
+            <td>
+                <div ng-class="{hidden: !model.differentFromLastYear(['programRestrictions', 'includeProgramRestrictions'])}"
+                     class="changedFrom">{{model.instructorNamesFromNuids(model.allRestrictions.programRestrictions,
+                    model.class.old.programRestrictions)}}
+                </div>
+            </td>
+        </tr>
+        <tr ng-class="{'modified': model.differentFromLastYear(['collegeRestrictions', 'includeCollegeRestrictions'])}">
+            <td>College Restrictions</td>
+            <td>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" ng-model="model.class.collegeRestrictions" multiple="multiple">
+                        <option ng-repeat="option in model.allRestrictions.collegeRestrictions"
+                                ng-value="option.collegeCode">
+                            {{option.collegeCode + " " + option.collegeDescription}}
+                        </option>
+                    </select>
+                </div>
+                <div ng-show="model.loggedInUser.admin" class="italics">
+                    {{model.instructorNamesFromNuids(model.allRestrictions.collegeRestrictions,
+                    model.class.collegeRestrictions)}}
+                </div>
+            </td>
+            <td>
+                <div ng-class="{hidden: !model.differentFromLastYear(['collegeRestrictions', 'includeCollegeRestrictions'])}"
+                     class="changedFrom">{{model.instructorNamesFromNuids(model.allRestrictions.collegeRestrictions,
+                    model.class.old.collegeRestrictions)}}
+                </div>
+            </td>
+        </tr>
+        <tr ng-class="{'modified': model.differentFromLastYear(['billingAttributes'])}">
+            <td>Billing Attributes</td>
+            <td>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" ng-model="model.class.billingAttributes" multiple="multiple">
+                        <option ng-repeat="option in model.allBillingAttributes" ng-value="option.billingAttributeCode">
+                            {{option.billingAttributeCode + " " + option.billingAttributeDescription}}
+                        </option>
+                    </select>
+                </div>
+                <div ng-show="model.loggedInUser.admin" class="italics">
+                    {{model.instructorNamesFromNuids(model.allBillingAttributes,
+                    model.class.billingAttributes)}}
+                </div>
+            </td>
+            <td>
+                <div ng-class="{hidden: !model.differentFromLastYear(['billingAttributes'])}"
+                     class="changedFrom">{{model.instructorNamesFromNuids(model.allBillingAttributes,
+                    model.class.old.billingAttributes)}}
+                </div>
+            </td>
+        </tr>
+        <tr ng-class="{'modified': model.differentFromLastYear(['honors'])}">
+            <td>Honors</td>
+            <td>
+                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.honors"
+                        ng-options="option for option in model.yesOrNo">
+                </select>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.honors}}</div>
+            </td>
+            <td>
+                <div ng-class="{hidden: !model.differentFromLastYear(['honors'])}" class="changedFrom">
+                    {{model.class.old.honors}}
+                </div>
+            </td>
+        </tr>
+        <tr ng-class="{'modified': model.differentFromLastYear(['doNotPublish'])}">
             <td>Hide on Banner Schedule?</td>
             <td>
                 <select ng-if="!model.loggedInUser.admin"
@@ -210,12 +346,12 @@
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.doNotPublish}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.doNotPublish === model.class.old.doNotPublish)}"
+                <div ng-class="{hidden: !model.differentFromLastYear(['doNotPublish'])}"
                      class="changedFrom">{{model.class.old.doNotPublish}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.cancel !== model.class.old.cancel)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['cancel'])}">
             <td>Cancel Class?</td>
             <td>
                 <select ng-if="!model.loggedInUser.admin"
@@ -225,12 +361,12 @@
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.cancel}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.cancel === model.class.old.cancel)}" class="changedFrom">
+                <div ng-class="{hidden: !model.differentFromLastYear(['cancel'])}" class="changedFrom">
                     {{model.class.old.cancel}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': (!model.class.metadata || !model.class.metadata.added) && (model.class.comment !== model.class.old.comment)}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['comment'])}">
             <td>Comment</td>
             <td>
                 <textarea ng-if="!model.loggedInUser.admin" ng-model="model.class.comment"/>
@@ -239,7 +375,7 @@
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: (model.class.metadata && model.class.metadata.added) || (model.class.comment === model.class.old.comment)}" class="changedFrom">
+                <div ng-class="{hidden: !model.differentFromLastYear(['comment'])}" class="changedFrom">
                     {{model.class.old.comment ? model.class.old.comment : "(none)"}}
                 </div>
             </td>
