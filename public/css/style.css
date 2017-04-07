@@ -107,3 +107,7 @@ div.color-legend2 {
 .italics {
     font-style: italic;
 }
+
+.error-box {
+    white-space: pre;
+}

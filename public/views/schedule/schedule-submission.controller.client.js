@@ -13,6 +13,8 @@
         vm.approveSchedule = approveSchedule;
         vm.navigateToClassDetail = navigateToClassDetail;
         vm.navigateToAddClass = navigateToAddClass;
+        vm.getScheduleSummaryLine = getScheduleSummaryLine;
+        vm.getScheduleStatusLine = getScheduleStatusLine;
 
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
@@ -33,7 +35,7 @@
         function getScheduleForTerm(term) {
             var r = true;
             if (vm.schedule) {
-                r = confirm("Are you sure you want to load new schedule? You will lose your progress.");
+                r = confirm("Are you sure you want to load new schedule? Unsaved progress will be lost.");
             }
             if (r == true || !vm.schedule) {
                 vm.schedule = ScheduleService.getScheduleByTerm(term);
@@ -81,6 +83,28 @@
             $window.sessionStorage.selectedTerm = JSON.stringify(vm.selectedTerm);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $location.url("/class-add/");
+        }
+
+        function getScheduleSummaryLine(schedule) {
+            if (!schedule.status) {
+                return schedule.departmentCode + " (" + schedule.term_readable + ")";
+            } else if (schedule.status === 'D') {
+                return schedule.departmentCode + " (" + schedule.term_readable + ") (draft)";
+            } else if (schedule.status === 'S') {
+                return schedule.departmentCode + " (" + schedule.term_readable + ") (waiting approval)";
+            } else if (schedule.status === 'R') {
+                return schedule.departmentCode + " (" + schedule.term_readable + ") (rejected)";
+            }
+        }
+
+        function getScheduleStatusLine(schedule) {
+            if (schedule.status === 'D') {
+                return "Last saved by " + schedule.last_modifying_user_name + " on " + schedule.timestamp;
+            } else if (schedule.status === 'R') {
+                return "Rejected by " + schedule.last_modifying_user_name + " on " + schedule.timestamp + " because: \n\n" + schedule.rejection_message;
+            } else if (schedule.status === 'S') {
+                return "Submitted by " + schedule.last_modifying_user_name + " on " + schedule.timestamp;
+            }
         }
 
         init();

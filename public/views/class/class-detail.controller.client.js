@@ -31,7 +31,6 @@
                 vm.allCreditHours = ClassService.getAllCreditHours();
                 vm.allCampuses = ClassService.getAllCampuses();
                 vm.allSections = ClassService.getAllSections();
-                vm.allWaitlist = ClassService.getAllWaitlist();
                 vm.allDoNotPublish = ClassService.getAllDoNotPublish();
                 vm.allCancel = ClassService.getAllCancel();
                 vm.allHonors = ClassService.getAllHonors();
@@ -50,14 +49,20 @@
         }
 
         function saveAndReturnToSchedule() {
-            vm.class.metadata = vm.class.metadata || {};
-            vm.class.metadata.modified = ClassService.isClassModified(vm.class);
-            vm.class.metadata.deleted = (vm.class.cancel === "Y");
+            var invalidClassReasons = ClassService.getInvalidClassReasons(vm.class);
+            if (invalidClassReasons.length) {
+                vm.error = invalidClassReasons.join("\n\n");
+                $window.scrollTo(0, 0);
+            } else {
+                vm.class.metadata = vm.class.metadata || {};
+                vm.class.metadata.modified = ClassService.isClassModified(vm.class);
+                vm.class.metadata.deleted = (vm.class.cancel === "Y");
 
-            var schedule = JSON.parse($window.sessionStorage.schedule);
-            schedule[vm.class.sessionStateIndex] = vm.class;
-            $window.sessionStorage.schedule = JSON.stringify(schedule);
-            $location.url("/schedule-submission");
+                var schedule = JSON.parse($window.sessionStorage.schedule);
+                schedule[vm.class.sessionStateIndex] = vm.class;
+                $window.sessionStorage.schedule = JSON.stringify(schedule);
+                $location.url("/schedule-submission");
+            }
         }
 
         function findClassInSessionState(unique_id) {

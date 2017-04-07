@@ -7,7 +7,7 @@
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
-        vm.getMostRecentCourseData = getMostRecentCourseData;
+        vm.getCourseDataFromCatalog = getCourseDataFromCatalog;
         vm.isPeakPeriod = isPeakPeriod;
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
@@ -28,7 +28,6 @@
                 vm.allCreditHours = ClassService.getAllCreditHours();
                 vm.allCampuses = ClassService.getAllCampuses();
                 vm.allSections = ClassService.getAllSections();
-                vm.allWaitlist = ClassService.getAllWaitlist();
                 vm.allDoNotPublish = ClassService.getAllDoNotPublish();
                 vm.allCancel = ClassService.getAllCancel();
                 vm.allHonors = ClassService.getAllHonors();
@@ -42,14 +41,14 @@
             }
         }
 
-        function getMostRecentCourseData(subjectCode, courseNumber) {
+        function getCourseDataFromCatalog(subjectCode, courseNumber) {
             vm.reloaded = (vm.reloaded === undefined) ? false : true;
             if (!vm.reloaded) {
-                vm.class = ClassService.getMostRecentCourseData(subjectCode, courseNumber);
+                vm.class = ClassService.getCourseDataFromCatalog(subjectCode, courseNumber);
                 vm.class.old = angular.copy(vm.class);
             } else {
                 vm.class = {}; // fix this bug: does not reload select2s
-                vm.class = ClassService.getMostRecentCourseData(subjectCode, courseNumber);
+                vm.class = ClassService.getCourseDataFromCatalog(subjectCode, courseNumber);
                 vm.class.old = angular.copy(vm.class);
             }
         }
@@ -59,11 +58,17 @@
         }
 
         function saveAndReturnToSchedule() {
-            prepareAddedClass(vm.class);
-            var schedule = JSON.parse($window.sessionStorage.schedule);
-            schedule.push(vm.class);
-            $window.sessionStorage.schedule = JSON.stringify(schedule);
-            $location.url("/schedule-submission");
+            var invalidClassReasons = ClassService.getInvalidClassReasons(vm.class);
+            if (invalidClassReasons.length) {
+                vm.error = invalidClassReasons.join("\n\n");
+                $window.scrollTo(0, 0);
+            } else {
+                prepareAddedClass(vm.class);
+                var schedule = JSON.parse($window.sessionStorage.schedule);
+                schedule.push(vm.class);
+                $window.sessionStorage.schedule = JSON.stringify(schedule);
+                $location.url("/schedule-submission");
+            }
         }
 
         function prepareAddedClass(aClass) {
