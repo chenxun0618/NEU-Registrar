@@ -16,7 +16,7 @@
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
 
-            if (!vm.loggedInUser) {
+            if (!vm.loggedInUser || vm.loggedInUser.admin) {
                 $location.url("/login");
             } else {
                 vm.allSubjectCodes = ClassService.getAllSubjectCodes();
