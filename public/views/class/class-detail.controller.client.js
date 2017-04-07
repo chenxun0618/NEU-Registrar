@@ -24,16 +24,10 @@
 
                 vm.allSubjectCodes = ClassService.getAllSubjectCodes();
                 vm.currentTerm = ClassService.getCurrentTerm();
-                vm.allStatuses = ClassService.getAllStatuses();
-                vm.allPartOfTerms = ClassService.getAllPartOfTerms();
                 vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
                 vm.allMeetingDays = ClassService.getAllMeetingDays();
-                vm.allCreditHours = ClassService.getAllCreditHours();
                 vm.allCampuses = ClassService.getAllCampuses();
-                vm.allSections = ClassService.getAllSections();
-                vm.allDoNotPublish = ClassService.getAllDoNotPublish();
-                vm.allCancel = ClassService.getAllCancel();
-                vm.allHonors = ClassService.getAllHonors();
+                vm.yesOrNo = ClassService.getYesOrNo();
                 vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
 
                 vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
@@ -129,6 +123,9 @@
         }
 
         function instructorNamesFromNuids(instructors, nuids) {
+            if (!instructors || !nuids) {
+                return null;
+            }
             var names = [];
             for (var x = 0; x < nuids.length; x++) {
                 var instructorNuid = nuids[x];

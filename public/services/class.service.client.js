@@ -7,77 +7,33 @@
 
         var api = {
             getCurrentTerm: getCurrentTerm,
-            getCourseDataFromCatalog: getCourseDataFromCatalog,
             getAllSubjectCodes: getAllSubjectCodes,
-            getAllStatuses: getAllStatuses,
-            getAllPartOfTerms: getAllPartOfTerms,
-            getAllInstructionalMethods: getAllInstructionalMethods,
-            getAllCreditHours: getAllCreditHours,
+            getCourseDataFromCatalog: getCourseDataFromCatalog,
             getAllMeetingDays: getAllMeetingDays,
-            getAllCampuses: getAllCampuses,
-            getAllSections: getAllSections,
-            getAllDoNotPublish: getAllDoNotPublish,
-            getAllHonors: getAllHonors,
-            getAllCancel: getAllCancel,
-            getAllSpecialApprovals: getAllSpecialApprovals,
             getAllTimeIntervals: getAllTimeIntervals,
             getAllPrimaryInstructors: getAllPrimaryInstructors,
             getAllSecondaryInstructors: getAllSecondaryInstructors,
+            getAllRestrictions: getAllRestrictions,
+            getAllInstructionalMethods: getAllInstructionalMethods,
+            getAllCampuses: getAllCampuses,
+            getAllSpecialApprovals: getAllSpecialApprovals,
+            getAllBillingAttributes: getAllBillingAttributes,
+            getYesOrNo: getYesOrNo,
             generateUniqueIdForClass: generateUniqueIdForClass,
             isClassModified: isClassModified,
             getInvalidClassReasons: getInvalidClassReasons
         };
 
-        function getAllSubjectCodes() {
-            return ["ACCT", "CS", "DS", "IS", "MATH", "PHYS", "PSYC"];
-        }
-
         function getCurrentTerm() {
             return "201810";
         }
 
-        function getAllStatuses() {
-            return ["A", "C", "I"];
-        }
-
-        function getAllPartOfTerms() {
-            return ["1", "2", "A", "B", "(none)"];
-        }
-
-        function getAllInstructionalMethods() {
-            return ["HY", "OL", "OOO", "SA", "SAFL", "TR", "VS"];
-        }
-
-        function getAllCreditHours() {
-            return ["4", "1", "2", "3", "8", "16"]; // ?
+        function getAllSubjectCodes() {
+            return ["ACCT", "CS", "DS", "IS", "MATH", "PHYS", "PSYC"];
         }
 
         function getAllMeetingDays() {
             return ["MWR", "TF", "MW", "M", "T", "W", "R", "F", "S"];
-        }
-
-        function getAllCampuses() {
-            return ["BOS", "SEA", "VTL", "XCR"];
-        }
-
-        function getAllSections() {
-            return ["01", "02", "03", "04"];
-        }
-
-        function getAllDoNotPublish() {
-            return ["Y", "N"];
-        }
-
-        function getAllHonors() {
-            return ["Y", "N"];
-        }
-
-        function getAllCancel() {
-            return ["Y", "N"];
-        }
-
-        function getAllSpecialApprovals() {
-            return ["", "A", "D", "G", "I"];
         }
 
         function getAllTimeIntervals() {
@@ -101,10 +57,96 @@
             return getAllPrimaryInstructors();
         }
 
+        function getAllRestrictions() {
+            return {
+                majorRestrictions: [
+                    {
+                        majorCode: "HISE",
+                        majorDescription: "Health Info Software Eng"
+                    },
+                    {
+                        majorCode: "MELS",
+                        majorDescription: "Medical Laboratory Science"
+                    },
+                    {
+                        majorCode: "RCRA",
+                        majorDescription: "Regulatory Compliance"
+                    }
+                ],
+                classRestrictions: [
+                    {
+                        classCode: "GR",
+                        classDescription: "Graduate"
+                    },
+                    {
+                        classCode: "JR",
+                        classDescription: "Junior"
+                    },
+                    {
+                        classCode: "SR",
+                        classDescription: "Senior"
+                    }
+                ],
+                levelRestrictions: [
+                    {
+                        levelCode: "UG",
+                        levelDescription: "Undergraduate"
+                    },
+                    {
+                        levelCode: "GP",
+                        levelDescription: "CPS - Graduate"
+                    },
+                    {
+                        levelCode: "LW",
+                        levelDescription: "Law"
+                    }
+                ],
+                programRestrictions: [],
+                collegeRestrictions: []
+            }
+        }
+
+        function getAllInstructionalMethods() {
+            return ["HY", "OL", "OOO", "SA", "SAFL", "TR", "VS"];
+        }
+
+        function getAllCampuses() {
+            return ["BOS", "SEA", "VTL", "XCR"];
+        }
+
+        function getAllSpecialApprovals() {
+            return ["", "A", "D", "G", "I"];
+        }
+
+        function getAllBillingAttributes() {
+            return [
+                {
+                    billingAttributeCode: "EDOL",
+                    billingAttributeDescription: "COE-Developed online"
+                },
+                {
+                    billingAttributeCode: "GB0P",
+                    billingAttributeDescription: "GSBA MS Innovation"
+                },
+                {
+                    billingAttributeCode: "GB3S",
+                    billingAttributeDescription: "GSSC Three Seas Program"
+                },
+                {
+                    billingAttributeCode: "GBCS",
+                    billingAttributeDescription: "GSCS Computer & Info Science"
+                },
+            ];
+        }
+
+        function getYesOrNo() {
+            return ["Y", "N"];
+        }
+
         function getCourseDataFromCatalog(subjectCode, courseNumber) {
 
             // dummy data for now
-            return {
+            var dummy = {
                 college: "BA",
                 collegeName: "D'Amore-McKim School of Business",
                 departmentCode: "ACCT",
@@ -113,26 +155,32 @@
                 subjectName: "Accounting",
                 term: "201810",
                 courseNumber: courseNumber,
-                section: "03",
-                // status: "A", ------ unnecessary?
-                partOfTerm: "1",
+                section: "01",
                 shortTitle: "Principles of Accounting",
-                instructionalMethod: "TR",
-                creditHour: 4,
-                meetingDays: "MWR",
-                meetingStart: "13:35",
-                meetingEnd: "14:40",
-                campus: "BOS",
-                primaryInstructor: "001303804",
-                secondaryInstructors: [],
-                enrollmentMax: 40,
-                waitlistCapacity: 5,
-                doNotPublish: "N",
-                specialApprovals: "A",
-                comment: "",
-                honors: "Y",
-                cancel: "N",
             };
+
+            fillDefaultData(dummy);
+
+            return dummy;
+        }
+
+        function fillDefaultData(aClass) {
+            aClass.secondaryInstructors = [];
+            aClass.majorRestrictions = [];
+            aClass.classRestrictions = [];
+            aClass.levelRestrictions = [];
+            aClass.programRestrictions = [];
+            aClass.collegeRestrictions = [];
+            aClass.includeMajorRestrictions = true;
+            aClass.includeClassRestrictions = true;
+            aClass.includeLevelRestrictions = true;
+            aClass.includeProgramRestrictions = true;
+            aClass.includeCollegeRestrictions = true;
+            aClass.specialApprovals = "";
+            aClass.billingAttributes = [];
+            aClass.honors = "N";
+            aClass.doNotPublish = "N";
+            aClass.cancel = "N";
         }
 
         function generateUniqueIdForClass(aClass) {
@@ -141,101 +189,119 @@
 
         // determines if a given class has been modified from its old data by examining all properties
         function isClassModified(aClass) {
-            var modified = !(
-                (aClass.college === aClass.old.college) &&
-                (aClass.collegeName === aClass.old.collegeName) &&
-                (aClass.departmentCode === aClass.old.departmentCode) &&
-                (aClass.departmentName === aClass.old.departmentName) &&
-                (aClass.subjectCode === aClass.old.subjectCode) &&
-                (aClass.subjectName === aClass.old.subjectName) &&
+            return (!aClass.old) || !(
                 (aClass.term === aClass.old.term) &&
+                (aClass.crn === aClass.old.crn) &&
+                (aClass.subjectCode === aClass.old.subjectCode) &&
                 (aClass.courseNumber === aClass.old.courseNumber) &&
                 (aClass.section === aClass.old.section) &&
-                (aClass.crn === aClass.old.crn) &&
-                (aClass.partOfTerm === aClass.old.partOfTerm) &&
                 (aClass.shortTitle === aClass.old.shortTitle) &&
-                (aClass.instructionalMethod === aClass.old.instructionalMethod) &&
-                (aClass.creditHour === aClass.old.creditHour) &&
                 (aClass.meetingDays === aClass.old.meetingDays) &&
                 (aClass.meetingStart === aClass.old.meetingStart) &&
                 (aClass.meetingEnd === aClass.old.meetingEnd) &&
-                (aClass.campus === aClass.old.campus) &&
                 (aClass.primaryInstructor === aClass.old.primaryInstructor) &&
+                (arraysEqual(aClass.secondaryInstructors, aClass.old.secondaryInstructors)) &&
                 (aClass.enrollmentMax === aClass.old.enrollmentMax) &&
+                (aClass.lastYearEnrollment === aClass.old.lastYearEnrollment) &&
+                (arraysEqual(aClass.majorRestrictions, aClass.old.majorRestrictions)) &&
+                (arraysEqual(aClass.classRestrictions, aClass.old.classRestrictions)) &&
+                (arraysEqual(aClass.levelRestrictions, aClass.old.levelRestrictions)) &&
+                (arraysEqual(aClass.programRestrictions, aClass.old.programRestrictions)) &&
+                (arraysEqual(aClass.collegeRestrictions, aClass.old.collegeRestrictions)) &&
+                (aClass.includeMajorRestrictions === aClass.old.includeMajorRestrictions) &&
+                (aClass.includeClassRestrictions === aClass.old.includeClassRestrictions) &&
+                (aClass.includeLevelRestrictions === aClass.old.includeLevelRestrictions) &&
+                (aClass.includeProgramRestrictions === aClass.old.includeProgramRestrictions) &&
+                (aClass.includeCollegeRestrictions === aClass.old.includeCollegeRestrictions) &&
                 (aClass.waitlistCapacity === aClass.old.waitlistCapacity) &&
-                (aClass.doNotPublish === aClass.old.doNotPublish) &&
+                (aClass.campus === aClass.old.campus) &&
+                (aClass.instructionalMethod === aClass.old.instructionalMethod) &&
                 (aClass.specialApprovals === aClass.old.specialApprovals) &&
-                (aClass.comment === aClass.old.comment) &&
+                (arraysEqual(aClass.billingAttributes, aClass.old.billingAttributes)) &&
                 (aClass.honors === aClass.old.honors) &&
-                (aClass.cancel === aClass.old.cancel)
+                (aClass.doNotPublish === aClass.old.doNotPublish) &&
+                (aClass.cancel === aClass.old.cancel) &&
+                (aClass.comment === aClass.old.comment)
             );
-
-            if (modified) {
-                return true;
-            } else {
-                if (aClass.secondaryInstructors.length !== aClass.old.secondaryInstructors.length) {
-                    return true;
-                } else {
-                    for (var x = 0; x < aClass.secondaryInstructors.length; x++) {
-                        if (aClass.secondaryInstructors[x] !== aClass.old.secondaryInstructors[x]) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-            }
         }
 
         function getInvalidClassReasons(aClass) {
             var invalidReasons = [];
 
+            if (!aClass.term || !(/^\d{6}$/.test(aClass.term))) { // 6 digit number
+                invalidReasons.push("Invalid term: " + aClass.term);
+            }
+            if (aClass.crn && !(/^\d{5}$/.test(aClass.crn))) { // 5 digit number
+                invalidReasons.push("Invalid CRN: " + aClass.crn);
+            }
             if (!getAllSubjectCodes().includes(aClass.subjectCode)) {
-                invalidReasons.push("Invalid subject code");
+                invalidReasons.push("Invalid subject code: " + aClass.subjectCode);
             }
-            if (!aClass.term) {
-                invalidReasons.push("Invalid term");
+            if (!aClass.courseNumber || !(typeof aClass.courseNumber === "string") || !(/^\d{4}$/.test(aClass.courseNumber))) {
+                invalidReasons.push("Invalid course number: " + aClass.courseNumber);
             }
-            if (!aClass.courseNumber || !(typeof aClass.courseNumber === "string") || !(aClass.courseNumber.length === 4)) {
-                invalidReasons.push("Invalid course number");
+            if (aClass.section && !(/^\d{2}$/.test(aClass.section))) {
+                invalidReasons.push("Invalid section: " + aClass.section);
             }
             if (!aClass.shortTitle) {
-                invalidReasons.push("Invalid title");
-            }
-            if (!getAllInstructionalMethods().includes(aClass.instructionalMethod)) {
-                invalidReasons.push("Invalid instructional method");
+                invalidReasons.push("Invalid title: " + aClass.shortTitle);
             }
             if (!aClass.meetingDays) {
-                invalidReasons.push("Invalid meeting days");
+                invalidReasons.push("Invalid meeting days: " + aClass.meetingDays);
             }
             if (!aClass.meetingStart || (aClass.meetingStart > aClass.meetingEnd)) {
-                invalidReasons.push("Invalid meeting start time");
+                invalidReasons.push("Invalid meeting start time: " + aClass.meetingStart);
             }
             if (!aClass.meetingEnd || (aClass.meetingStart > aClass.meetingEnd)) {
-                invalidReasons.push("Invalid meeting end time");
-            }
-            if (!getAllCampuses().includes(aClass.campus)) {
-                invalidReasons.push("Invalid campus code");
+                invalidReasons.push("Invalid meeting end time: " + aClass.meetingEnd);
             }
             if (!aClass.primaryInstructor) {
-                invalidReasons.push("Invalid primary instructor");
+                invalidReasons.push("Invalid primary instructor: " + aClass.primaryInstructor);
+            }
+            if (!(aClass.secondaryInstructors === undefined || aClass.secondaryInstructors === null || aClass.secondaryInstructors.constructor === Array)) {
+                invalidReasons.push("Invalid secondary instructors: " + aClass.secondaryInstructors);
             }
             if (!aClass.enrollmentMax || !(typeof aClass.enrollmentMax === 'number') || !(aClass.enrollmentMax > 0)) {
-                invalidReasons.push("Invalid enrollment maximum");
+                invalidReasons.push("Invalid enrollment maximum: " + aClass.enrollmentMax);
+            }
+            if (aClass.lastYearEnrollment && (!(typeof aClass.lastYearEnrollment === 'number') || !(aClass.lastYearEnrollment > 0))) {
+                invalidReasons.push("Invalid enrollment maximum: " + aClass.lastYearEnrollment);
+            }
+            if (!(aClass.majorRestrictions === undefined || aClass.majorRestrictions === null || aClass.majorRestrictions.constructor === Array)) {
+                invalidReasons.push("Invalid major restrictions: " + aClass.majorRestrictions);
+            }
+            if (!(aClass.classRestrictions === undefined || aClass.classRestrictions === null || aClass.classRestrictions.constructor === Array)) {
+                invalidReasons.push("Invalid class restrictions: " + aClass.classRestrictions);
+            }
+            if (!(aClass.levelRestrictions === undefined || aClass.levelRestrictions === null || aClass.levelRestrictions.constructor === Array)) {
+                invalidReasons.push("Invalid level restrictions: " + aClass.levelRestrictions);
+            }
+            if (!(aClass.programRestrictions === undefined || aClass.programRestrictions === null || aClass.programRestrictions.constructor === Array)) {
+                invalidReasons.push("Invalid program restrictions: " + aClass.programRestrictions);
+            }
+            if (!(aClass.collegeRestrictions === undefined || aClass.collegeRestrictions === null || aClass.collegeRestrictions.constructor === Array)) {
+                invalidReasons.push("Invalid college restrictions: " + aClass.collegeRestrictions);
             }
             if (!(typeof aClass.waitlistCapacity === 'number' && aClass.waitlistCapacity >= 0)) {
-                invalidReasons.push("Invalid waitlist capacity");
+                invalidReasons.push("Invalid waitlist capacity: " + aClass.waitlistCapacity);
             }
-            if (!getAllDoNotPublish().includes(aClass.doNotPublish)) {
-                invalidReasons.push("Invalid publish indicator");
+            if (!getAllCampuses().includes(aClass.campus)) {
+                invalidReasons.push("Invalid campus code: " + aClass.campus);
+            }
+            if (!getAllInstructionalMethods().includes(aClass.instructionalMethod)) {
+                invalidReasons.push("Invalid instructional method: " + aClass.instructionalMethod);
+            }
+            if (!getYesOrNo().includes(aClass.doNotPublish)) {
+                invalidReasons.push("Invalid \"do not publish\" indicator: " + aClass.doNotPublish);
             }
             if (!getAllSpecialApprovals().includes(aClass.specialApprovals)) {
-                invalidReasons.push("Invalid special approval indicator");
+                invalidReasons.push("Invalid special approval indicator: " + aClass.specialApprovals);
             }
-            if (!getAllHonors().includes(aClass.honors)) {
-                invalidReasons.push("Invalid honors indicator");
+            if (!getYesOrNo().includes(aClass.honors)) {
+                invalidReasons.push("Invalid honors indicator: " + aClass.honors);
             }
-            if (!getAllCancel().includes(aClass.cancel)) {
-                invalidReasons.push("Invalid cancel indicator");
+            if (!getYesOrNo().includes(aClass.cancel)) {
+                invalidReasons.push("Invalid cancel indicator: " + aClass.cancel);
             }
 
             return invalidReasons;
