@@ -45,25 +45,25 @@ class Utils
         return $_GET[$val];
     }
 
-    /*
-     * construct a query
-     */
-    function construct_query($query, $values)
-    {
-        $stmt = $this->conn->prepare($query);
-
-        for ($i = 1; $i <= count($values); $i++) {
-            $stmt->bind_param($i, $values[$i]);
-        }
-
-        $result = $stmt->execute();
-
-        // If database cannot process the query
-        if (!$result)
-            die("Couldn't find the information: " . $this->conn->error);
-
-        return $result;
-    }
+//    /*
+//     * construct a query
+//     */
+//    function construct_query($query, $values)
+//    {
+//        $stmt = $this->conn->prepare($query);
+//
+//        for ($i = 1; $i <= count($values); $i++) {
+//            $stmt->bind_param($i, $values[$i]);
+//        }
+//
+//        $result = $stmt->execute();
+//
+//        // If database cannot process the query
+//        if (!$result)
+//            die("Couldn't find the information: " . $this->conn->error);
+//
+//        return $result;
+//    }
 
     /*
      * perform a query on the database and return the retrieved data in an array
