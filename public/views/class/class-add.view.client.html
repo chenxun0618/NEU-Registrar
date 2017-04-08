@@ -48,6 +48,10 @@
             <td>{{model.class.section}}</td>
         </tr>
         <tr>
+            <td>Status</td>
+            <td>{{model.class.status}}</td>
+        </tr>
+        <tr>
             <td>CRN</td>
             <td class="changedFrom">(to be generated)</td>
         </tr>
@@ -104,9 +108,13 @@
             </td>
         </tr>
         <tr>
-            <td>Waitlist Capacity*</td>
+            <td>Waitlist?*</td>
             <td>
-                <input ng-model="model.class.waitlistCapacity" type="number" min="1" step="1"/>
+                <select ng-model="model.class.waitlistCapacity">
+                    <option ng-repeat="option in [{capacity: 99, indicator: 'Y'}, {capacity: 0, indicator: 'N'}]" ng-value="option.capacity">
+                        {{option.indicator}}
+                    </option>
+                </select>
             </td>
         </tr>
         <tr>
@@ -243,13 +251,6 @@
             <td>Hide on Banner Schedule?</td>
             <td>
                 <select ng-model="model.class.doNotPublish" ng-options="option for option in model.yesOrNo">
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Cancel Class?</td>
-            <td>
-                <select ng-model="model.class.cancel" ng-options="option for option in model.yesOrNo">
                 </select>
             </td>
         </tr>

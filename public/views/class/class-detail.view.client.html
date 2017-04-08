@@ -22,6 +22,10 @@
             <td></td>
         </tr>
         <tr>
+            <td>Status</td>
+            <td>{{model.class.status}}</td>
+        </tr>
+        <tr>
             <td>CRN</td>
             <td ng-class="{changedFrom: !model.class.crn}">{{model.class.crn || "(to be generated)"}}</td>
             <td></td>
@@ -128,15 +132,19 @@
             </td>
         </tr>
         <tr ng-class="{'modified': model.differentFromLastYear(['waitlistCapacity'])}">
-            <td>Waitlist Capacity</td>
+            <td>Waitlist?</td>
             <td>
-                <input ng-if="!model.loggedInUser.admin" ng-model="model.class.waitlistCapacity" type="number" min="0"
-                       step="1"/>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.waitlistCapacity}}</div>
+                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.waitlistCapacity">
+                    <option ng-repeat="option in [{capacity: 99, indicator: 'Y'}, {capacity: 0, indicator: 'N'}]" ng-value="option.capacity">
+                        {{option.indicator}}
+                    </option>
+                </select>
+
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.waitlistCapacity ? "Y" : "N"}}</div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['waitlistCapacity'])}"
-                     class="changedFrom">{{model.class.old.waitlistCapacity}}
+                     class="changedFrom">{{model.class.old.waitlistCapacity ? "Y" : "N"}}
                 </div>
             </td>
         </tr>
@@ -468,8 +476,11 @@
         Time selected is during peak hours <b>MWR 9:15-15:25, TF 9:50-15:25</b>, please proceed with caution.
     </div>
 
-    <div>
+    <div ng-if="!model.loggedInUser.admin">
         <button ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Save & Return</button>
         <button ng-click="model.returnToSchedule()" type="button" class="btn btn-warning">Cancel</button>
+    </div>
+    <div ng-if="model.loggedInUser.admin">
+        <button ng-click="model.returnToSchedule()" type="button" class="btn btn-primary">Return to Schedule</button>
     </div>
 </div>
