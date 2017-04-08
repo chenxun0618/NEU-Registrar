@@ -24,8 +24,6 @@ class Utils
         // If connection was not established
         if ($this->conn->connect_errno)
             die("Connection failed: " . $this->conn->connect_error);
-
-        echo "connection established\n";
     }
 
     /*
@@ -34,7 +32,6 @@ class Utils
     function __destruct()
     {
         $this->conn->close();
-        echo "connection closed\n";
     }
 
     /*
