@@ -1,16 +1,15 @@
 <?php
-include 'utils.php';
+include 'DB.php';
 
-$utils = new Utils();
-$dept = $utils->get('dept');
-$query = "CALL getMostRecentSched('$dept')";
-$result = $utils->query($query);
-$schedule = $result[0];
+$db = new DB();
+$dept = $db->get('dept');
+$query = "CALL getSubmissionByDept('$dept')";
+$schedule = $db->query($query);
 
 if (array_key_exists("classes", $schedule)) {
-    echo json_encode($schedule);
+    $db->return_json($result);
 } else {
-    $classes = $utils->query("CALL getClassesByDept('$dept')");
+    $classes = $db->query("CALL getClassesByDept('$dept')");
     $schedule["classes"] = $classes;
-    echo json_encode($schedule);
+    $db->return_json($schedule);
 }

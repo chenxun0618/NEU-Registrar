@@ -4,7 +4,7 @@
  * a utility class that contains all the framework functions
  */
 
-class Utils
+class DB
 {
     protected $conn;
 
@@ -45,25 +45,19 @@ class Utils
         return $_GET[$val];
     }
 
-//    /*
-//     * construct a query
-//     */
-//    function construct_query($query, $values)
-//    {
-//        $stmt = $this->conn->prepare($query);
-//
-//        for ($i = 1; $i <= count($values); $i++) {
-//            $stmt->bind_param($i, $values[$i]);
-//        }
-//
-//        $result = $stmt->execute();
-//
-//        // If database cannot process the query
-//        if (!$result)
-//            die("Couldn't find the information: " . $this->conn->error);
-//
-//        return $result;
-//    }
+    /*
+     * set the response header
+     */
+    function header()
+    {
+        if (!$this->conn->errno) {
+            header("HTTP/1.1 200 OK");
+            header("Content-Type: application/json");
+        } else {
+            header("HTTP/1.1 500 " . $this->conn->error);
+            header("Content-Type: application/json");
+        }
+    }
 
     /*
      * perform a query on the database and return the retrieved data in an array
@@ -75,17 +69,21 @@ class Utils
 
         // If database cannot process the query
         if (!$result)
-            die("Couldn't find the information: " . $this->conn->error . "\n");
+            die("Couldn't find the information: " . $this->conn->error);
 
         // If there is no rows in the result
         if ($result->num_rows <= 0)
-            die("0 results\n");
+            die("0 results");
 
         $array = array();
         while ($row = $result->fetch_assoc()) {
             $row_array = array();
             foreach ($row as $key => $value) {
-                $row_array[$key] = $value;
+                $json = json_decode($value);
+                if (is_null($json))
+                    $row_array[$key] = $value;
+                else
+                    $row_array[$key] = $json;
             }
             array_push($array, $row_array);
         }
@@ -93,6 +91,18 @@ class Utils
         $result->close();
         $this->conn->next_result();
 
+        if (count($array) == 1)
+            return $array[0];
+
         return $array;
+    }
+
+    /*
+     * set the header of the response and return json_encoded result
+     */
+    function return_json($json)
+    {
+        $this->header();
+        echo json_encode($json);
     }
 }

@@ -1,8 +1,8 @@
 <?php
-include 'utils.php';
+include 'DB.php';
 
-$utils = new Utils();
-$id = $utils->get('NUID');
+$db = new DB();
+$id = $db->get('NUID');
 $query = "CALL getUserDept('$id')";
-$result = $utils->query($query);
-echo json_encode($result);
+$result = $db->query($query);
+$db->return_json($result);

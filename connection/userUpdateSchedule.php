@@ -1,7 +1,7 @@
 <?php
-include 'utils.php';
+include 'DB.php';
 
-$utils = new Utils();
+$utils = new DB();
 $id = $utils->get('NUID');
 $dept = $utils->get('dept');
 $timeStamp = $utils->get('timeStamp');

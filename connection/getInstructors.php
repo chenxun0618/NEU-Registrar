@@ -1,7 +1,7 @@
 <?php
-include 'utils.php';
+include 'DB.php';
 
-$utils = new Utils();
+$db = new DB();
 $query = "CALL get_all_instructors()";
-$result = $utils->query($query);
-echo json_encode($result);
+$result = $db->query($query);
+$db->return_json($result);
