@@ -1,12 +1,12 @@
 <?php
 include 'DB.php';
 
-$utils = new DB();
-$id = $utils->get('NUID');
-$dept = $utils->get('dept');
-$timeStamp = $utils->get('timeStamp');
-$status = $utils->get('status');
-$classes = $utils->get('classes');
+$db = new DB();
+$id = $db->get('NUID');
+$dept = $db->get('dept');
+$timeStamp = $db->get('timeStamp');
+$status = $db->get('status');
+$classes = $db->get('classes');
 
 $query = "CALL userUpdateSchedule('$id', '$dept', $timeStamp, '$status', $classes)";
-$utils->query($query);
+$db->query($query);

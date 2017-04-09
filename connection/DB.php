@@ -80,7 +80,7 @@ class DB
             $row_array = array();
             foreach ($row as $key => $value) {
                 $json = json_decode($value);
-                if (is_null($json))
+                if (is_null($json) || is_numeric($json))
                     $row_array[$key] = $value;
                 else
                     $row_array[$key] = $json;
