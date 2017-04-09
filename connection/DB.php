@@ -22,8 +22,10 @@ class DB
         }
 
         // If connection was not established
-        if ($this->conn->connect_errno)
-            die("Connection failed: " . $this->conn->connect_error);
+        if ($this->conn->connect_errno) {
+            $this->header(500, $this->conn->connect_error);
+            die;
+        }
     }
 
     /*
@@ -40,7 +42,8 @@ class DB
     function get($val)
     {
         if (!isset($_GET[$val])) {
-            die($val . " is not valid");
+            $this->header(400, $val . " is not valid");
+            die;
         }
         return $_GET[$val];
     }
@@ -48,15 +51,9 @@ class DB
     /*
      * set the response header
      */
-    function header()
+    function header($code, $text)
     {
-        if (!$this->conn->errno) {
-            header("HTTP/1.1 200 OK");
-            header("Content-Type: application/json");
-        } else {
-            header("HTTP/1.1 500 " . $this->conn->error);
-            header("Content-Type: application/json");
-        }
+        header("HTTP/1.1 " . $code . ' ' . $text);
     }
 
     /*
@@ -68,12 +65,14 @@ class DB
         $result = $this->conn->query($query);
 
         // If database cannot process the query
-        if (!$result)
-            die("Couldn't find the information: " . $this->conn->error);
+        if (!$result) {
+            $this->header(400, $this->conn->error);
+            die;
+        }
 
         // If there is no rows in the result
         if ($result->num_rows <= 0)
-            die("0 results");
+            return $result;
 
         $array = array();
         while ($row = $result->fetch_assoc()) {
@@ -100,9 +99,15 @@ class DB
     /*
      * set the header of the response and return json_encoded result
      */
-    function return_json($json)
+    function return_json($code, $json)
     {
-        $this->header();
+        if ($code / 100 == 2)
+            $text = "OK";
+        else
+            $text = $this->conn->error;
+
+        $this->header($code, $text);
+        header("Content-Type: application/json");
         echo json_encode($json);
     }
 }
