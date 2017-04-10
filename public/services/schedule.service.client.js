@@ -50,7 +50,6 @@
                     billingAttributes: [],
                     honors: "Y",
                     doNotPublish: "N",
-                    cancel: "N",
                     comment: "",
                     old: {
                         term: "201810",
@@ -84,7 +83,6 @@
                         billingAttributes: [],
                         honors: "Y",
                         doNotPublish: "N",
-                        cancel: "N",
                         comment: ""
                     }
                 },
@@ -120,7 +118,6 @@
                     billingAttributes: [],
                     honors: "Y",
                     doNotPublish: "N",
-                    cancel: "N",
                     comment: "",
                     old: {
                         term: "201810",
@@ -154,7 +151,6 @@
                         billingAttributes: [],
                         honors: "Y",
                         doNotPublish: "N",
-                        cancel: "N",
                         comment: ""
                     }
                 },
@@ -190,7 +186,6 @@
                     billingAttributes: [],
                     honors: "Y",
                     doNotPublish: "N",
-                    cancel: "N",
                     comment: "",
                     old: {
                         term: "201810",
@@ -224,7 +219,6 @@
                         billingAttributes: [],
                         honors: "Y",
                         doNotPublish: "N",
-                        cancel: "N",
                         comment: ""
                     }
                 },
@@ -260,7 +254,6 @@
                     billingAttributes: [],
                     honors: "Y",
                     doNotPublish: "N",
-                    cancel: "N",
                     comment: "",
                     old: {
                         term: "201810",
@@ -294,7 +287,6 @@
                         billingAttributes: [],
                         honors: "Y",
                         doNotPublish: "N",
-                        cancel: "N",
                         comment: ""
                     }
                 }
@@ -312,7 +304,7 @@
                 currentClass.metadata = currentClass.metadata || {};
                 currentClass.metadata.modified = ClassService.isClassModified(currentClass);
                 currentClass.metadata.added = !currentClass.old;
-                currentClass.metadata.deleted = (currentClass.cancel === "Y");
+                currentClass.metadata.deleted = (currentClass.status === "C");
 
                 // generate unique id for each class for angular routing
                 currentClass.metadata.unique_id = ClassService.generateUniqueIdForClass(currentClass);

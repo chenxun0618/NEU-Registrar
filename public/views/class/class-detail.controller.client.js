@@ -38,6 +38,8 @@
 
                 vm.allRestrictions = ClassService.getAllRestrictions();
                 vm.allBillingAttributes = ClassService.getAllBillingAttributes();
+
+                vm.allStatuses = ClassService.getAllStatuses();
             }
         }
 
@@ -53,7 +55,7 @@
             } else {
                 vm.class.metadata = vm.class.metadata || {};
                 vm.class.metadata.modified = ClassService.isClassModified(vm.class);
-                vm.class.metadata.deleted = (vm.class.cancel === "Y");
+                vm.class.metadata.deleted = (vm.class.status === "C");
 
                 var schedule = JSON.parse($window.sessionStorage.schedule);
                 schedule[vm.class.sessionStateIndex] = vm.class;

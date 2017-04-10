@@ -34,7 +34,7 @@
         }
 
         function getAllStatuses() {
-            return ["A", "I", "C"];
+            return [{code: "A", description: "Active"}, {code: "I", description: "Inactive"}, {code: "C", description: "Cancelled"}];
         }
 
         function getAllMeetingDays() {
@@ -161,7 +161,7 @@
                 term: "201810",
                 courseNumber: courseNumber,
                 section: "01",
-                shortTitle: "Principles of Accounting",
+                shortTitle: "Principles of Accounting"
             };
 
             fillDefaultData(dummy);
@@ -186,7 +186,6 @@
             aClass.billingAttributes = [];
             aClass.honors = "N";
             aClass.doNotPublish = "N";
-            aClass.cancel = "N";
             aClass.comment = "";
         }
 
@@ -228,7 +227,6 @@
                 (arraysEqual(aClass.billingAttributes, aClass.old.billingAttributes)) &&
                 (aClass.honors === aClass.old.honors) &&
                 (aClass.doNotPublish === aClass.old.doNotPublish) &&
-                (aClass.cancel === aClass.old.cancel) &&
                 (aClass.comment === aClass.old.comment)
             );
         }
@@ -239,7 +237,7 @@
             if (!aClass.term || !(/^\d{6}$/.test(aClass.term))) { // 6 digit number
                 invalidReasons.push("Invalid term: " + aClass.term);
             }
-            if (!getAllStatuses().includes(aClass.status)) {
+            if (!["A", "C", "I"].includes(aClass.status)) {
                 invalidReasons.push("Invalid status: " + aClass.status);
             }
             if (aClass.crn && !(/^\d{5}$/.test(aClass.crn))) { // 5 digit number
@@ -310,9 +308,6 @@
             }
             if (!getYesOrNo().includes(aClass.honors)) {
                 invalidReasons.push("Invalid honors indicator: " + aClass.honors);
-            }
-            if (!getYesOrNo().includes(aClass.cancel)) {
-                invalidReasons.push("Invalid cancel indicator: " + aClass.cancel);
             }
 
             return invalidReasons;

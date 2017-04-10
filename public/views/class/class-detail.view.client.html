@@ -22,10 +22,6 @@
             <td></td>
         </tr>
         <tr>
-            <td>Status</td>
-            <td>{{model.class.status}}</td>
-        </tr>
-        <tr>
             <td>CRN</td>
             <td ng-class="{changedFrom: !model.class.crn}">{{model.class.crn || "(to be generated)"}}</td>
             <td></td>
@@ -423,18 +419,20 @@
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': model.differentFromLastYear(['cancel'])}">
-            <td>Cancel Class?</td>
+        <tr ng-class="{'modified': model.differentFromLastYear(['status'])}">
+            <td>Status</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin"
-                        ng-model="model.class.cancel"
-                        ng-options="option for option in model.yesOrNo">
+                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.status">
+                    <option ng-repeat="option in model.allStatuses"
+                            ng-value="option.code">
+                        {{option.description}}
+                    </option>
                 </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.cancel}}</div>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.extractTargetAttributes("description", "code", model.allStatuses, model.class.status)}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['cancel'])}" class="changedFrom">
-                    {{model.class.old.cancel}}
+                <div ng-class="{hidden: !model.differentFromLastYear(['status'])}" class="changedFrom">
+                    {{model.extractTargetAttributes("description", "code", model.allStatuses, model.class.old.status)}}
                 </div>
             </td>
         </tr>
