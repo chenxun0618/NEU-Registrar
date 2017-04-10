@@ -12,12 +12,22 @@ use PHPUnit\Framework\TestCase;
             );
         }
 
+        public function testGetMeetingSequences() {
+            $dd = new Dropdowns();
+            $meetingSequences = $dd->getMeetingSequences();
+
+            $this->assertEquals(
+                117,
+                count($meetingSequences)
+            );
+        }
+
         public function testGetCampuses() {
             $dd = new Dropdowns();
             $campuses = $dd->getCampuses();
 
             $this->assertEquals(
-                4,
+                20,
                 count($campuses)
             );
         }
@@ -29,6 +39,16 @@ use PHPUnit\Framework\TestCase;
             $this->assertEquals(
                 66,
                 count($billingAttributes)
+            );
+        }
+
+        public function testGetMajorRestrictions() {
+            $dd = new Dropdowns();
+            $majorRestrictions = $dd->getMajorRestrictions();
+
+            $this->assertEquals(
+                793,
+                count($majorRestrictions)
             );
         }
 
@@ -49,6 +69,26 @@ use PHPUnit\Framework\TestCase;
             $this->assertEquals(
                 6,
                 count($levelRestrictions)
+            );
+        }
+
+        public function testGetProgramRestrictions() {
+            $dd = new Dropdowns();
+            $programRestrictions = $dd->getProgramResrictions();
+
+            $this->assertEquals(
+                1169,
+                count($programRestrictions)
+            );
+        }
+
+        public function testGetCollegeRestrictions() {
+            $dd = new Dropdowns();
+            $collegeRestrictions = $dd->getCollegeRestrictions();
+
+            $this->assertEquals(
+                9,
+                count($collegeRestrictions)
             );
         }
     }

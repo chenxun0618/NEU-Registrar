@@ -3,13 +3,18 @@
 
     $dd = new Dropdowns();
     $instructionalMethod = $dd->getInstructionalMethods();
+    $meetingSequences = $dd->getMeetingSequences();
     $campus = $dd->getCampuses();
     $billingAttributes = $dd->getBillingAttributes();
+    $majorRestrictions = $dd->getMajorRestrictions();
     $classRestrictions = $dd->getClassRestrictions();
     $levelRestrictions = $dd->getLevelRestrictions();
+    $programRestrictions = $dd->getProgramResrictions();
+    $collegeRestrictions = $dd->getCollegeRestrictions();
 
-    $dropdownData = ["instructionalMethod"=>$instructionalMethod, "campus"=>$campus, "billingAttributes"=>$billingAttributes,
-            "classRestrictions"=>$classRestrictions, "levelRestrictions"=>$levelRestrictions
+    $dropdownData = ["instructionalMethod"=>$instructionalMethod, "meetingSequences"=>$meetingSequences, "campus"=>$campus,
+            "billingAttributes"=>$billingAttributes, "majorRestrictions"=>$majorRestrictions, "classRestrictions"=>$classRestrictions,
+            "levelRestrictions"=>$levelRestrictions, "programRestrictions"=>$programRestrictions, "collegeRestrictions"=>$collegeRestrictions
     ];
 
     echo json_encode($dropdownData);
@@ -32,32 +37,50 @@
          */
         public function getInstructionalMethods() {
             $rows = $this->db->selectAllQuery('select_gtvinsm');
+            $rowObj = array();
             $instructionalMethod = array();
 
             // loops through rows
             for ($i = 0; $i < count($rows); $i++) {
+                $rowObj['code'] = $rows[$i]['code'];
+                $rowObj['desc'] = $rows[$i]['desc'];
                 // adds instructional method code to array
-                $instructionalMethod[$rows[$i]['code']] = $rows[$i]['desc'];
+                $instructionalMethod[] = $rowObj;
             }
 
             return $instructionalMethod;
         }
 
-        public function getCampuses() {
-            $rows = $this->db->selectAllQuery('select_ssbsect');
-            $campus = array();
-            $codes = array();
+        public function getMeetingSequences() {
+            $rows = $this->db->selectAllQuery('select_stvmeet');
+            $rowObj = array();
+            $meetingSequences = array();
 
             // loops through rows
             for ($i = 0; $i < count($rows); $i++) {
-                if (!array_key_exists($rows[$i]['campusCode'], $codes)) {
-                    // adds campus code to array
-                    $campus[$rows[$i]['campusCode']] = $rows[$i]['campusDesc'];
-                    $codes[] = $rows[$i]['campusCode'];
-                }
+                $rowObj['code'] = $rows[$i]['code'];
+                $rowObj['dow'] = $rows[$i]['dow'];
+                $rowObj['beginTime'] = $rows[$i]['beginTime'];
+                $rowObj['endTime'] = $rows[$i]['endTime'];
+                // adds instructional method code to array
+                $meetingSequences[] = $rowObj;
             }
 
-            return $campus;
+            return $meetingSequences;
+        }
+
+        public function getCampuses() {
+            $rows = $this->db->selectAllQuery('select_stvcamp');
+            $campuses = array();
+
+            // loops through rows
+            for ($i = 0; $i < count($rows); $i++) {
+                $rowObj['code'] = $rows[$i]['code'];
+                $rowObj['desc'] = $rows[$i]['desc'];
+                $campuses[] = $rowObj;
+            }
+
+            return $campuses;
         }
 
         public function getBillingAttributes() {
@@ -66,10 +89,31 @@
 
             // loops through rows
             for ($i = 0; $i < count($rows); $i++) {
-                $billingAttributes[$rows[$i]['code']] = $rows[$i]['desc'];
+                $rowObj['code'] = $rows[$i]['code'];
+                $rowObj['desc'] = $rows[$i]['desc'];
+                $billingAttributes[] = $rowObj;
             }
 
             return $billingAttributes;
+        }
+
+        public function getMajorRestrictions() {
+            $rows = $this->db->selectAllQuery('select_stvmajr');
+            $majorRestrictions = array();
+
+            // loops through rows
+            for ($i = 0; $i < count($rows); $i++) {
+                $rowObj['collegeCode'] = $rows[$i]['collegeCode'];
+                $rowObj['collegeDesc'] = $rows[$i]['collegeDesc'];
+                $rowObj['code'] = $rows[$i]['code'];
+                $rowObj['desc'] = $rows[$i]['desc'];
+                $rowObj['validMajorIndicator'] = $rows[$i]['validMajorIndicator'];
+                $rowObj['validMinorIndicator'] = $rows[$i]['validMinorIndicator'];
+                $rowObj['validConcentrationIndicator'] = $rows[$i]['validConcentrationIndicator'];
+                $majorRestrictions[] = $rowObj;
+            }
+
+            return $majorRestrictions;
         }
 
         public function getClassRestrictions() {
@@ -78,7 +122,9 @@
 
             // loops through rows
             for ($i = 0; $i < count($rows); $i++) {
-                $classRestrictions[$rows[$i]['code']] = $rows[$i]['desc'];
+                $rowObj['code'] = $rows[$i]['code'];
+                $rowObj['desc'] = $rows[$i]['desc'];
+                $classRestrictions[] = $rowObj;
             }
 
             return $classRestrictions;
@@ -90,10 +136,40 @@
 
             // loops through rows
             for ($i = 0; $i < count($rows); $i++) {
-                $levelRestrictions[$rows[$i]['code']] = $rows[$i]['desc'];
+                $rowObj['code'] = $rows[$i]['code'];
+                $rowObj['desc'] = $rows[$i]['desc'];
+                $levelRestrictions[] = $rowObj;
             }
 
             return $levelRestrictions;
+        }
+
+        public function getProgramResrictions() {
+            $rows = $this->db->selectAllQuery('select_stvprog');
+            $programRestrictions = array();
+
+            // loops through rows
+            for ($i = 0; $i < count($rows); $i++) {
+                $rowObj['code'] = $rows[$i]['code'];
+                $rowObj['desc'] = $rows[$i]['desc'];
+                $programRestrictions[] = $rowObj;
+            }
+
+            return $programRestrictions;
+        }
+
+        public function getCollegeRestrictions() {
+            $rows = $this->db->selectAllQuery('select_stvcoll');
+            $collegeRestrictions = array();
+
+            // loops through rows
+            for ($i = 0; $i < count($rows); $i++) {
+                $rowObj['code'] = $rows[$i]['code'];
+                $rowObj['desc'] = $rows[$i]['desc'];
+                $collegeRestrictions[] = $rowObj;
+            }
+
+            return $collegeRestrictions;
         }
     }
 ?>
