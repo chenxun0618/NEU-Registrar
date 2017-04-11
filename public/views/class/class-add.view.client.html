@@ -61,7 +61,7 @@
         <tr>
             <td>Title*</td>
             <td>
-                <input ng-model="model.class.shortTitle"></input>
+                <input ng-model="model.class.courseTitle"></input>
             </td>
         </tr>
         <tr>
@@ -72,12 +72,12 @@
                         ng-change="model.updateOnChangeOfTime(0)">
                 </select>
 
-                <select ng-model="model.class.meetingStart"
+                <select ng-model="model.class.meetingBeginTime"
                         ng-options="option for option in model.allMeetingStartTimes"
                         ng-change="model.updateOnChangeOfTime(1)">
                 </select>
                 —
-                <select ng-model="model.class.meetingEnd"
+                <select ng-model="model.class.meetingEndTime"
                         ng-options="option for option in model.allMeetingEndTimes"
                         ng-change="model.updateOnChangeOfTime(0)">
                 </select>
@@ -86,7 +86,7 @@
         <tr>
             <td>Primary Instructor*</td>
             <td>
-                <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.primaryInstructor"
+                <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.primaryInstructorID"
                         ng-options="option.nuid as option.name for option in model.allInstructors">
                 </select>
             </td>
@@ -103,7 +103,7 @@
         <tr>
             <td>Enrollment Maximum*</td>
             <td>
-                <input type="number" min="1" step="1" ng-model="model.class.enrollmentMax"/>
+                <input type="number" min="1" step="1" ng-model="model.class.maxEnrollment"/>
             </td>
         </tr>
         <tr>
@@ -119,22 +119,29 @@
         <tr>
             <td>Campus*</td>
             <td>
-                <select ng-model="model.class.campus" ng-options="option for option in model.allCampuses">
-                </select>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" style="width: 150px"
+                            ng-model="model.class.campusCode"
+                            ng-options="option.code as option.desc for option in model.all.campus">
+                    </select>
+                </div>
             </td>
         </tr>
         <tr>
             <td>Instructional Method*</td>
             <td>
-                <select ng-model="model.class.instructionalMethod"
-                        ng-options="option for option in model.allInstructionalMethods">
-                </select>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" style="width: 100px"
+                            ng-model="model.class.instructionalMethodCode"
+                            ng-options="option.code as option.desc for option in model.all.instructionalMethod">
+                    </select>
+                </div>
             </td>
         </tr>
         <tr>
             <td>Special Approvals*</td>
             <td>
-                <select ng-model="model.class.specialApprovals"
+                <select ng-model="model.class.specialApprovalCode"
                         ng-options="option for option in model.allSpecialApprovals">
                 </select>
             </td>
@@ -150,10 +157,8 @@
                     <input type="radio" ng-model="model.class.includeMajorRestrictions" ng-value="!model">
                     Exclude
                 </label><br/>
-                <select class="select2" ng-model="model.class.majorRestrictions" multiple="multiple">
-                    <option ng-repeat="option in model.allRestrictions.majorRestrictions" ng-value="option.majorCode">
-                        {{option.majorCode + " " + option.majorDescription}}
-                    </option>
+                <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.majorRestrictions" multiple="multiple"
+                        ng-options="option.code as option.desc for option in model.all.majorRestrictions">
                 </select>
             </td>
         </tr>
@@ -168,10 +173,8 @@
                     <input type="radio" ng-model="model.class.includeClassRestrictions" ng-value="!model">
                     Exclude
                 </label><br/>
-                <select class="select2" ng-model="model.class.classRestrictions" multiple="multiple">
-                    <option ng-repeat="option in model.allRestrictions.classRestrictions" ng-value="option.classCode">
-                        {{option.classCode + " " + option.classDescription}}
-                    </option>
+                <select class="select2" style="width: 200px" ng-model="model.class.classRestrictions" multiple="multiple"
+                        ng-options="option.code as option.desc for option in model.all.classRestrictions">
                 </select>
             </td>
         </tr>
@@ -186,10 +189,8 @@
                     <input type="radio" ng-model="model.class.includeLevelRestrictions" ng-value="!model">
                     Exclude
                 </label><br/>
-                <select class="select2" ng-model="model.class.levelRestrictions" multiple="multiple">
-                    <option ng-repeat="option in model.allRestrictions.levelRestrictions" ng-value="option.levelCode">
-                        {{option.levelCode + " " + option.levelDescription}}
-                    </option>
+                <select class="select2" style="width: 200px" ng-model="model.class.levelRestrictions" multiple="multiple"
+                        ng-options="option.code as option.desc for option in model.all.levelRestrictions">
                 </select>
             </td>
         </tr>
@@ -204,10 +205,8 @@
                     <input type="radio" ng-model="model.class.includeProgramRestrictions" ng-value="!model">
                     Exclude
                 </label><br/>
-                <select class="select2" ng-model="model.class.programRestrictions" multiple="multiple">
-                    <option ng-repeat="option in model.allRestrictions.programRestrictions" ng-value="option.programCode">
-                        {{option.programCode + " " + option.programDescription}}
-                    </option>
+                <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.programRestrictions" multiple="multiple"
+                        ng-options="option.code as option.desc for option in model.all.programRestrictions">
                 </select>
             </td>
         </tr>
@@ -222,20 +221,16 @@
                     <input type="radio" ng-model="model.class.includeCollegeRestrictions" ng-value="!model">
                     Exclude
                 </label><br/>
-                <select class="select2" ng-model="model.class.collegeRestrictions" multiple="multiple">
-                    <option ng-repeat="option in model.allRestrictions.collegeRestrictions" ng-value="option.collegeCode">
-                        {{option.collegeCode + " " + option.collegeDescription}}
-                    </option>
+                <select class="select2" style="width: 200px" ng-model="model.class.collegeRestrictions" multiple="multiple"
+                        ng-options="option.code as option.desc for option in model.all.collegeRestrictions">
                 </select>
             </td>
         </tr>
         <tr>
             <td>Billing Attributes</td>
             <td>
-                <select class="select2" ng-model="model.class.billingAttributes" multiple="multiple">
-                    <option ng-repeat="option in model.allBillingAttributes" ng-value="option.billingAttributeCode">
-                        {{option.billingAttributeCode + " " + option.billingAttributeDescription}}
-                    </option>
+                <select class="select2" style="width: 200px" ng-model="model.class.billingAttributes" multiple="multiple"
+                        ng-options="option.code as option.desc for option in model.all.billingAttributes">
                 </select>
             </td>
         </tr>
@@ -247,9 +242,9 @@
             </td>
         </tr>
         <tr>
-            <td>Hide on Banner Schedule?</td>
+            <td>Show on Banner Schedule?</td>
             <td>
-                <select ng-model="model.class.doNotPublish" ng-options="option for option in model.yesOrNo">
+                <select ng-model="model.class.publish" ng-options="option for option in model.yesOrNo">
                 </select>
             </td>
         </tr>

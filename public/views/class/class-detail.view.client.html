@@ -29,19 +29,19 @@
             <td ng-class="{changedFrom: !model.class.crn}">{{model.class.crn || "(to be generated)"}}</td>
             <td></td>
         </tr>
-        <tr ng-class="{'modified': model.differentFromLastYear(['shortTitle'])}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['courseTitle'])}">
             <td>Title</td>
             <td>
-                <input ng-if="!model.loggedInUser.admin" type="text" ng-model="model.class.shortTitle"/>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.shortTitle}}</div>
+                <input ng-if="!model.loggedInUser.admin" type="text" ng-model="model.class.courseTitle"/>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.courseTitle}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['shortTitle'])}" class="changedFrom">
-                    {{model.class.old.shortTitle}}
+                <div ng-class="{hidden: !model.differentFromLastYear(['courseTitle'])}" class="changedFrom">
+                    {{model.class.old.courseTitle}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': model.differentFromLastYear(['meetingDays', 'meetingStart', 'meetingEnd'])}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['meetingDays', 'meetingBeginTime', 'meetingEndTime'])}">
             <td>Meeting Times</td>
             <td>
                 <div ng-if="!model.loggedInUser.admin">
@@ -50,78 +50,79 @@
                             ng-change="model.updateOnChangeOfTime(0)">
                     </select>
 
-                    <select ng-model="model.class.meetingStart"
+                    <select ng-model="model.class.meetingBeginTime"
                             ng-options="option for option in model.allMeetingStartTimes"
                             ng-change="model.updateOnChangeOfTime(1)">
                     </select>
                     —
-                    <select ng-model="model.class.meetingEnd"
+                    <select ng-model="model.class.meetingEndTime"
                             ng-options="option for option in model.allMeetingEndTimes"
                             ng-change="model.updateOnChangeOfTime(0)">
                     </select>
                 </div>
                 <div ng-if="model.loggedInUser.admin" class="italics">
-                    {{model.class.meetingDays + ", " + model.class.meetingStart + "—" + model.class.meetingEnd}}
+                    {{model.class.meetingDays + ", " + model.class.meetingBeginTime + "—" + model.class.meetingEndTime}}
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['meetingDays', 'meetingStart', 'meetingEnd'])}"
-                     class="changedFrom">{{model.class.old.meetingDays + ", " + model.class.old.meetingStart + "—" +
-                    model.class.old.meetingEnd}}
+                <div ng-class="{hidden: !model.differentFromLastYear(['meetingDays', 'meetingBeginTime', 'meetingEndTime'])}"
+                     class="changedFrom">{{model.class.old.meetingDays + ", " + model.class.old.meetingBeginTime + "—" +
+                    model.class.old.meetingEndTime}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': model.differentFromLastYear(['primaryInstructor'])}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['primaryInstructorID'])}">
             <td>Primary Instructor</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.primaryInstructor"
+                    <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.primaryInstructorID"
                             ng-options="option.nuid as option.name for option in model.allInstructors">
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.extractTargetAttributes("name", "nuid", model.allPrimaryInstructors,
-                    [model.class.primaryInstructor])}}
+                    {{model.extractTargetAttributes("name", "nuid", model.allInstructors,
+                    [model.class.primaryInstructorID])}}
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['primaryInstructor'])}"
-                     class="changedFrom">{{model.extractTargetAttributes("name", "nuid", model.allPrimaryInstructors,
-                    [model.class.old.primaryInstructor])}}
+                <div ng-class="{hidden: !model.differentFromLastYear(['primaryInstructorID'])}"
+                     class="changedFrom">{{model.extractTargetAttributes("name", "nuid", model.allInstructors,
+                    [model.class.old.primaryInstructorID])}}
                 </div>
             </td>
         </tr>
         <tr>
         <tr ng-class="{'modified': model.differentFromLastYear(['secondaryInstructors'])}">
-            <td>Secondary Instructors {{model.class.secondaryInstructors}}</td>
+            <td>Secondary Instructors</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.secondaryInstructors" multiple="multiple"
-                        ng-options="option.nuid as option.name for option in model.allInstructors">
+                    <select class="select2 largeSelect2" style="width: 200px"
+                            ng-model="model.class.secondaryInstructors" multiple="multiple"
+                            ng-options="option.nuid as option.name for option in model.allInstructors">
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.extractTargetAttributes("name", "nuid", model.allSecondaryInstructors,
+                    {{model.extractTargetAttributes("name", "nuid", model.allInstructors,
                     model.class.secondaryInstructors)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['secondaryInstructors'])}"
-                     class="changedFrom">{{model.extractTargetAttributes("name", "nuid", model.allSecondaryInstructors,
+                     class="changedFrom">{{model.extractTargetAttributes("name", "nuid", model.allInstructors,
                     model.class.old.secondaryInstructors)}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': model.differentFromLastYear(['enrollmentMax'])}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['maxEnrollment'])}">
             <td>Enrollment Maximum</td>
             <td>
-                <input ng-if="!model.loggedInUser.admin" ng-model="model.class.enrollmentMax" type="number" min="1"
+                <input ng-if="!model.loggedInUser.admin" ng-model="model.class.maxEnrollment" type="number" min="1"
                        step="1"/>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.enrollmentMax}}</div>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.maxEnrollment}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['enrollmentMax'])}"
-                     class="changedFrom">{{model.class.old.enrollmentMax}}
+                <div ng-class="{hidden: !model.differentFromLastYear(['maxEnrollment'])}"
+                     class="changedFrom">{{model.class.old.maxEnrollment}}
                 </div>
             </td>
         </tr>
@@ -129,7 +130,8 @@
             <td>Waitlist?</td>
             <td>
                 <select ng-if="!model.loggedInUser.admin" ng-model="model.class.waitlistCapacity">
-                    <option ng-repeat="option in [{capacity: 99, indicator: 'Y'}, {capacity: 0, indicator: 'N'}]" ng-value="option.capacity">
+                    <option ng-repeat="option in [{capacity: 99, indicator: 'Y'}, {capacity: 0, indicator: 'N'}]"
+                            ng-value="option.capacity">
                         {{option.indicator}}
                     </option>
                 </select>
@@ -142,49 +144,54 @@
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': model.differentFromLastYear(['campus'])}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['campusCode'])}">
             <td>Campus</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.campus"
-                        ng-options="option for option in model.allCampuses">
-                </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.campus}}</div>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" style="width: 150px"
+                            ng-model="model.class.campusCode"
+                            ng-options="option.code as option.desc for option in model.all.campus">
+                    </select>
+                </div>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.campusCode}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['campus'])}" class="changedFrom">
-                    {{model.class.old.campus}}
+                <div ng-class="{hidden: !model.differentFromLastYear(['campusCode'])}" class="changedFrom">
+                    {{model.class.old.campusCode}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': model.differentFromLastYear(['instructionalMethod'])}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['instructionalMethodCode'])}">
             <td>Instructional Method</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin"
-                        ng-model="model.class.instructionalMethod"
-                        ng-options="option for option in model.allInstructionalMethods">
-                </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.instructionalMethod}}</div>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" style="width: 100px"
+                            ng-model="model.class.instructionalMethodCode"
+                            ng-options="option.code as option.desc for option in model.all.instructionalMethod">
+                    </select>
+                </div>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.instructionalMethodCode}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['instructionalMethod'])}"
-                     class="changedFrom">{{model.class.old.instructionalMethod}}
+                <div ng-class="{hidden: !model.differentFromLastYear(['instructionalMethodCode'])}"
+                     class="changedFrom">{{model.class.old.instructionalMethodCode}}
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': model.differentFromLastYear(['specialApprovals'])}">
+        <tr ng-class="{'modified': model.differentFromLastYear(['specialApprovalCode'])}">
             <td>Special Approvals</td>
             <td>
                 <select ng-if="!model.loggedInUser.admin"
-                        ng-model="model.class.specialApprovals"
+                        ng-model="model.class.specialApprovalCode"
                         ng-options="option for option in model.allSpecialApprovals">
                 </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.specialApprovals ?
-                    model.class.specialApprovals : "(none)"}}
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.specialApprovalCode ?
+                    model.class.specialApprovalCode : "(none)"}}
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['specialApprovals'])}"
-                     class="changedFrom">{{model.class.old.specialApprovals ? model.class.old.specialApprovals :
+                <div ng-class="{hidden: !model.differentFromLastYear(['specialApprovalCode'])}"
+                     class="changedFrom">{{model.class.old.specialApprovalCode ? model.class.old.specialApprovalCode :
                     "(none)"}}
                 </div>
             </td>
@@ -201,25 +208,23 @@
                         <input type="radio" ng-model="model.class.includeMajorRestrictions" ng-value="!model">
                         Exclude
                     </label><br/>
-                    <select class="select2" ng-model="model.class.majorRestrictions" multiple="multiple">
-                        <option ng-repeat="option in model.allRestrictions.majorRestrictions"
-                                ng-value="option.majorCode">
-                            {{option.majorCode + " " + option.majorDescription}}
-                        </option>
+                    <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.majorRestrictions"
+                            multiple="multiple"
+                            ng-options="option.code as option.desc for option in model.all.majorRestrictions">
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
                     {{(model.class.includeMajorRestrictions ? "Include: " : "Exclude: ") +
-                    model.extractTargetAttributes("majorDescription", "majorCode",
-                    model.allRestrictions.majorRestrictions,
+                    model.extractTargetAttributes("desc", "code",
+                    model.all.majorRestrictions,
                     model.class.majorRestrictions)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['majorRestrictions', 'includeMajorRestrictions'])}"
                      class="changedFrom">{{(model.class.old.includeMajorRestrictions ? "Include: " : "Exclude: ") +
-                    model.extractTargetAttributes("majorDescription", "majorCode",
-                    model.allRestrictions.majorRestrictions,
+                    model.extractTargetAttributes("desc", "code",
+                    model.all.majorRestrictions,
                     model.class.old.majorRestrictions)}}
                 </div>
             </td>
@@ -236,25 +241,23 @@
                         <input type="radio" ng-model="model.class.includeClassRestrictions" ng-value="!model">
                         Exclude
                     </label><br/>
-                    <select class="select2" ng-model="model.class.classRestrictions" multiple="multiple">
-                        <option ng-repeat="option in model.allRestrictions.classRestrictions"
-                                ng-value="option.classCode">
-                            {{option.classCode + " " + option.classDescription}}
-                        </option>
+                    <select class="select2" style="width: 200px" ng-model="model.class.classRestrictions"
+                            multiple="multiple"
+                            ng-options="option.code as option.desc for option in model.all.classRestrictions">
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
                     {{(model.class.includeClassRestrictions ? "Include: " : "Exclude: ") +
-                    model.extractTargetAttributes("classDescription", "classCode",
-                    model.allRestrictions.classRestrictions,
+                    model.extractTargetAttributes("desc", "code",
+                    model.all.classRestrictions,
                     model.class.classRestrictions)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['classRestrictions', 'includeClassRestrictions'])}"
                      class="changedFrom">{{(model.class.old.includeClassRestrictions ? "Include: " : "Exclude: ") +
-                    model.extractTargetAttributes("classDescription", "classCode",
-                    model.allRestrictions.classRestrictions,
+                    model.extractTargetAttributes("desc", "code",
+                    model.all.classRestrictions,
                     model.class.old.classRestrictions)}}
                 </div>
             </td>
@@ -271,25 +274,23 @@
                         <input type="radio" ng-model="model.class.includeLevelRestrictions" ng-value="!model">
                         Exclude
                     </label><br/>
-                    <select class="select2" ng-model="model.class.levelRestrictions" multiple="multiple">
-                        <option ng-repeat="option in model.allRestrictions.levelRestrictions"
-                                ng-value="option.levelCode">
-                            {{option.levelCode + " " + option.levelDescription}}
-                        </option>
+                    <select class="select2" style="width: 200px" ng-model="model.class.levelRestrictions"
+                            multiple="multiple"
+                            ng-options="option.code as option.desc for option in model.all.levelRestrictions">
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
                     {{(model.class.includeLevelRestrictions ? "Include: " : "Exclude: ") +
-                    model.extractTargetAttributes("levelDescription", "levelCode",
-                    model.allRestrictions.levelRestrictions,
+                    model.extractTargetAttributes("desc", "code",
+                    model.all.levelRestrictions,
                     model.class.levelRestrictions)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['levelRestrictions', 'includeLevelRestrictions'])}"
                      class="changedFrom">{{(model.class.old.includeLevelRestrictions ? "Include: " : "Exclude: ") +
-                    model.extractTargetAttributes("levelDescription", "levelCode",
-                    model.allRestrictions.levelRestrictions,
+                    model.extractTargetAttributes("desc", "code",
+                    model.all.levelRestrictions,
                     model.class.old.levelRestrictions)}}
                 </div>
             </td>
@@ -306,25 +307,23 @@
                         <input type="radio" ng-model="model.class.includeProgramRestrictions" ng-value="!model">
                         Exclude
                     </label><br/>
-                    <select class="select2" ng-model="model.class.programRestrictions" multiple="multiple">
-                        <option ng-repeat="option in model.allRestrictions.programRestrictions"
-                                ng-value="option.programCode">
-                            {{option.programCode + " " + option.programDescription}}
-                        </option>
+                    <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.programRestrictions"
+                            multiple="multiple"
+                            ng-options="option.code as option.desc for option in model.all.programRestrictions">
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
                     {{(model.class.includeProgramRestrictions ? "Include: " : "Exclude: ") +
-                    model.extractTargetAttributes("programDescription", "programCode",
-                    model.allRestrictions.programRestrictions,
+                    model.extractTargetAttributes("desc", "code",
+                    model.all.programRestrictions,
                     model.class.programRestrictions)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['programRestrictions', 'includeProgramRestrictions'])}"
                      class="changedFrom">{{(model.class.old.includeProgramRestrictions ? "Include: " : "Exclude: ") +
-                    model.extractTargetAttributes("programDescription", "programCode",
-                    model.allRestrictions.programRestrictions,
+                    model.extractTargetAttributes("desc", "code",
+                    model.all.programRestrictions,
                     model.class.old.programRestrictions)}}
                 </div>
             </td>
@@ -341,25 +340,23 @@
                         <input type="radio" ng-model="model.class.includeCollegeRestrictions" ng-value="!model">
                         Exclude
                     </label><br/>
-                    <select class="select2" ng-model="model.class.collegeRestrictions" multiple="multiple">
-                        <option ng-repeat="option in model.allRestrictions.collegeRestrictions"
-                                ng-value="option.collegeCode">
-                            {{option.collegeCode + " " + option.collegeDescription}}
-                        </option>
+                    <select class="select2" style="width: 200px" ng-model="model.class.collegeRestrictions"
+                            multiple="multiple"
+                            ng-options="option.code as option.desc for option in model.all.collegeRestrictions">
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
                     {{(model.class.includeCollegeRestrictions ? "Include: " : "Exclude: ") +
-                    model.extractTargetAttributes("collegeRestriction", "collegeCode",
-                    model.allRestrictions.collegeRestrictions,
+                    model.extractTargetAttributes("desc", "code",
+                    model.all.collegeRestrictions,
                     model.class.collegeRestrictions)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['collegeRestrictions', 'includeCollegeRestrictions'])}"
                      class="changedFrom">{{(model.class.old.includeCollegeRestrictions ? "Include: " : "Exclude: ") +
-                    model.extractTargetAttributes("collegeRestriction", "collegeCode",
-                    model.allRestrictions.collegeRestrictions,
+                    model.extractTargetAttributes("desc", "code",
+                    model.all.collegeRestrictions,
                     model.class.old.collegeRestrictions)}}
                 </div>
             </td>
@@ -368,22 +365,21 @@
             <td>Billing Attributes</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2" ng-model="model.class.billingAttributes" multiple="multiple">
-                        <option ng-repeat="option in model.allBillingAttributes" ng-value="option.billingAttributeCode">
-                            {{option.billingAttributeCode + " " + option.billingAttributeDescription}}
-                        </option>
+                    <select class="select2" style="width: 200px" ng-model="model.class.billingAttributes"
+                            multiple="multiple"
+                            ng-options="option.code as option.desc for option in model.all.billingAttributes">
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
-                    {{model.extractTargetAttributes("billingAttributeDescription", "billingAttributeCode",
-                    model.allBillingAttributes,
+                    {{model.extractTargetAttributes("desc", "code",
+                    model.all.billingAttributes,
                     model.class.billingAttributes)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['billingAttributes'])}"
-                     class="changedFrom">{{model.extractTargetAttributes("billingAttributeDescription",
-                    "billingAttributeCode", model.allBillingAttributes,
+                     class="changedFrom">{{model.extractTargetAttributes("desc",
+                    "code", model.all.billingAttributes,
                     model.class.old.billingAttributes)}}
                 </div>
             </td>
@@ -402,18 +398,18 @@
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': model.differentFromLastYear(['doNotPublish'])}">
-            <td>Hide on Banner Schedule?</td>
+        <tr ng-class="{'modified': model.differentFromLastYear(['publish'])}">
+            <td>Show on Banner Schedule?</td>
             <td>
                 <select ng-if="!model.loggedInUser.admin"
-                        ng-model="model.class.doNotPublish"
+                        ng-model="model.class.publish"
                         ng-options="option for option in model.yesOrNo">
                 </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.doNotPublish}}</div>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.publish}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['doNotPublish'])}"
-                     class="changedFrom">{{model.class.old.doNotPublish}}
+                <div ng-class="{hidden: !model.differentFromLastYear(['publish'])}"
+                     class="changedFrom">{{model.class.old.publish}}
                 </div>
             </td>
         </tr>
@@ -426,7 +422,9 @@
                         {{option.description}}
                     </option>
                 </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.extractTargetAttributes("description", "code", model.allStatuses, model.class.status)}}</div>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.extractTargetAttributes("description",
+                    "code", model.allStatuses, model.class.status)}}
+                </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['status'])}" class="changedFrom">

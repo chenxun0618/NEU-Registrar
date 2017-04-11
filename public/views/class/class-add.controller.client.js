@@ -21,11 +21,21 @@
             } else {
                 vm.allSubjectCodes = ClassService.getAllSubjectCodes();
                 vm.currentTerm = ClassService.getCurrentTerm();
-                vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
                 vm.allMeetingDays = ClassService.getAllMeetingDays();
-                vm.allCampuses = ClassService.getAllCampuses();
-                vm.yesOrNo = ClassService.getYesOrNo();
+                vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
+                vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
                 vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
+                vm.yesOrNo = ClassService.getYesOrNo();
+
+                ClassService.getDropdownValues()
+                    .then(
+                        function (res) {
+                            vm.all = res.data;
+                        },
+                        function (error) {
+                            vm.error = error.data;
+                        }
+                    );
 
                 ClassService.getAllInstructors()
                     .then(
@@ -36,12 +46,6 @@
                             vm.error = error.data;
                         }
                     );
-
-                vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
-                vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
-
-                vm.allRestrictions = ClassService.getAllRestrictions();
-                vm.allBillingAttributes = ClassService.getAllBillingAttributes();
             }
         }
 
@@ -119,7 +123,7 @@
         }
 
         function updateEndingTimes() {
-            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingStart);
+            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingBeginTime);
             var classMinDuration = 65;
             var classMaxDuration = 210;
             vm.allMeetingEndTimes = vm.allMeetingStartTimes
@@ -129,8 +133,8 @@
         function updateOnChangeOfTime(isMeetingStart) {
             if (isMeetingStart)
                 updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingStart) ||
-                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEnd);
+            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingBeginTime) ||
+                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEndTime);
         }
 
         init();
