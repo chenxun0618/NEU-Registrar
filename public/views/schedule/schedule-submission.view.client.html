@@ -13,7 +13,7 @@
     <form name="getSchedules">
         <label for="scheduleSelect"> Schedule: </label>
         <select name="scheduleSelect" id="scheduleSelect" ng-model="model.selectedSchedule"
-                ng-options="model.getScheduleSummaryLine(option) for option in model.schedules track by option.departmentCode+option.term"
+                ng-options="model.getScheduleSummaryLine(option) for option in model.schedules track by option.departmentCode+option.termCode"
                 ng-change="model.getScheduleDetail(model.selectedSchedule)">
         </select>
     </form>
@@ -31,10 +31,10 @@
         <tr ng-class="{'added': (class.metadata && class.metadata.added), 'deleted': (class.metadata && !class.metadata.added && class.metadata.deleted), 'modified': (class.metadata && !class.metadata.deleted && !class.metadata.added && class.metadata.modified)}"
             ng-repeat="class in model.schedule | filterClass:filterText">
             <td>{{class.subjectCode}} {{class.courseNumber}}</td>
-            <td>{{class.shortTitle}}</td>
-            <td>{{class.meetingDays}} {{class.meetingStart.slice(0, class.meetingStart.length -
-                3)}}:{{class.meetingStart.slice(class.meetingStart.length - 2)}}–{{class.meetingEnd.slice(0,
-                class.meetingEnd.length - 3)}}:{{class.meetingEnd.slice(class.meetingEnd.length - 2)}}
+            <td>{{class.courseTitle}}</td>
+            <td>{{class.meetingDays}} {{class.meetingBeginTime.slice(0, class.meetingBeginTime.length -
+                3)}}:{{class.meetingBeginTime.slice(class.meetingBeginTime.length - 2)}}–{{class.meetingEndTime.slice(0,
+                class.meetingEndTime.length - 3)}}:{{class.meetingEndTime.slice(class.meetingEndTime.length - 2)}}
             </td>
             <td>
                 <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">{{model.loggedInUser.admin ? "View"

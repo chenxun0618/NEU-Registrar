@@ -22,13 +22,23 @@
             } else {
                 vm.class = findClassInSessionState($routeParams.unique_id); // find in session state for now until I figure out how to pass the specified course to this controller
 
-                vm.allSubjectCodes = ClassService.getAllSubjectCodes();
                 vm.currentTerm = ClassService.getCurrentTerm();
-                vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
                 vm.allMeetingDays = ClassService.getAllMeetingDays();
-                vm.allCampuses = ClassService.getAllCampuses();
-                vm.yesOrNo = ClassService.getYesOrNo();
+                vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
+                vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+                vm.allStatuses = ClassService.getAllStatuses();
                 vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
+                vm.yesOrNo = ClassService.getYesOrNo();
+
+                ClassService.getDropdownValues()
+                    .then(
+                        function (res) {
+                            vm.all = res.data;
+                        },
+                        function (error) {
+                            vm.error = error.data;
+                        }
+                    );
 
                 ClassService.getAllInstructors()
                     .then(
@@ -39,14 +49,6 @@
                             vm.error = error.data;
                         }
                     );
-
-                vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
-                vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
-
-                vm.allRestrictions = ClassService.getAllRestrictions();
-                vm.allBillingAttributes = ClassService.getAllBillingAttributes();
-
-                vm.allStatuses = ClassService.getAllStatuses();
             }
         }
 
@@ -55,6 +57,7 @@
         }
 
         function saveAndReturnToSchedule() {
+            console.log(vm.class);
             var invalidClassReasons = ClassService.getInvalidClassReasons(vm.class);
             if (invalidClassReasons.length) {
                 vm.error = invalidClassReasons.join("\n\n");
@@ -120,7 +123,7 @@
         }
 
         function updateEndingTimes() {
-            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingStart);
+            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingBeginTime);
             var classMinDuration = 65;
             var classMaxDuration = 210;
             vm.allMeetingEndTimes = vm.allMeetingStartTimes
@@ -130,8 +133,8 @@
         function updateOnChangeOfTime(isMeetingStart) {
             if (isMeetingStart)
                 updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingStart) ||
-                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEnd);
+            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingBeginTime) ||
+                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEndTime);
         }
 
         function extractTargetAttributes(targetAttribute, sourceAttribute, allData, localData) {

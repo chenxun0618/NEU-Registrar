@@ -6,6 +6,7 @@
     function ClassService($http) {
 
         var api = {
+            getDropdownValues: getDropdownValues,
             getCurrentTerm: getCurrentTerm,
             getAllSubjectCodes: getAllSubjectCodes,
             getAllStatuses: getAllStatuses,
@@ -13,16 +14,17 @@
             getAllMeetingDays: getAllMeetingDays,
             getAllTimeIntervals: getAllTimeIntervals,
             getAllInstructors: getAllInstructors,
-            getAllRestrictions: getAllRestrictions,
-            getAllInstructionalMethods: getAllInstructionalMethods,
-            getAllCampuses: getAllCampuses,
             getAllSpecialApprovals: getAllSpecialApprovals,
-            getAllBillingAttributes: getAllBillingAttributes,
             getYesOrNo: getYesOrNo,
             generateUniqueIdForClass: generateUniqueIdForClass,
             isClassModified: isClassModified,
             getInvalidClassReasons: getInvalidClassReasons
         };
+
+        function getDropdownValues() {
+            var url = "/lib/Dropdowns.php";
+            return $http.get(url);
+        }
 
         function getCurrentTerm() {
             return "201810";
@@ -30,6 +32,10 @@
 
         function getAllSubjectCodes() {
             return ["ACCT", "CS", "DS", "IS", "MATH", "PHYS", "PSYC"];
+        }
+
+        function getAllSpecialApprovals() {
+            return ["", "A", "D", "G", "I"];
         }
 
         function getAllStatuses() {
@@ -49,88 +55,6 @@
             return $http.get(url);
         }
 
-        function getAllRestrictions() {
-            return {
-                majorRestrictions: [
-                    {
-                        majorCode: "HISE",
-                        majorDescription: "Health Info Software Eng"
-                    },
-                    {
-                        majorCode: "MELS",
-                        majorDescription: "Medical Laboratory Science"
-                    },
-                    {
-                        majorCode: "RCRA",
-                        majorDescription: "Regulatory Compliance"
-                    }
-                ],
-                classRestrictions: [
-                    {
-                        classCode: "GR",
-                        classDescription: "Graduate"
-                    },
-                    {
-                        classCode: "JR",
-                        classDescription: "Junior"
-                    },
-                    {
-                        classCode: "SR",
-                        classDescription: "Senior"
-                    }
-                ],
-                levelRestrictions: [
-                    {
-                        levelCode: "UG",
-                        levelDescription: "Undergraduate"
-                    },
-                    {
-                        levelCode: "GP",
-                        levelDescription: "CPS - Graduate"
-                    },
-                    {
-                        levelCode: "LW",
-                        levelDescription: "Law"
-                    }
-                ],
-                programRestrictions: [],
-                collegeRestrictions: []
-            }
-        }
-
-        function getAllInstructionalMethods() {
-            return ["HY", "OL", "OOO", "SA", "SAFL", "TR", "VS"];
-        }
-
-        function getAllCampuses() {
-            return ["BOS", "SEA", "VTL", "XCR"];
-        }
-
-        function getAllSpecialApprovals() {
-            return ["", "A", "D", "G", "I"];
-        }
-
-        function getAllBillingAttributes() {
-            return [
-                {
-                    billingAttributeCode: "EDOL",
-                    billingAttributeDescription: "COE-Developed online"
-                },
-                {
-                    billingAttributeCode: "GB0P",
-                    billingAttributeDescription: "GSBA MS Innovation"
-                },
-                {
-                    billingAttributeCode: "GB3S",
-                    billingAttributeDescription: "GSSC Three Seas Program"
-                },
-                {
-                    billingAttributeCode: "GBCS",
-                    billingAttributeDescription: "GSCS Computer & Info Science"
-                },
-            ];
-        }
-
         function getYesOrNo() {
             return ["Y", "N"];
         }
@@ -145,10 +69,10 @@
                 departmentName: "Accounting",
                 subjectCode: subjectCode,
                 subjectName: "Accounting",
-                term: "201810",
+                termCode: "201810",
                 courseNumber: courseNumber,
                 section: "01",
-                shortTitle: "Principles of Accounting"
+                courseTitle: "Principles of Accounting"
             };
 
             fillDefaultData(dummy);
@@ -169,34 +93,34 @@
             aClass.includeLevelRestrictions = true;
             aClass.includeProgramRestrictions = true;
             aClass.includeCollegeRestrictions = true;
-            aClass.specialApprovals = "";
+            aClass.specialApprovalCode = "";
             aClass.billingAttributes = [];
             aClass.honors = "N";
-            aClass.doNotPublish = "N";
+            aClass.publish = "Y";
             aClass.comment = "";
         }
 
         function generateUniqueIdForClass(aClass) {
-            return (aClass.crn) || (aClass.term + aClass.subjectCode + aClass.courseNumber + aClass.section);
+            return (aClass.crn) || (aClass.termCode + aClass.subjectCode + aClass.courseNumber + aClass.section);
         }
 
         // determines if a given class has been modified from its old data by examining all properties
         function isClassModified(aClass) {
             return (!aClass.old) || !(
-                (aClass.term === aClass.old.term) &&
+                (aClass.termCode === aClass.old.termCode) &&
                 (aClass.status === aClass.old.status) &&
                 (aClass.crn === aClass.old.crn) &&
                 (aClass.subjectCode === aClass.old.subjectCode) &&
                 (aClass.courseNumber === aClass.old.courseNumber) &&
                 (aClass.section === aClass.old.section) &&
-                (aClass.shortTitle === aClass.old.shortTitle) &&
+                (aClass.courseTitle === aClass.old.courseTitle) &&
                 (aClass.meetingDays === aClass.old.meetingDays) &&
-                (aClass.meetingStart === aClass.old.meetingStart) &&
-                (aClass.meetingEnd === aClass.old.meetingEnd) &&
-                (aClass.primaryInstructor === aClass.old.primaryInstructor) &&
+                (aClass.meetingBeginTime === aClass.old.meetingBeginTime) &&
+                (aClass.meetingEndTime === aClass.old.meetingEndTime) &&
+                (aClass.primaryInstructorID === aClass.old.primaryInstructorID) &&
                 (arraysEqual(aClass.secondaryInstructors, aClass.old.secondaryInstructors)) &&
-                (aClass.enrollmentMax === aClass.old.enrollmentMax) &&
-                (aClass.lastYearEnrollment === aClass.old.lastYearEnrollment) &&
+                (aClass.maxEnrollment === aClass.old.maxEnrollment) &&
+                (aClass.priorEnrollment === aClass.old.priorEnrollment) &&
                 (arraysEqual(aClass.majorRestrictions, aClass.old.majorRestrictions)) &&
                 (arraysEqual(aClass.classRestrictions, aClass.old.classRestrictions)) &&
                 (arraysEqual(aClass.levelRestrictions, aClass.old.levelRestrictions)) &&
@@ -208,12 +132,12 @@
                 (aClass.includeProgramRestrictions === aClass.old.includeProgramRestrictions) &&
                 (aClass.includeCollegeRestrictions === aClass.old.includeCollegeRestrictions) &&
                 (aClass.waitlistCapacity === aClass.old.waitlistCapacity) &&
-                (aClass.campus === aClass.old.campus) &&
-                (aClass.instructionalMethod === aClass.old.instructionalMethod) &&
-                (aClass.specialApprovals === aClass.old.specialApprovals) &&
+                (aClass.campusCode === aClass.old.campusCode) &&
+                (aClass.instructionalMethodCode === aClass.old.instructionalMethodCode) &&
+                (aClass.specialApprovalCode === aClass.old.specialApprovalCode) &&
                 (arraysEqual(aClass.billingAttributes, aClass.old.billingAttributes)) &&
                 (aClass.honors === aClass.old.honors) &&
-                (aClass.doNotPublish === aClass.old.doNotPublish) &&
+                (aClass.publish === aClass.old.publish) &&
                 (aClass.comment === aClass.old.comment)
             );
         }
@@ -221,8 +145,8 @@
         function getInvalidClassReasons(aClass) {
             var invalidReasons = [];
 
-            if (!aClass.term || !(/^\d{6}$/.test(aClass.term))) { // 6 digit number
-                invalidReasons.push("Invalid term: " + aClass.term);
+            if (!aClass.termCode || !(/^\d{6}$/.test(aClass.termCode))) { // 6 digit number
+                invalidReasons.push("Invalid term code: " + aClass.termCode);
             }
             if (!["A", "C", "I"].includes(aClass.status)) {
                 invalidReasons.push("Invalid status: " + aClass.status);
@@ -239,29 +163,29 @@
             if (aClass.section && !(/^\d{2}$/.test(aClass.section))) {
                 invalidReasons.push("Invalid section: " + aClass.section);
             }
-            if (!aClass.shortTitle) {
-                invalidReasons.push("Invalid title: " + aClass.shortTitle);
+            if (!aClass.courseTitle) {
+                invalidReasons.push("Invalid title: " + aClass.courseTitle);
             }
             if (!aClass.meetingDays) {
                 invalidReasons.push("Invalid meeting days: " + aClass.meetingDays);
             }
-            if (!aClass.meetingStart || (aClass.meetingStart > aClass.meetingEnd)) {
-                invalidReasons.push("Invalid meeting start time: " + aClass.meetingStart);
+            if (!aClass.meetingBeginTime || (aClass.meetingBeginTime > aClass.meetingEndTime)) {
+                invalidReasons.push("Invalid meeting start time: " + aClass.meetingBeginTime);
             }
-            if (!aClass.meetingEnd || (aClass.meetingStart > aClass.meetingEnd)) {
-                invalidReasons.push("Invalid meeting end time: " + aClass.meetingEnd);
+            if (!aClass.meetingEndTime || (aClass.meetingBeginTime > aClass.meetingEndTime)) {
+                invalidReasons.push("Invalid meeting end time: " + aClass.meetingEndTime);
             }
-            if (!aClass.primaryInstructor) {
-                invalidReasons.push("Invalid primary instructor: " + aClass.primaryInstructor);
+            if (!aClass.primaryInstructorID) {
+                invalidReasons.push("Invalid primary instructor: " + aClass.primaryInstructorID);
             }
             if (!(aClass.secondaryInstructors === undefined || aClass.secondaryInstructors === null || aClass.secondaryInstructors.constructor === Array)) {
                 invalidReasons.push("Invalid secondary instructors: " + aClass.secondaryInstructors);
             }
-            if (!aClass.enrollmentMax || !(typeof aClass.enrollmentMax === 'number') || !(aClass.enrollmentMax > 0)) {
-                invalidReasons.push("Invalid enrollment maximum: " + aClass.enrollmentMax);
+            if (!aClass.maxEnrollment || !(typeof aClass.maxEnrollment === 'number') || !(aClass.maxEnrollment > 0)) {
+                invalidReasons.push("Invalid maximum enrollment: " + aClass.maxEnrollment);
             }
-            if (aClass.lastYearEnrollment && (!(typeof aClass.lastYearEnrollment === 'number') || !(aClass.lastYearEnrollment > 0))) {
-                invalidReasons.push("Invalid enrollment maximum: " + aClass.lastYearEnrollment);
+            if (aClass.priorEnrollment && (!(typeof aClass.priorEnrollment === 'number') || !(aClass.priorEnrollment > 0))) {
+                invalidReasons.push("Invalid prior enrollment: " + aClass.priorEnrollment);
             }
             if (!(aClass.majorRestrictions === undefined || aClass.majorRestrictions === null || aClass.majorRestrictions.constructor === Array)) {
                 invalidReasons.push("Invalid major restrictions: " + aClass.majorRestrictions);
@@ -281,17 +205,14 @@
             if (!(typeof aClass.waitlistCapacity === 'number' && aClass.waitlistCapacity >= 0)) {
                 invalidReasons.push("Invalid waitlist capacity: " + aClass.waitlistCapacity);
             }
-            if (!getAllCampuses().includes(aClass.campus)) {
-                invalidReasons.push("Invalid campus code: " + aClass.campus);
+            if (!aClass.campusCode) {
+                invalidReasons.push("Campus code is required");
             }
-            if (!getAllInstructionalMethods().includes(aClass.instructionalMethod)) {
-                invalidReasons.push("Invalid instructional method: " + aClass.instructionalMethod);
+            if (!getYesOrNo().includes(aClass.publish)) {
+                invalidReasons.push("Invalid publish indicator: " + aClass.publish);
             }
-            if (!getYesOrNo().includes(aClass.doNotPublish)) {
-                invalidReasons.push("Invalid \"do not publish\" indicator: " + aClass.doNotPublish);
-            }
-            if (!getAllSpecialApprovals().includes(aClass.specialApprovals)) {
-                invalidReasons.push("Invalid special approval indicator: " + aClass.specialApprovals);
+            if (!getAllSpecialApprovals().includes(aClass.specialApprovalCode)) {
+                invalidReasons.push("Invalid special approval indicator: " + aClass.specialApprovalCode);
             }
             if (!getYesOrNo().includes(aClass.honors)) {
                 invalidReasons.push("Invalid honors indicator: " + aClass.honors);

@@ -9,7 +9,7 @@
             for (var i = 0; i < classes.length; i++) {
                 if (classes[i].subjectCode.search(re) !== -1 ||
                     classes[i].courseNumber.search(re) !== -1 ||
-                    classes[i].shortTitle.search(re) !== -1) {
+                    classes[i].courseTitle.search(re) !== -1) {
                     result.push(classes[i]);
                 }
             }
