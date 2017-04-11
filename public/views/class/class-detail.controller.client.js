@@ -11,8 +11,8 @@
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
         vm.toastMessage = toastMessage;
-        vm.arraysEqual = arraysEqual;
-        vm.instructorNamesFromNuids = instructorNamesFromNuids;
+        vm.extractTargetAttributes = extractTargetAttributes;
+        vm.differentFromLastYear = differentFromLastYear;
 
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
@@ -22,26 +22,33 @@
             } else {
                 vm.class = findClassInSessionState($routeParams.unique_id); // find in session state for now until I figure out how to pass the specified course to this controller
 
-                vm.allSubjectCodes = ClassService.getAllSubjectCodes();
                 vm.currentTerm = ClassService.getCurrentTerm();
-                vm.allStatuses = ClassService.getAllStatuses();
-                vm.allPartOfTerms = ClassService.getAllPartOfTerms();
-                vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
                 vm.allMeetingDays = ClassService.getAllMeetingDays();
-                vm.allCreditHours = ClassService.getAllCreditHours();
-                vm.allCampuses = ClassService.getAllCampuses();
-                vm.allSections = ClassService.getAllSections();
-                vm.allWaitlist = ClassService.getAllWaitlist();
-                vm.allDoNotPublish = ClassService.getAllDoNotPublish();
-                vm.allCancel = ClassService.getAllCancel();
-                vm.allHonors = ClassService.getAllHonors();
-                vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
-
-                vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
-                vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
-
                 vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
                 vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+                vm.allStatuses = ClassService.getAllStatuses();
+                vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
+                vm.yesOrNo = ClassService.getYesOrNo();
+
+                ClassService.getDropdownValues()
+                    .then(
+                        function (res) {
+                            vm.all = res.data;
+                        },
+                        function (error) {
+                            vm.error = error.data;
+                        }
+                    );
+
+                ClassService.getAllInstructors()
+                    .then(
+                        function (res) {
+                            vm.allInstructors = res.data;
+                        },
+                        function (error) {
+                            vm.error = error.data;
+                        }
+                    );
             }
         }
 
@@ -50,14 +57,21 @@
         }
 
         function saveAndReturnToSchedule() {
-            vm.class.metadata = vm.class.metadata || {};
-            vm.class.metadata.modified = ClassService.isClassModified(vm.class);
-            vm.class.metadata.deleted = (vm.class.cancel === "Y");
+            console.log(vm.class);
+            var invalidClassReasons = ClassService.getInvalidClassReasons(vm.class);
+            if (invalidClassReasons.length) {
+                vm.error = invalidClassReasons.join("\n\n");
+                $window.scrollTo(0, 0);
+            } else {
+                vm.class.metadata = vm.class.metadata || {};
+                vm.class.metadata.modified = ClassService.isClassModified(vm.class);
+                vm.class.metadata.deleted = (vm.class.status === "C");
 
-            var schedule = JSON.parse($window.sessionStorage.schedule);
-            schedule[vm.class.sessionStateIndex] = vm.class;
-            $window.sessionStorage.schedule = JSON.stringify(schedule);
-            $location.url("/schedule-submission");
+                var schedule = JSON.parse($window.sessionStorage.schedule);
+                schedule[vm.class.sessionStateIndex] = vm.class;
+                $window.sessionStorage.schedule = JSON.stringify(schedule);
+                $location.url("/schedule-submission");
+            }
         }
 
         function findClassInSessionState(unique_id) {
@@ -109,7 +123,7 @@
         }
 
         function updateEndingTimes() {
-            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingStart);
+            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingBeginTime);
             var classMinDuration = 65;
             var classMaxDuration = 210;
             vm.allMeetingEndTimes = vm.allMeetingStartTimes
@@ -119,39 +133,48 @@
         function updateOnChangeOfTime(isMeetingStart) {
             if (isMeetingStart)
                 updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingStart) ||
-                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEnd);
+            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingBeginTime) ||
+                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEndTime);
         }
 
-        function arraysEqual(a, b) {
-            if (a === b) return true;
-            if (a == null || b == null) return false;
-            if (a.length != b.length) return false;
-
-            for (var i = 0; i < a.length; ++i) {
-                if (a[i] !== b[i]) return false;
+        function extractTargetAttributes(targetAttribute, sourceAttribute, allData, localData) {
+            if (!allData || !localData) {
+                return null;
             }
-            return true;
-        }
 
-        function instructorNamesFromNuids(instructors, nuids) {
-            var names = [];
-            for (var x = 0; x < nuids.length; x++) {
-                var instructorNuid = nuids[x];
-                for (var y = 0; y < instructors.length; y++) {
-                    if (instructorNuid === instructors[y].nuid) {
-                        names.push(instructors[y].name);
+            var targetData = [];
+            for (var x = 0; x < localData.length; x++) {
+                var localDataSourceAttribute = localData[x];
+                for (var y = 0; y < allData.length; y++) {
+                    if (localDataSourceAttribute === allData[y][sourceAttribute]) {
+                        targetData.push(allData[y][targetAttribute]);
                     }
                 }
             }
 
-            if (names.length === 0) {
+            if (targetData.length === 0) {
                 return "(none)";
-            } else if (names.length == 1) {
-                return names[0];
+            } else if (targetData.length == 1) {
+                return targetData[0];
             } else {
-                return names;
+                return targetData.join(", ");
             }
+        }
+
+        function differentFromLastYear(attributes) {
+            for (var x = 0; x < attributes.length; x++) {
+                var attribute = attributes[x];
+                if (vm.class[attribute].constructor === Array) {
+                    if (vm.class.old && !arraysEqual(vm.class[attribute], vm.class.old[attribute])) {
+                        return true;
+                    }
+                } else {
+                    if (vm.class.old && vm.class[attribute] !== vm.class.old[attribute]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         init();

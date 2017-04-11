@@ -3,11 +3,11 @@
         .module("NEURegistrar")
         .controller("ClassAddController", ClassAddController);
 
-    function ClassAddController($location, $window, ClassService, ScheduleService) {
+    function ClassAddController($location, $window, ClassService) {
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
-        vm.getMostRecentCourseData = getMostRecentCourseData;
+        vm.getCourseDataFromCatalog = getCourseDataFromCatalog;
         vm.isPeakPeriod = isPeakPeriod;
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
@@ -16,41 +16,45 @@
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
 
-            if (!vm.loggedInUser) {
+            if (!vm.loggedInUser || vm.loggedInUser.admin) {
                 $location.url("/login");
             } else {
                 vm.allSubjectCodes = ClassService.getAllSubjectCodes();
                 vm.currentTerm = ClassService.getCurrentTerm();
-                vm.allStatuses = ClassService.getAllStatuses();
-                vm.allPartOfTerms = ClassService.getAllPartOfTerms();
-                vm.allInstructionalMethods = ClassService.getAllInstructionalMethods();
                 vm.allMeetingDays = ClassService.getAllMeetingDays();
-                vm.allCreditHours = ClassService.getAllCreditHours();
-                vm.allCampuses = ClassService.getAllCampuses();
-                vm.allSections = ClassService.getAllSections();
-                vm.allWaitlist = ClassService.getAllWaitlist();
-                vm.allDoNotPublish = ClassService.getAllDoNotPublish();
-                vm.allCancel = ClassService.getAllCancel();
-                vm.allHonors = ClassService.getAllHonors();
-                vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
-
-                vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
-                vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
-
                 vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
                 vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
+                vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
+                vm.yesOrNo = ClassService.getYesOrNo();
+
+                ClassService.getDropdownValues()
+                    .then(
+                        function (res) {
+                            vm.all = res.data;
+                        },
+                        function (error) {
+                            vm.error = error.data;
+                        }
+                    );
+
+                ClassService.getAllInstructors()
+                    .then(
+                        function (res) {
+                            vm.allInstructors = res.data;
+                        },
+                        function (error) {
+                            vm.error = error.data;
+                        }
+                    );
             }
         }
 
-        function getMostRecentCourseData(subjectCode, courseNumber) {
-            vm.reloaded = (vm.reloaded === undefined) ? false : true;
-            if (!vm.reloaded) {
-                vm.class = ClassService.getMostRecentCourseData(subjectCode, courseNumber);
-                vm.class.old = angular.copy(vm.class);
+        function getCourseDataFromCatalog(subjectCode, courseNumber) {
+            if (!(/^\d{4}$/.test(courseNumber))) { // 4 digit number
+                vm.error = "Invalid course number"
             } else {
-                vm.class = {}; // fix this bug: does not reload select2s
-                vm.class = ClassService.getMostRecentCourseData(subjectCode, courseNumber);
-                vm.class.old = angular.copy(vm.class);
+                vm.class = ClassService.getCourseDataFromCatalog(subjectCode, courseNumber);
+                vm.error = "";
             }
         }
 
@@ -59,17 +63,22 @@
         }
 
         function saveAndReturnToSchedule() {
-            prepareAddedClass(vm.class);
-            var schedule = JSON.parse($window.sessionStorage.schedule);
-            schedule.push(vm.class);
-            $window.sessionStorage.schedule = JSON.stringify(schedule);
-            $location.url("/schedule-submission");
+            var invalidClassReasons = ClassService.getInvalidClassReasons(vm.class);
+            if (invalidClassReasons.length) {
+                vm.error = invalidClassReasons.join("\n\n");
+                $window.scrollTo(0, 0);
+            } else {
+                prepareAddedClass(vm.class);
+                var schedule = JSON.parse($window.sessionStorage.schedule);
+                schedule.push(vm.class);
+                $window.sessionStorage.schedule = JSON.stringify(schedule);
+                $location.url("/schedule-submission");
+            }
         }
 
         function prepareAddedClass(aClass) {
             aClass.metadata = aClass.metadata || {};
             aClass.metadata.added = true;
-            aClass.metadata.modified = ClassService.isClassModified(aClass);
             aClass.metadata.unique_id = ClassService.generateUniqueIdForClass(aClass);
         }
 
@@ -86,6 +95,9 @@
         }
 
         function isPeakPeriod(day, time) {
+            if (!day || !time) {
+                return false;
+            }
             var isPeakPeriod = 0;
             var x = document.getElementById("toast");
             if (day === "M" || day === "W" || day === "R" ||
@@ -111,7 +123,7 @@
         }
 
         function updateEndingTimes() {
-            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingStart);
+            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingBeginTime);
             var classMinDuration = 65;
             var classMaxDuration = 210;
             vm.allMeetingEndTimes = vm.allMeetingStartTimes
@@ -121,8 +133,8 @@
         function updateOnChangeOfTime(isMeetingStart) {
             if (isMeetingStart)
                 updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingStart) ||
-                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEnd);
+            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingBeginTime) ||
+                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEndTime);
         }
 
         init();

@@ -1,7 +1,9 @@
 <?php
     class RegistrarDatabase {
-        protected $conn;
+        //protected $conn;
         protected $host;
+        protected $username;
+        protected $password;
         protected $dbName;
 
         /**
@@ -10,17 +12,19 @@
         public function __construct() {
             // loads configuration file as an array
             $config = parse_ini_file('config/config.ini');
-            $this->databaseConnect($config['host'], $config['username'], $config['password'], $config['db_name']);
+            //$this->databaseConnect($config['host'], $config['username'], $config['password'], $config['db_name']);
             $this->host = $config['host'];
+            $this->username = $config['username'];
+            $this->password = $config['password'];
             $this->dbName = $config['db_name'];
         }
 
         /**
          * Deconstructor for RegistrarDatabase object.
          */
-        public function __destruct() {
-            $this->conn->close();
-        }
+//        public function __destruct() {
+//            $this->conn->close();
+//        }
 
         /**
          * Makes a connection to the database using the given parameters.
@@ -30,12 +34,16 @@
          * @param $password
          * @param $db_name
          */
-        protected function databaseConnect($host, $username, $password, $db_name) {
+        protected function databaseConnect() {
             try {
-                $this->conn = new mysqli($host, $username, $password, $db_name);
+                $conn = new mysqli($this->host, $this->username, $this->password, $this->dbName);
+            // @codeCoverageIgnoreStart
             } catch (Exception $e) {
                 throw new mysqli_sql_exception("Error with database connection: " . $e);
             }
+            // @codeCoverageIgnoreEnd
+
+            return $conn;
         }
 
         /**
@@ -80,15 +88,17 @@
          * @return array            the rows results from the query as JSON
          */
         public function selectAllQuery($sp) {
+            $conn = $this->databaseConnect();
+
             if ($sp == '') {
                 throw new InvalidArgumentException("Input is an empty string.");
             }
 
-            if (!$this->checkValidStoredProcedure($sp)) {
+            if (!$this->checkValidStoredProcedure($conn, $sp)) {
                 throw new InvalidArgumentException("Not a valid stored procedure.");
             }
 
-            $sp = mysqli_real_escape_string($this->conn, $sp);
+            $sp = mysqli_real_escape_string($conn, $sp);
 
             $resultsArr = array();
             $fieldsArr = array();
@@ -99,7 +109,7 @@
 SQL;
 
             try {
-                $result = mysqli_query($this->conn, $query);
+                $result = mysqli_query($conn, $query);
             // @codeCoverageIgnoreStart
             } catch (Exception $e) {
                 throw new mysqli_sql_exception("Error with query: " . $e);
@@ -133,12 +143,12 @@ SQL;
          * @param string $sp      the name of the stored procedure
          * @return bool     whether or not the name is in the database
          */
-        public function checkValidStoredProcedure($sp) {
+        public function checkValidStoredProcedure($conn, $sp) {
             if ($sp == '') {
                 throw new InvalidArgumentException("Input is an empty string.");
             }
 
-            $sp = mysqli_real_escape_string($this->conn, $sp);
+            $sp = mysqli_real_escape_string($conn, $sp);
 
             $resultsArr = array();
             $query = <<<SQL
@@ -148,7 +158,7 @@ SQL;
 SQL;
 
             try {
-                $result = mysqli_query($this->conn, $query);
+                $result = mysqli_query($conn, $query);
             // @codeCoverageIgnoreStart
             } catch (Exception $e) {
                 throw new mysqli_sql_exception("Error with query: " . $e);

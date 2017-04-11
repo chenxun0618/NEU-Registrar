@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="NEURegistrar">
+<head>
+    <meta charset="UTF-8">
+    <title>NEU Registrar Class Scheduler</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="viewport" content="initial-scale=1.25, user-scalable = no">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="public/css/style.css" rel="stylesheet"/>
+    <link href="public/css/toast.css" rel="stylesheet"/>
+    <link href="public/css/filterText.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <script src="https://code.angularjs.org/snapshot/angular.min.js"></script>
+    <script src="https://code.angularjs.org/snapshot/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script src="public/app.js"></script>
+    <script src="public/config.js"></script>
+    <script src="public/views/user/login.controller.client.js"></script>
+    <script src="public/views/schedule/schedule-submission.controller.client.js"></script>
+    <script src="public/views/class/class-add.controller.client.js"></script>
+    <script src="public/views/class/class-detail.controller.client.js"></script>
+    <script src="public/services/user.service.client.js"></script>
+    <script src="public/services/schedule.service.client.js"></script>
+    <script src="public/services/class.service.client.js"></script>
+</head>
+<body>
+<div ng-view></div>
+<script>
+    function arraysEqual(a, b) {
+        if (a === b) return true;
+        if (a == null || b == null) return false;
+        if (a.length != b.length) return false;
+
+        for (var i = 0; i < a.length; ++i) {
+            if (a[i] !== b[i]) return false;
+        }
+        return true;
+    }
+</script>
+</body>
+
+</html>
