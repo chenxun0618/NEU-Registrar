@@ -57,7 +57,6 @@
         }
 
         function saveAndReturnToSchedule() {
-            console.log(vm.class);
             var invalidClassReasons = ClassService.getInvalidClassReasons(vm.class);
             if (invalidClassReasons.length) {
                 vm.error = invalidClassReasons.join("\n\n");
@@ -66,6 +65,7 @@
                 vm.class.metadata = vm.class.metadata || {};
                 vm.class.metadata.modified = ClassService.isClassModified(vm.class);
                 vm.class.metadata.deleted = (vm.class.status === "C");
+                vm.class.metadata.modifiedInSession = true;
 
                 var schedule = JSON.parse($window.sessionStorage.schedule);
                 schedule[vm.class.sessionStateIndex] = vm.class;
