@@ -30,8 +30,15 @@
                 vm.yesOrNo = ClassService.getYesOrNo();
                 vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
 
-                vm.allPrimaryInstructors = ClassService.getAllPrimaryInstructors();
-                vm.allSecondaryInstructors = ClassService.getAllSecondaryInstructors();
+                ClassService.getAllInstructors()
+                    .then(
+                        function (res) {
+                            vm.allInstructors = res.data;
+                        },
+                        function (error) {
+                            vm.error = error.data;
+                        }
+                    );
 
                 vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
                 vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();

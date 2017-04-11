@@ -1,5 +1,8 @@
 <script type="text/javascript">
     $('select.select2').select2();
+    $('select.largeSelect2').select2({
+        minimumInputLength: 2
+    });
 </script>
 
 <div class="container">
@@ -72,10 +75,8 @@
             <td>Primary Instructor</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2" ng-model="model.class.primaryInstructor">
-                        <option ng-repeat="option in model.allPrimaryInstructors" ng-value="option.nuid">{{option.nuid}}
-                            {{option.name}}
-                        </option>
+                    <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.primaryInstructor"
+                            ng-options="option.nuid as option.name for option in model.allInstructors">
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
@@ -92,14 +93,11 @@
         </tr>
         <tr>
         <tr ng-class="{'modified': model.differentFromLastYear(['secondaryInstructors'])}">
-            <td>Secondary Instructors</td>
+            <td>Secondary Instructors {{model.class.secondaryInstructors}}</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2" ng-model="model.class.secondaryInstructors" multiple="multiple">
-                        <option ng-repeat="option in model.allSecondaryInstructors" ng-value="option.nuid">
-                            {{option.nuid}}
-                            {{option.name}}
-                        </option>
+                    <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.secondaryInstructors" multiple="multiple"
+                        ng-options="option.nuid as option.name for option in model.allInstructors">
                     </select>
                 </div>
                 <div ng-show="model.loggedInUser.admin" class="italics">
