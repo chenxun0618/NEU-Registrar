@@ -42,7 +42,6 @@
                 ScheduleService.getScheduleDetail(selectedDepartment, vm.loggedInUser)
                     .then(
                         function (res) {
-                            console.log(res.data);
                             vm.schedule = res.data;
                             ScheduleService.preprocessSchedule(vm.schedule);
                         },
