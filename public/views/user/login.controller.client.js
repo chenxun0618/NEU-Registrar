@@ -15,6 +15,17 @@
         vm.login = login;
 
         function login(email, nuid) {
+
+            if (!validateEmail(email)) {
+                vm.error = "Invalid email";
+                return;
+            }
+
+            if ((!nuid) || (nuid && nuid.length != 9)) {
+                vm.error = "Invalid NUID";
+                return;
+            }
+
             var user;
             UserService.login(email, nuid)
                 .then(
@@ -26,10 +37,15 @@
                         $location.url("/schedule-submission/");
                     },
                     function (error) {
-                        vm.error = error.statusText;
+                        vm.error = error.data ? error.data : error.statusText;
                     }
                 );
         };
+
+        function validateEmail(email) {
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
 
         function reformatSchedule(user) {
             var newDepts = [];

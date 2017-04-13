@@ -8,7 +8,7 @@
         var api = {
             getDropdownValues: getDropdownValues,
             getCurrentTerm: getCurrentTerm,
-            getAllSubjectCodes: getAllSubjectCodes,
+            getAllSubjectCodesInDept: getAllSubjectCodesInDept,
             getAllStatuses: getAllStatuses,
             getCourseDataFromCatalog: getCourseDataFromCatalog,
             getAllMeetingDays: getAllMeetingDays,
@@ -30,8 +30,9 @@
             return "201810";
         }
 
-        function getAllSubjectCodes() {
-            return ["ACCT", "CS", "DS", "IS", "MATH", "PHYS", "PSYC"];
+        function getAllSubjectCodesInDept(dept) {
+            var url = "/connection/getAllSubjectCodesInDept.php?dept=" + dept;
+            return $http.get(url);
         }
 
         function getAllSpecialApprovals() {
@@ -39,7 +40,7 @@
         }
 
         function getAllStatuses() {
-            return [{code: "A", description: "Active"}, {code: "I", description: "Inactive"}, {code: "C", description: "Cancelled"}];
+            return ["Active", "Cancelled"];
         }
 
         function getAllMeetingDays() {
@@ -47,7 +48,7 @@
         }
 
         function getAllTimeIntervals() {
-            return ["08:00", "08:05", "08:10", "08:15", "08:20", "08:25", "08:30", "08:35", "08:40", "08:45", "08:50", "08:55", "09:00", "09:05", "09:10", "09:15", "09:20", "09:25", "09:30", "09:35", "09:40", "09:45", "09:50", "09:55", "10:00", "10:05", "10:10", "10:15", "10:20", "10:25", "10:30", "10:35", "10:40", "10:45", "10:50", "10:55", "11:00", "11:05", "11:10", "11:15", "11:20", "11:25", "11:30", "11:35", "11:40", "11:45", "11:50", "11:55", "12:00", "12:05", "12:10", "12:15", "12:20", "12:25", "12:30", "12:35", "12:40", "12:45", "12:50", "12:55", "13:00", "13:05", "13:10", "13:15", "13:20", "13:25", "13:30", "13:35", "13:40", "13:45", "13:50", "13:55", "14:00", "14:05", "14:10", "14:15", "14:20", "14:25", "14:30", "14:35", "14:40", "14:45", "14:50", "14:55", "15:00", "15:05", "15:10", "15:15", "15:20", "15:25", "15:30", "15:35", "15:40", "15:45", "15:50", "15:55", "16:00", "16:05", "16:10", "16:15", "16:20", "16:25", "16:30", "16:35", "16:40", "16:45", "16:50", "16:55", "17:00", "17:05", "17:10", "17:15", "17:20", "17:25", "17:30", "17:35", "17:40", "17:45", "17:50", "17:55", "18:00", "18:05", "18:10", "18:15", "18:20", "18:25", "18:30", "18:35", "18:40", "18:45", "18:50", "18:55", "19:00", "19:05", "19:10", "19:15", "19:20", "19:25", "19:30", "19:35", "19:40", "19:45", "19:50", "19:55", "20:00", "20:05", "20:10", "20:15", "20:20", "20:25", "20:30", "20:35", "20:40", "20:45", "20:50", "20:55", "21:00", "21:05", "21:10", "21:15", "21:20", "21:25", "21:30", "21:35", "21:40", "21:45", "21:50", "21:55", "22:00"];
+            return ["0800", "0805", "0810", "0815", "0820", "0825", "0830", "0835", "0840", "0845", "0850", "0855", "0900", "0905", "0910", "0915", "0920", "0925", "0930", "0935", "0940", "0945", "0950", "0955", "1000", "1005", "1010", "1015", "1020", "1025", "1030", "1035", "1040", "1045", "1050", "1055", "1100", "1105", "1110", "1115", "1120", "1125", "1130", "1135", "1140", "1145", "1150", "1155", "1200", "1205", "1210", "1215", "1220", "1225", "1230", "1235", "1240", "1245", "1250", "1255", "1300", "1305", "1310", "1315", "1320", "1325", "1330", "1335", "1340", "1345", "1350", "1355", "1400", "1405", "1410", "1415", "1420", "1425", "1430", "1435", "1440", "1445", "1450", "1455", "1500", "1505", "1510", "1515", "1520", "1525", "1530", "1535", "1540", "1545", "1550", "1555", "1600", "1605", "1610", "1615", "1620", "1625", "1630", "1635", "1640", "1645", "1650", "1655", "1700", "1705", "1710", "1715", "1720", "1725", "1730", "1735", "1740", "1745", "1750", "1755", "1800", "1805", "1810", "1815", "1820", "1825", "1830", "1835", "1840", "1845", "1850", "1855", "1900", "1905", "1910", "1915", "1920", "1925", "1930", "1935", "1940", "1945", "1950", "1955", "2000", "2005", "2010", "2015", "2020", "2025", "2030", "2035", "2040", "2045", "2050", "2055", "2100", "2105", "2110", "2115", "2120", "2125", "2130", "2135", "2140", "2145", "2150", "2155", "2200"];
         }
 
         function getAllInstructors() {
@@ -81,21 +82,19 @@
         }
 
         function fillDefaultData(aClass) {
-            aClass.status = "A";
-            aClass.secondaryInstructors = [];
+            aClass.status = "Active";
             aClass.majorRestrictions = [];
             aClass.classRestrictions = [];
             aClass.levelRestrictions = [];
             aClass.programRestrictions = [];
             aClass.collegeRestrictions = [];
-            aClass.includeMajorRestrictions = true;
-            aClass.includeClassRestrictions = true;
-            aClass.includeLevelRestrictions = true;
-            aClass.includeProgramRestrictions = true;
-            aClass.includeCollegeRestrictions = true;
+            aClass.includeMajorRestriction = 1;
+            aClass.includeClassRestriction = 1;
+            aClass.includeLevelRestriction = 1;
+            aClass.includeProgramRestriction = 1;
+            aClass.includeCollegeRestriction = 1;
             aClass.specialApprovalCode = "";
-            aClass.billingAttributes = [];
-            aClass.honors = "N";
+            aClass.attributeCode = [];
             aClass.publish = "Y";
             aClass.comment = "";
         }
@@ -118,7 +117,6 @@
                 (aClass.meetingBeginTime === aClass.old.meetingBeginTime) &&
                 (aClass.meetingEndTime === aClass.old.meetingEndTime) &&
                 (aClass.primaryInstructorID === aClass.old.primaryInstructorID) &&
-                (arraysEqual(aClass.secondaryInstructors, aClass.old.secondaryInstructors)) &&
                 (aClass.maxEnrollment === aClass.old.maxEnrollment) &&
                 (aClass.priorEnrollment === aClass.old.priorEnrollment) &&
                 (arraysEqual(aClass.majorRestrictions, aClass.old.majorRestrictions)) &&
@@ -126,19 +124,17 @@
                 (arraysEqual(aClass.levelRestrictions, aClass.old.levelRestrictions)) &&
                 (arraysEqual(aClass.programRestrictions, aClass.old.programRestrictions)) &&
                 (arraysEqual(aClass.collegeRestrictions, aClass.old.collegeRestrictions)) &&
-                (aClass.includeMajorRestrictions === aClass.old.includeMajorRestrictions) &&
-                (aClass.includeClassRestrictions === aClass.old.includeClassRestrictions) &&
-                (aClass.includeLevelRestrictions === aClass.old.includeLevelRestrictions) &&
-                (aClass.includeProgramRestrictions === aClass.old.includeProgramRestrictions) &&
-                (aClass.includeCollegeRestrictions === aClass.old.includeCollegeRestrictions) &&
+                (aClass.includeMajorRestriction === aClass.old.includeMajorRestriction) &&
+                (aClass.includeClassRestriction === aClass.old.includeClassRestriction) &&
+                (aClass.includeLevelRestriction === aClass.old.includeLevelRestriction) &&
+                (aClass.includeProgramRestriction === aClass.old.includeProgramRestriction) &&
+                (aClass.includeCollegeRestriction === aClass.old.includeCollegeRestriction) &&
                 (aClass.waitlistCapacity === aClass.old.waitlistCapacity) &&
                 (aClass.campusCode === aClass.old.campusCode) &&
                 (aClass.instructionalMethodCode === aClass.old.instructionalMethodCode) &&
                 (aClass.specialApprovalCode === aClass.old.specialApprovalCode) &&
-                (arraysEqual(aClass.billingAttributes, aClass.old.billingAttributes)) &&
-                (aClass.honors === aClass.old.honors) &&
-                (aClass.publish === aClass.old.publish) &&
-                (aClass.comment === aClass.old.comment)
+                (arraysEqual(aClass.attributeCode, aClass.old.attributeCode)) &&
+                (aClass.publish === aClass.old.publish)
             );
         }
 
@@ -148,19 +144,16 @@
             if (!aClass.termCode || !(/^\d{6}$/.test(aClass.termCode))) { // 6 digit number
                 invalidReasons.push("Invalid term code: " + aClass.termCode);
             }
-            if (!["A", "C", "I"].includes(aClass.status)) {
+            if (!["Active", "Cancelled"].includes(aClass.status)) {
                 invalidReasons.push("Invalid status: " + aClass.status);
             }
             if (aClass.crn && !(/^\d{5}$/.test(aClass.crn))) { // 5 digit number
                 invalidReasons.push("Invalid CRN: " + aClass.crn);
             }
-            if (!getAllSubjectCodes().includes(aClass.subjectCode)) {
-                invalidReasons.push("Invalid subject code: " + aClass.subjectCode);
-            }
             if (!aClass.courseNumber || !(typeof aClass.courseNumber === "string") || !(/^\d{4}$/.test(aClass.courseNumber))) {
                 invalidReasons.push("Invalid course number: " + aClass.courseNumber);
             }
-            if (aClass.section && !(/^\d{2}$/.test(aClass.section))) {
+            if (aClass.section && !(0 < aClass.section && aClass.section < 100)) {
                 invalidReasons.push("Invalid section: " + aClass.section);
             }
             if (!aClass.courseTitle) {
@@ -177,9 +170,6 @@
             }
             if (!aClass.primaryInstructorID) {
                 invalidReasons.push("Invalid primary instructor: " + aClass.primaryInstructorID);
-            }
-            if (!(aClass.secondaryInstructors === undefined || aClass.secondaryInstructors === null || aClass.secondaryInstructors.constructor === Array)) {
-                invalidReasons.push("Invalid secondary instructors: " + aClass.secondaryInstructors);
             }
             if (!aClass.maxEnrollment || !(typeof aClass.maxEnrollment === 'number') || !(aClass.maxEnrollment > 0)) {
                 invalidReasons.push("Invalid maximum enrollment: " + aClass.maxEnrollment);
@@ -213,9 +203,6 @@
             }
             if (!getAllSpecialApprovals().includes(aClass.specialApprovalCode)) {
                 invalidReasons.push("Invalid special approval indicator: " + aClass.specialApprovalCode);
-            }
-            if (!getYesOrNo().includes(aClass.honors)) {
-                invalidReasons.push("Invalid honors indicator: " + aClass.honors);
             }
 
             return invalidReasons;

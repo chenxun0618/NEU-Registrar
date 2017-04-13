@@ -32,13 +32,13 @@ use PHPUnit\Framework\TestCase;
             );
         }
 
-        public function testGetBillingAttributes() {
+        public function testGetAttributeCode() {
             $dd = new Dropdowns();
-            $billingAttributes = $dd->getBillingAttributes();
+            $attributes = $dd->getAttributeCode();
 
             $this->assertEquals(
                 66,
-                count($billingAttributes)
+                count($attributeCode)
             );
         }
 

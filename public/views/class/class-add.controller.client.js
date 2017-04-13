@@ -12,14 +12,24 @@
         vm.updateEndingTimes = updateEndingTimes;
         vm.updateOnChangeOfTime = updateOnChangeOfTime;
         vm.toastMessage = toastMessage;
+        vm.getFormattedTime = getFormattedTime;
 
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
+            vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
 
             if (!vm.loggedInUser || vm.loggedInUser.admin) {
                 $location.url("/login");
             } else {
-                vm.allSubjectCodes = ClassService.getAllSubjectCodes();
+                ClassService.getAllSubjectCodesInDept(vm.selectedDepartment.departmentCode)
+                    .then(
+                        function (res) {
+                            vm.allSubjectCodesInDept = res.data.subjectCodes;
+                        },
+                        function (error) {
+                            vm.error = error.data ? error.data : error.statusText;
+                        }
+                    );
                 vm.currentTerm = ClassService.getCurrentTerm();
                 vm.allMeetingDays = ClassService.getAllMeetingDays();
                 vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
@@ -50,11 +60,13 @@
         }
 
         function getCourseDataFromCatalog(subjectCode, courseNumber) {
-            if (!(/^\d{4}$/.test(courseNumber))) { // 4 digit number
-                vm.error = "Invalid course number"
+            if (!subjectCode) {
+                vm.error = "Must supply subject code";
+            } else if (!(/^\d{4}$/.test(courseNumber))) { // 4 digit number
+                vm.error = "Invalid course number";
             } else {
-                vm.class = ClassService.getCourseDataFromCatalog(subjectCode, courseNumber);
                 vm.error = "";
+                vm.class = ClassService.getCourseDataFromCatalog(subjectCode, courseNumber);
             }
         }
 
@@ -70,7 +82,7 @@
             } else {
                 prepareAddedClass(vm.class);
                 var schedule = JSON.parse($window.sessionStorage.schedule);
-                schedule.push(vm.class);
+                schedule.classes.push(vm.class);
                 $window.sessionStorage.schedule = JSON.stringify(schedule);
                 $location.url("/schedule-submission");
             }
@@ -135,6 +147,11 @@
                 updateEndingTimes();
             vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingBeginTime) ||
                 isPeakPeriod(vm.class.meetingDays, vm.class.meetingEndTime);
+        }
+
+        function getFormattedTime(str) {
+            var secondToLast = str.length - 2;
+            return str.substring(0, secondToLast) + ":" + str.substring(secondToLast, str.length);
         }
 
         init();
