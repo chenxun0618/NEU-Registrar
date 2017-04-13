@@ -53,18 +53,36 @@
         }
 
         function saveSchedule() {
-            if (vm.schedule && vm.schedule.classes) {
-                ScheduleService.saveSchedule(vm.schedule);
+            if (vm.schedule) {
+                ScheduleService.saveSchedule(vm.loggedInUser.nuid, vm.selectedDepartment.departmentCode,
+                    findScheduleTimestamp(vm.selectedDepartment.departmentCode), vm.schedule.classes)
+                    .then(
+                        function (res) {
+                            console.log(res);
+                        },
+                        function (error) {
+                            vm.error = error.data ? error.data : error.statusText;
+                        }
+                    );
             } else {
                 vm.error = "No schedule found";
                 $window.scrollTo(0, 0);
             }
+
+            function findScheduleTimestamp(deptCode) {
+                for (var x = 0; x < vm.allDepartments.length; x++) {
+                    if (deptCode === vm.allDepartments[x].departmentCode) {
+                        return vm.allDepartments[x].lastEditTime;
+                    }
+                }
+            }
+
         }
 
         function submitSchedule() {
             var r = confirm("Are you sure you want to submit this schedule?");
             if (r == true) {
-                if (vm.schedule && vm.schedule.classes) {
+                if (vm.schedule) {
                     ScheduleService.submitSchedule(vm.schedule);
                     $location.url("/submitted/");
                 } else {
@@ -77,7 +95,7 @@
         function rejectSchedule() {
             var rejection_message = prompt("Enter a reason for the rejection (optional):", "");
             if (rejection_message !== null) {
-                if (vm.schedule && vm.schedule.classes) {
+                if (vm.schedule) {
                     ScheduleService.rejectSchedule(vm.schedule, rejection_message);
                     $window.sessionStorage.schedule = JSON.stringify(null);
                     $location.url("/schedule-submission/");
@@ -91,7 +109,7 @@
         function approveSchedule() {
             var r = confirm("Are you sure you want to approve this schedule?");
             if (r == true) {
-                if (vm.schedule && vm.schedule.classes) {
+                if (vm.schedule) {
                     ScheduleService.approveSchedule(vm.schedule);
                     $window.sessionStorage.schedule = JSON.stringify(null);
                     $location.url("/schedule-submission/");
