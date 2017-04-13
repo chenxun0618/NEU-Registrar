@@ -133,7 +133,7 @@
             <td>Special Approvals*</td>
             <td>
                 <select ng-model="model.class.specialApprovalCode"
-                        ng-options="option for option in model.allSpecialApprovals">
+                        ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.allSpecialApprovals">
                 </select>
             </td>
         </tr>
