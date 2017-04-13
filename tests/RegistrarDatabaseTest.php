@@ -28,6 +28,9 @@
             );
         }
 
+        /**
+         * Tests that the output for the getHost method is correct.
+         */
         public function testGetHost() {
             $db = new RegistrarDatabase();
 
@@ -37,6 +40,9 @@
             );
         }
 
+        /**
+         * Tests that the output for the getDatabaseName method is correct.
+         */
         public function testGetDatabaseName() {
             $db = new RegistrarDatabase();
 
@@ -46,6 +52,9 @@
             );
         }
 
+        /**
+         * Tests that the updateHost method changes the hostname for the class.
+         */
         public function testUpdateHost() {
             $db = new RegistrarDatabase();
             $method = self::getMethod('updateHost');
@@ -57,6 +66,9 @@
             );
         }
 
+        /**
+         * Tests that the updateDatabaseName method changes the database name for the class.
+         */
         public function testUpdateDatabaseName() {
             $db = new RegistrarDatabase();
             $method = self::getMethod('updateDatabaseName');
@@ -68,6 +80,9 @@
             );
         }
 
+        /**
+         * Tests that the updateHost method throws an IllegalArgumentException when an empty string is given as input.
+         */
         public function testEmptyStringUpdateHost() {
             $db = new RegistrarDatabase();
             $method = self::getMethod('updateHost');
@@ -76,6 +91,10 @@
             $method->invokeArgs($db, array('$newHost'=>''));
         }
 
+        /**
+         * Tests that the updateDatabaseName method throws an IllegalArgumentException when an empty string is given as
+         * input.
+         */
         public function testEmptyStringUpdateDatabaseName() {
             $db = new RegistrarDatabase();
             $method = self::getMethod('updateDatabaseName');
@@ -83,17 +102,6 @@
             $this->expectException(InvalidArgumentException::class);
             $method->invokeArgs($db, array('$newDB'=>''));
         }
-
-        /**
-         * Tests that the databaseConnect method throws an exception on a bad connection.
-         */
-//        public function testBadConnection() {
-//            $db = new RegistrarDatabase();
-//            $method = self::getMethod('databaseConnect');
-//
-//            $this->expectException(mysqli_sql_exception::class);
-//            $method->invokeArgs($db, array());
-//        }
 
         /**
          * Tests that the output for the selectAllQuery method is correct.
@@ -119,13 +127,14 @@
             );
 
             $this->assertEquals(
-                76,
+                782,
                 count($db->selectAllQuery('select_ssbsect'))
             );
         }
 
         /**
-         * Tests that the selectAllQuery method throws an exception on an invalid query.
+         * Tests that the selectAllQuery method throws an IllegalArgumentException when an invalid procedure is given
+         * as input.
          */
         public function testInvalidProcedure() {
             $db = new RegistrarDatabase();
@@ -136,13 +145,61 @@
         }
 
         /**
-         * Tests that the selectAllQuery method throws an exception on an empty input.
+         * Tests that the selectAllQuery method throws an IllegalArgumentException when an empty string is given as
+         * input.
          */
         public function testEmptyStringSelectAll() {
             $db = new RegistrarDatabase();
 
             $this->expectException(InvalidArgumentException::class);
             $results = $db->selectAllQuery('');
+        }
+
+        /**
+         * Tests that the output for the getCourseCatalog method is correct.
+         */
+        public function testGetCourseCatalog() {
+            $db = new RegistrarDatabase();
+            $subjectCode = 'CINE';
+            $courseNumber = '2161';
+            $title = $db->getCourseCatalog($subjectCode, $courseNumber)[0]['title'];
+            $departmentCode = $db->getCourseCatalog($subjectCode, $courseNumber)[0]['departmentCode'];
+
+            $this->assertEquals(
+                'Video Software Tools',
+                $title
+            );
+
+            $this->assertEquals(
+                'COMM',
+                $departmentCode
+            );
+        }
+
+        /**
+         * Tests that the getCourseCatalog method throws an IllegalArgumentException when an empty string is given for
+         * the subject code.
+         */
+        public function testEmptyStringSubjectCodeGetCourseCatalog() {
+            $db = new RegistrarDatabase();
+            $subjectCode = '';
+            $courseNumber = '2161';
+
+            $this->expectException(InvalidArgumentException::class);
+            $db->getCourseCatalog($subjectCode, $courseNumber);
+        }
+
+        /**
+         * Tests that the getCourseCatalog method throws an IllegalArgumentException when an empty string is given for
+         * the course number.
+         */
+        public function testEmptyStringCourseNumberGetCourseCatalog() {
+            $db = new RegistrarDatabase();
+            $subjectCode = 'CINE';
+            $courseNumber = '';
+
+            $this->expectException(InvalidArgumentException::class);
+            $db->getCourseCatalog($subjectCode, $courseNumber);
         }
 
         /**
@@ -169,7 +226,8 @@
         }
 
         /**
-         * Tests that the checkValidStoredProcedure method throws an exception on an empty input.
+         * Tests that the checkValidStoredProcedure method throws an IllegalArgumentException when an empty string is
+         * given as input.
          */
         public function testEmptyStringCheckValidStoredProcedure() {
             $db = new RegistrarDatabase();
@@ -193,15 +251,5 @@
                 $sp
             );
         }
-
-//        public function testBadQueryCheckValidStoredProcedure() {
-//            $db = new RegistrarDatabase();
-//            $sp = 'select_gtvinsm';
-//
-//            $this->expectException(mysqli_sql_exception::class);
-//            $method = self::getMethod('updateHost');
-//            $method->invokeArgs($db, array('$newHost'=>'invalid_host'));
-//            $db->checkValidStoredProcedure($sp);
-//        }
     }
 ?>

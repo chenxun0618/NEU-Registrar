@@ -1,6 +1,5 @@
 <?php
     class RegistrarDatabase {
-        //protected $conn;
         protected $host;
         protected $username;
         protected $password;
@@ -12,7 +11,6 @@
         public function __construct() {
             // loads configuration file as an array
             $config = parse_ini_file('config/config.ini');
-            //$this->databaseConnect($config['host'], $config['username'], $config['password'], $config['db_name']);
             $this->host = $config['host'];
             $this->username = $config['username'];
             $this->password = $config['password'];
@@ -20,19 +18,9 @@
         }
 
         /**
-         * Deconstructor for RegistrarDatabase object.
-         */
-//        public function __destruct() {
-//            $this->conn->close();
-//        }
-
-        /**
          * Makes a connection to the database using the given parameters.
          *
-         * @param $host
-         * @param $username
-         * @param $password
-         * @param $db_name
+         * @return mysqli       a database connection
          */
         protected function databaseConnect() {
             try {
@@ -52,7 +40,7 @@
          * @return string       the host name
          */
         public function getHost() {
-            return (string) $this->host;
+            return $this->host;
         }
 
         /**
@@ -61,17 +49,27 @@
          * @return string       the database name
          */
         public function getDatabaseName() {
-            return (string) $this->dbName;
+            return $this->dbName;
         }
 
+        /**
+         * Updates the hostname.
+         *
+         * @param string $newHost      the new hostname
+         */
         protected function updateHost($newHost) {
             if ($newHost == '') {
-                throw new InvalidArgumentException("New host name is an empty string.");
+                throw new InvalidArgumentException("New hostname is an empty string.");
             }
 
             $this->host = $newHost;
         }
 
+        /**
+         * Updates the database name.
+         *
+         * @param string $newDB        the new database name
+         */
         protected function updateDatabaseName($newDB) {
             if ($newDB == '') {
                 throw new InvalidArgumentException("New database name is an empty string.");
@@ -135,6 +133,49 @@ SQL;
             }
 
             return $resultsArr;
+        }
+
+        public function getCourseCatalog($subjectCode, $courseNumber) {
+            $conn = $this->databaseConnect();
+
+            if ($subjectCode == '') {
+                throw new InvalidArgumentException("Subject code is an empty string.");
+            }
+
+            if ($courseNumber == '') {
+                throw new InvalidArgumentException("Course number is an empty string.");
+            }
+
+            $subjectCode = mysqli_real_escape_string($conn, $subjectCode);
+            $courseNumber = mysqli_real_escape_string($conn, $courseNumber);
+            $query = <<<SQL
+              CALL course_catalog_lookup('$subjectCode', '$courseNumber');
+SQL;
+
+            $rowObj = array();
+            $courseCatalog = array();
+
+            try {
+                $result = mysqli_query($conn, $query);
+            // @codeCoverageIgnoreStart
+            } catch (Exception $e) {
+                throw new mysqli_sql_exception("Error with query: " . $e);
+            }
+            // @codeCoverageIgnoreEnd
+
+            while ($row = mysqli_fetch_assoc($result)) {
+                $rowObj['collegeCode'] = $row['collegeCode'];
+                $rowObj['collegeDescription'] = $row['collegeDescription'];
+                $rowObj['departmentCode'] = $row['departmentCode'];
+                $rowObj['departmentDescription'] = $row['departmentDescription'];
+                $rowObj['subjectCode'] = $row['subjectCode'];
+                $rowObj['courseNumber'] = $row['courseNumber'];
+                $rowObj['title'] = $row['title'];
+
+                $courseCatalog[] = $rowObj;
+            }
+
+            return $courseCatalog;
         }
 
         /**
