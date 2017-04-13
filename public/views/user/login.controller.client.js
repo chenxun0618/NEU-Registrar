@@ -40,8 +40,8 @@
                 var deptName = Object.keys(dept)[0];
                 var scheduleStatus = dept[deptName];
                 newDepts.push({
-                    code: deptName,
-                    scheduleStatus: scheduleStatus
+                    departmentCode: deptName,
+                    status: scheduleStatus
                 });
             }
 

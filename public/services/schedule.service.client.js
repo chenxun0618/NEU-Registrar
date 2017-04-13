@@ -10,8 +10,7 @@
             saveSchedule: saveSchedule,
             submitSchedule: submitSchedule,
             rejectSchedule: rejectSchedule,
-            approveSchedule: approveSchedule,
-            getAllSchedules: getAllSchedules,
+            approveSchedule: approveSchedule
         };
 
         function getScheduleDetail(schedule) {
@@ -326,34 +325,6 @@
 
         function approveSchedule(schedule) {
             // communicate with web service
-        }
-
-        // based on logged in user's nuid, gets the appropriate list of schedule metadata in descending order
-        function getAllSchedules(nuid) {
-
-            // dummy data for now
-            return [
-                {
-                    departmentCode: "ACCT",
-                    termCode: "201810",
-                    term_readable: "Spring 2018",
-                    status: "D",
-                    last_modifying_user_nuid: "001104152",
-                    last_modifying_user_name: "John Smith",
-                    timestamp: new Date()
-                },
-                {
-                    departmentCode: "ENTR",
-                    termCode: "201810",
-                    term_readable: "Spring 2018"
-                },
-                {
-                    departmentCode: "MKTG",
-                    termCode: "201810",
-                    term_readable: "Spring 2018"
-                },
-
-            ];
         }
 
         return api;

@@ -19,7 +19,7 @@
     <form name="getSchedules">
         <label for="scheduleSelect"> Schedule: </label>
         <select name="scheduleSelect" id="scheduleSelect" ng-model="model.selectedSchedule"
-                ng-options="model.getScheduleSummaryLine(option) for option in model.schedules track by option.departmentCode+option.termCode"
+                ng-options="model.getScheduleSummaryLine(option) for option in model.schedules"
                 ng-change="model.getScheduleDetail(model.selectedSchedule)">
         </select>
     </form>

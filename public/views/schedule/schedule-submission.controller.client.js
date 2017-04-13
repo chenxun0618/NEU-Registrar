@@ -23,8 +23,7 @@
             if (!vm.loggedInUser) {
                 $location.url("/login/");
             } else {
-                vm.subjectCodes = ClassService.getAllSubjectCodes();
-                vm.schedules = ScheduleService.getAllSchedules();
+                vm.schedules = vm.loggedInUser.depts;
 
                 if ($window.sessionStorage.selectedSchedule) {
                     vm.selectedSchedule = JSON.parse($window.sessionStorage.selectedSchedule);
