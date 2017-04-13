@@ -13,6 +13,7 @@
         vm.toastMessage = toastMessage;
         vm.extractTargetAttributes = extractTargetAttributes;
         vm.differentFromLastYear = differentFromLastYear;
+        vm.getReadableMeetingTime = getReadableMeetingTime;
         vm.getFormattedTime = getFormattedTime;
 
         function init() {
@@ -37,7 +38,7 @@
                             vm.all = res.data;
                         },
                         function (error) {
-                            vm.error = error.data;
+                            vm.error = error.data ? error.data : error.statusText;
                         }
                     );
 
@@ -47,7 +48,7 @@
                             vm.allInstructors = res.data;
                         },
                         function (error) {
-                            vm.error = error.data;
+                            vm.error = error.data ? error.data : error.statusText;
                         }
                     );
             }
@@ -176,6 +177,14 @@
                 }
             }
             return false;
+        }
+
+        function getReadableMeetingTime(aClass) {
+            if (!aClass.meetingDays || !aClass.meetingBeginTime || !aClass.meetingEndTime) {
+                return "(not found)";
+            } else {
+                return aClass.meetingDays + " " + getFormattedTime(aClass.meetingBeginTime) + "–" + getFormattedTime(aClass.meetingEndTime);
+            }
         }
 
         function getFormattedTime(str) {

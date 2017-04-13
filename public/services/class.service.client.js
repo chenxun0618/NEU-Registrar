@@ -11,6 +11,7 @@
             getAllSubjectCodesInDept: getAllSubjectCodesInDept,
             getAllStatuses: getAllStatuses,
             getCourseDataFromCatalog: getCourseDataFromCatalog,
+            fillDefaultData: fillDefaultData,
             getAllMeetingDays: getAllMeetingDays,
             getAllTimeIntervals: getAllTimeIntervals,
             getAllInstructors: getAllInstructors,
@@ -61,27 +62,12 @@
         }
 
         function getCourseDataFromCatalog(subjectCode, courseNumber) {
-
-            // dummy data for now
-            var dummy = {
-                college: "BA",
-                collegeName: "D'Amore-McKim School of Business",
-                departmentCode: "ACCT",
-                departmentName: "Accounting",
-                subjectCode: subjectCode,
-                subjectName: "Accounting",
-                termCode: "201810",
-                courseNumber: courseNumber,
-                section: "01",
-                courseTitle: "Principles of Accounting"
-            };
-
-            fillDefaultData(dummy);
-
-            return dummy;
+            var url = "/lib/courseCatalogLookup.php?subjectCode=" + subjectCode + "&courseNumber=" + courseNumber;
+            return $http.get(url);
         }
 
-        function fillDefaultData(aClass) {
+        function fillDefaultData(aClass, schedule) {
+            aClass.termCode = getCurrentTerm();
             aClass.status = "Active";
             aClass.majorRestrictions = [];
             aClass.classRestrictions = [];
@@ -97,6 +83,21 @@
             aClass.attributeCode = [];
             aClass.publish = "Y";
             aClass.comment = "";
+
+            aClass.section = findMinimalSection(aClass, schedule);
+        }
+
+        function findMinimalSection(aClass, schedule) {
+            var minSection = 0;
+
+            for (var x = 0; x < schedule.classes.length; x++) {
+                var currentClass = schedule.classes[x];
+                if (aClass.subjectCode === currentClass.subjectCode && aClass.courseNumber === currentClass.courseNumber) {
+                    minSection = Math.max(minSection, currentClass.section);
+                }
+            }
+
+            return minSection + 1;
         }
 
         function generateUniqueIdForClass(aClass) {
@@ -153,7 +154,7 @@
             if (!aClass.courseNumber || !(typeof aClass.courseNumber === "string") || !(/^\d{4}$/.test(aClass.courseNumber))) {
                 invalidReasons.push("Invalid course number: " + aClass.courseNumber);
             }
-            if (aClass.section && !(0 < aClass.section && aClass.section < 100)) {
+            if (!aClass.section || (aClass.section && !(0 < aClass.section && aClass.section < 100))) {
                 invalidReasons.push("Invalid section: " + aClass.section);
             }
             if (!aClass.courseTitle) {

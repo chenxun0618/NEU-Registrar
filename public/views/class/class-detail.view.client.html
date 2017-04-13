@@ -32,7 +32,7 @@
         <tr ng-class="{'modified': model.differentFromLastYear(['courseTitle'])}">
             <td>Title</td>
             <td>
-                <input ng-if="!model.loggedInUser.admin" type="text" ng-model="model.class.courseTitle"/>
+                <input style="width:200px" ng-if="!model.loggedInUser.admin" type="text" ng-model="model.class.courseTitle"/>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.courseTitle}}</div>
             </td>
             <td>
@@ -61,13 +61,12 @@
                     </select>
                 </div>
                 <div ng-if="model.loggedInUser.admin" class="italics">
-                    {{model.class.meetingDays + ", " + model.class.meetingBeginTime + "—" + model.class.meetingEndTime}}
+                    {{model.getReadableMeetingTime(model.class)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['meetingDays', 'meetingBeginTime', 'meetingEndTime'])}"
-                     class="changedFrom">{{model.class.old.meetingDays + ", " + model.class.old.meetingBeginTime + "—" +
-                    model.class.old.meetingEndTime}}
+                     class="changedFrom">{{model.class.old ? model.getReadableMeetingTime(model.class.old) : ""}}
                 </div>
             </td>
         </tr>
