@@ -1,122 +1,121 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-    class DropdownsTest extends TestCase {
-        /**
-         * Tests that the output for the getInstructionalMethods method is correct.
-         */
-        public function testGetInstructionalMethods() {
-            $dd = new Dropdowns();
-            $instructionalMethods = $dd->getInstructionalMethods();
+class DropdownsTest extends TestCase {
+    /**
+     * Tests that the output for the getInstructionalMethods method is correct.
+     */
+    public function testGetInstructionalMethods() {
+        $dd = new Dropdowns();
+        $instructionalMethods = $dd->getInstructionalMethods();
 
-            $this->assertEquals(
+        $this->assertEquals(
                 11,
                 count($instructionalMethods)
-            );
-        }
+        );
+    }
 
-        /**
-         * Tests that the output for the getMeetingSequences method is correct.
-         */
-        public function testGetMeetingSequences() {
-            $dd = new Dropdowns();
-            $meetingSequences = $dd->getMeetingSequences();
+    /**
+     * Tests that the output for the getMeetingSequences method is correct.
+     */
+    public function testGetMeetingSequences() {
+        $dd = new Dropdowns();
+        $meetingSequences = $dd->getMeetingSequences();
 
-            $this->assertEquals(
+        $this->assertEquals(
                 117,
                 count($meetingSequences)
-            );
-        }
+        );
+    }
 
-        /**
-         * Tests that the output for the getCampuses method is correct.
-         */
-        public function testGetCampuses() {
-            $dd = new Dropdowns();
-            $campuses = $dd->getCampuses();
+    /**
+     * Tests that the output for the getCampuses method is correct.
+     */
+    public function testGetCampuses() {
+        $dd = new Dropdowns();
+        $campuses = $dd->getCampuses();
 
-            $this->assertEquals(
+        $this->assertEquals(
                 20,
                 count($campuses)
-            );
-        }
+        );
+    }
 
-        /**
-         * Tests that the output for the getAttributeCode method is correct.
-         */
-        public function testGetAttributeCode() {
-            $dd = new Dropdowns();
-            $attributes = $dd->getAttributeCode();
+    /**
+     * Tests that the output for the getAttributeCode method is correct.
+     */
+    public function testGetAttributeCode() {
+        $dd = new Dropdowns();
+        $attributes = $dd->getAttributeCode();
 
-            $this->assertEquals(
+        $this->assertEquals(
                 66,
                 count($attributes)
-            );
-        }
+        );
+    }
 
-        /**
-         * Tests that the output for the getMajorRestrictions method is correct.
-         */
-        public function testGetMajorRestrictions() {
-            $dd = new Dropdowns();
-            $majorRestrictions = $dd->getMajorRestrictions();
+    /**
+     * Tests that the output for the getMajorRestrictions method is correct.
+     */
+    public function testGetMajorRestrictions() {
+        $dd = new Dropdowns();
+        $majorRestrictions = $dd->getMajorRestrictions();
 
-            $this->assertEquals(
+        $this->assertEquals(
                 793,
                 count($majorRestrictions)
-            );
-        }
+        );
+    }
 
-        /**
-         * Tests that the output for the getClassRestrictions method is correct.
-         */
-        public function testGetClassRestrictions() {
-            $dd = new Dropdowns();
-            $classRestrictions = $dd->getClassRestrictions();
+    /**
+     * Tests that the output for the getClassRestrictions method is correct.
+     */
+    public function testGetClassRestrictions() {
+        $dd = new Dropdowns();
+        $classRestrictions = $dd->getClassRestrictions();
 
-            $this->assertEquals(
+        $this->assertEquals(
                 7,
                 count($classRestrictions)
-            );
-        }
+        );
+    }
 
-        /**
-         * Tests that the output for the getLevelRestrictions method is correct.
-         */
-        public function testGetLevelRestrictions() {
-            $dd = new Dropdowns();
-            $levelRestrictions = $dd->getLevelRestrictions();
+    /**
+     * Tests that the output for the getLevelRestrictions method is correct.
+     */
+    public function testGetLevelRestrictions() {
+        $dd = new Dropdowns();
+        $levelRestrictions = $dd->getLevelRestrictions();
 
-            $this->assertEquals(
+        $this->assertEquals(
                 6,
                 count($levelRestrictions)
-            );
-        }
+        );
+    }
 
-        /**
-         * Tests that the output for the getProgramRestrictions method is correct.
-         */
-        public function testGetProgramRestrictions() {
-            $dd = new Dropdowns();
-            $programRestrictions = $dd->getProgramRestrictions();
+    /**
+     * Tests that the output for the getProgramRestrictions method is correct.
+     */
+    public function testGetProgramRestrictions() {
+        $dd = new Dropdowns();
+        $programRestrictions = $dd->getProgramRestrictions();
 
-            $this->assertEquals(
+        $this->assertEquals(
                 1169,
                 count($programRestrictions)
-            );
-        }
+        );
+    }
 
-        /**
-         * Tests that the output for the getCollegeRestrictions method is correct.
-         */
-        public function testGetCollegeRestrictions() {
-            $dd = new Dropdowns();
-            $collegeRestrictions = $dd->getCollegeRestrictions();
+    /**
+     * Tests that the output for the getCollegeRestrictions method is correct.
+     */
+    public function testGetCollegeRestrictions() {
+        $dd = new Dropdowns();
+        $collegeRestrictions = $dd->getCollegeRestrictions();
 
-            $this->assertEquals(
+        $this->assertEquals(
                 9,
                 count($collegeRestrictions)
-            );
-        }
+        );
     }
-?>
+}
