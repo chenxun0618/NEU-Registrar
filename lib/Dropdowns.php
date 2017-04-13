@@ -9,7 +9,7 @@
     $majorRestrictions = $dd->getMajorRestrictions();
     $classRestrictions = $dd->getClassRestrictions();
     $levelRestrictions = $dd->getLevelRestrictions();
-    $programRestrictions = $dd->getProgramResrictions();
+    $programRestrictions = $dd->getProgramRestrictions();
     $collegeRestrictions = $dd->getCollegeRestrictions();
 
     $dropdownData = ["instructionalMethod"=>$instructionalMethod, "meetingSequences"=>$meetingSequences, "campus"=>$campus,
@@ -32,7 +32,6 @@
         /**
          * Gets all the different instructional method codes from the given rows.
          *
-         * @param $rows
          * @return array
          */
         public function getInstructionalMethods() {
@@ -51,6 +50,11 @@
             return $instructionalMethod;
         }
 
+        /**
+         * Retrieves all the meeting sequences data.
+         *
+         * @return array        the meeting sequences data
+         */
         public function getMeetingSequences() {
             $rows = $this->db->selectAllQuery('select_stvmeet');
             $rowObj = array();
@@ -69,6 +73,11 @@
             return $meetingSequences;
         }
 
+        /**
+         * Retrieves all the campuses data.
+         *
+         * @return array        the campuses data
+         */
         public function getCampuses() {
             $rows = $this->db->selectAllQuery('select_stvcamp');
             $campuses = array();
@@ -83,6 +92,11 @@
             return $campuses;
         }
 
+        /**
+         * Retrieves all the billing attributes data.
+         *
+         * @return array        the billing attributes data
+         */
         public function getBillingAttributes() {
             $rows = $this->db->selectAllQuery('select_stvattr');
             $billingAttributes = array();
@@ -97,6 +111,11 @@
             return $billingAttributes;
         }
 
+        /**
+         * Retrieves all the major restrictions data.
+         *
+         * @return array        the major restrictions data
+         */
         public function getMajorRestrictions() {
             $rows = $this->db->selectAllQuery('select_stvmajr');
             $majorRestrictions = array();
@@ -116,6 +135,11 @@
             return $majorRestrictions;
         }
 
+        /**
+         * Retrieves all the class restrictions data.
+         *
+         * @return array        the class restrictions data
+         */
         public function getClassRestrictions() {
             $rows = $this->db->selectAllQuery('select_stvclas');
             $classRestrictions = array();
@@ -130,6 +154,11 @@
             return $classRestrictions;
         }
 
+        /**
+         * Retrieves all the level restrictions data.
+         *
+         * @return array        the level restrictions data
+         */
         public function getLevelRestrictions() {
             $rows = $this->db->selectAllQuery('select_stvlevl');
             $levelRestrictions = array();
@@ -144,7 +173,12 @@
             return $levelRestrictions;
         }
 
-        public function getProgramResrictions() {
+        /**
+         * Retrieves all the program restrictions data.
+         *
+         * @return array        the program restrictions data
+         */
+        public function getProgramRestrictions() {
             $rows = $this->db->selectAllQuery('select_stvprog');
             $programRestrictions = array();
 
@@ -158,6 +192,11 @@
             return $programRestrictions;
         }
 
+        /**
+         * Retrieves all the college restrictions data.
+         *
+         * @return array        the college restrictions data
+         */
         public function getCollegeRestrictions() {
             $rows = $this->db->selectAllQuery('select_stvcoll');
             $collegeRestrictions = array();

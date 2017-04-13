@@ -1,4 +1,5 @@
 <?php
+    // @codeCoverageIgnoreStart
     include 'RegistrarDatabase.php';
 
     if (isset($_GET['subjectCode'])) {
@@ -19,4 +20,5 @@
     $courseCatalog = $db->getCourseCatalog($subjectCode, $courseNumber)[0];
 
     echo json_encode($courseCatalog);
+    // @codeCoverageIgnoreEnd
 ?>
