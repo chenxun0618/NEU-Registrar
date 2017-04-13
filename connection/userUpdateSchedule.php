@@ -5,9 +5,9 @@ $db = new DB();
 $id = $db->get('NUID');
 $dept = $db->get('dept');
 $timeStamp = $db->get('timeStamp');
-$status = $db->get('status');
+$action = $db->get('action');
 $classes = $db->get('classes');
-$query = "CALL userUpdateSchedule('$id', '$dept', '$timeStamp', '$status', '$classes')";
+$query = "CALL userUpdateSchedule('$id', '$dept', '$timeStamp', '$action', '$classes')";
 $result = $db->query($query);
 
 if ($result->num_rows <= 0)
