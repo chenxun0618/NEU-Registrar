@@ -150,7 +150,7 @@
                 <div ng-show="!model.loggedInUser.admin">
                     <select class="select2" style="width: 150px"
                             ng-model="model.class.campusCode"
-                            ng-options="option.code as option.desc for option in model.all.campus">
+                            ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.campus">
                     </select>
                 </div>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.campusCode}}</div>
@@ -165,9 +165,9 @@
             <td>Instructional Method</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2" style="width: 100px"
+                    <select class="select2" style="width: 150px"
                             ng-model="model.class.instructionalMethodCode"
-                            ng-options="option.code as option.desc for option in model.all.instructionalMethod">
+                            ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.instructionalMethod">
                     </select>
                 </div>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.instructionalMethodCode}}</div>
