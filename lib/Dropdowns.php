@@ -5,7 +5,7 @@
     $instructionalMethod = $dd->getInstructionalMethods();
     $meetingSequences = $dd->getMeetingSequences();
     $campus = $dd->getCampuses();
-    $billingAttributes = $dd->getBillingAttributes();
+    $attributeCode = $dd->getAttributeCode();
     $majorRestrictions = $dd->getMajorRestrictions();
     $classRestrictions = $dd->getClassRestrictions();
     $levelRestrictions = $dd->getLevelRestrictions();
@@ -13,7 +13,7 @@
     $collegeRestrictions = $dd->getCollegeRestrictions();
 
     $dropdownData = ["instructionalMethod"=>$instructionalMethod, "meetingSequences"=>$meetingSequences, "campus"=>$campus,
-            "billingAttributes"=>$billingAttributes, "majorRestrictions"=>$majorRestrictions, "classRestrictions"=>$classRestrictions,
+            "attributeCode"=>$attributeCode, "majorRestrictions"=>$majorRestrictions, "classRestrictions"=>$classRestrictions,
             "levelRestrictions"=>$levelRestrictions, "programRestrictions"=>$programRestrictions, "collegeRestrictions"=>$collegeRestrictions
     ];
 
@@ -97,18 +97,18 @@
          *
          * @return array        the billing attributes data
          */
-        public function getBillingAttributes() {
+        public function getAttributeCode() {
             $rows = $this->db->selectAllQuery('select_stvattr');
-            $billingAttributes = array();
+            $attributeCode = array();
 
             // loops through rows
             for ($i = 0; $i < count($rows); $i++) {
                 $rowObj['code'] = $rows[$i]['code'];
                 $rowObj['desc'] = $rows[$i]['desc'];
-                $billingAttributes[] = $rowObj;
+                $attributeCode[] = $rowObj;
             }
 
-            return $billingAttributes;
+            return $attributeCode;
         }
 
         /**
