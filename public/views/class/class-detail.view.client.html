@@ -95,7 +95,8 @@
             <td>
                 <input ng-if="!model.loggedInUser.admin" ng-model="model.class.maxEnrollment" type="number" min="1"
                        step="1"/>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.maxEnrollment}}</div>
+                <div ng-if="!model.loggedInUser.admin" class="italics">(Prior enrollment: {{model.class.priorEnrollment}})</div>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.maxEnrollment}} (Prior enrollment: {{model.class.priorEnrollment}})</div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['maxEnrollment'])}"
@@ -130,11 +131,16 @@
                             ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.campus">
                     </select>
                 </div>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.campusCode}}</div>
+                <div ng-if="model.loggedInUser.admin" class="italics">
+                    {{model.extractTargetAttributes("desc", "code",
+                    model.all.campus,
+                    [model.class.campusCode])}}</div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['campusCode'])}" class="changedFrom">
-                    {{model.class.old.campusCode}}
+                    {{model.extractTargetAttributes("desc", "code",
+                    model.all.campus,
+                    [model.class.old.campusCode])}}
                 </div>
             </td>
         </tr>
@@ -147,28 +153,40 @@
                             ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.instructionalMethod">
                     </select>
                 </div>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.instructionalMethodCode}}</div>
+                <div ng-if="model.loggedInUser.admin" class="italics">
+                    {{model.extractTargetAttributes("desc", "code",
+                    model.all.instructionalMethod,
+                    [model.class.instructionalMethodCode])}}</div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['instructionalMethodCode'])}"
-                     class="changedFrom">{{model.class.old.instructionalMethodCode}}
+                     class="changedFrom">
+                    {{model.extractTargetAttributes("desc", "code",
+                    model.all.instructionalMethod,
+                    [model.class.old.instructionalMethodCode])}}
                 </div>
             </td>
         </tr>
         <tr ng-class="{'modified': model.differentFromLastYear(['specialApprovalCode'])}">
             <td>Special Approvals</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin"
-                        ng-model="model.class.specialApprovalCode"
-                        ng-options="option for option in model.allSpecialApprovals">
-                </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.specialApprovalCode ?
-                    model.class.specialApprovalCode : "(none)"}}
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" style="width: 150px;"
+                            ng-model="model.class.specialApprovalCode"
+                            ng-options="option.code as (option.code ? (option.desc + ' (' + option.code + ')') : '') for option in model.allSpecialApprovals">
+                    </select>
+                </div>
+                <div ng-if="model.loggedInUser.admin" class="italics">
+                    {{model.extractTargetAttributes("desc", "code", model.allSpecialApprovals, [model.class.old.specialApprovalCode]) ?
+                    model.extractTargetAttributes("desc", "code", model.allSpecialApprovals, [model.class.old.specialApprovalCode]) :
+                    "(none)"}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['specialApprovalCode'])}"
-                     class="changedFrom">{{model.class.old.specialApprovalCode ? model.class.old.specialApprovalCode :
+                     class="changedFrom">
+                    {{model.extractTargetAttributes("desc", "code", model.allSpecialApprovals, [model.class.old.specialApprovalCode]) ?
+                    model.extractTargetAttributes("desc", "code", model.allSpecialApprovals, [model.class.old.specialApprovalCode]) :
                     "(none)"}}
                 </div>
             </td>
