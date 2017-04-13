@@ -32,6 +32,10 @@ a:hover {
     font-weight: bold;
 }
 
+.float-left {
+    float: left;
+}
+
 .float-right {
     float: right;
 }
@@ -113,5 +117,12 @@ div.color-legend2 {
 }
 
 label {
-    font-weight:normal;
+    font-weight: normal;
+}
+
+.logout {
+    font-size: 14px;
+    font-weight: normal;
+    position: relative;
+    top: -5px;
 }

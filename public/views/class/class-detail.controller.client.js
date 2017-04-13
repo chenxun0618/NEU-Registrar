@@ -13,6 +13,7 @@
         vm.toastMessage = toastMessage;
         vm.extractTargetAttributes = extractTargetAttributes;
         vm.differentFromLastYear = differentFromLastYear;
+        vm.getFormattedTime = getFormattedTime;
 
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
@@ -57,7 +58,6 @@
         }
 
         function saveAndReturnToSchedule() {
-            console.log(vm.class);
             var invalidClassReasons = ClassService.getInvalidClassReasons(vm.class);
             if (invalidClassReasons.length) {
                 vm.error = invalidClassReasons.join("\n\n");
@@ -66,9 +66,10 @@
                 vm.class.metadata = vm.class.metadata || {};
                 vm.class.metadata.modified = ClassService.isClassModified(vm.class);
                 vm.class.metadata.deleted = (vm.class.status === "C");
+                vm.class.metadata.modifiedInSession = true;
 
                 var schedule = JSON.parse($window.sessionStorage.schedule);
-                schedule[vm.class.sessionStateIndex] = vm.class;
+                schedule.classes[vm.class.sessionStateIndex] = vm.class;
                 $window.sessionStorage.schedule = JSON.stringify(schedule);
                 $location.url("/schedule-submission");
             }
@@ -76,8 +77,8 @@
 
         function findClassInSessionState(unique_id) {
             var schedule = JSON.parse($window.sessionStorage.schedule);
-            for (var x = 0; x < schedule.length; x++) {
-                var current = schedule[x];
+            for (var x = 0; x < schedule.classes.length; x++) {
+                var current = schedule.classes[x];
                 if (current.metadata.unique_id === unique_id) {
                     current.sessionStateIndex = x;
                     return current;
@@ -164,6 +165,9 @@
         function differentFromLastYear(attributes) {
             for (var x = 0; x < attributes.length; x++) {
                 var attribute = attributes[x];
+                if (vm.class[attribute] === undefined) {
+                    console.log(attribute);
+                }
                 if (vm.class[attribute].constructor === Array) {
                     if (vm.class.old && !arraysEqual(vm.class[attribute], vm.class.old[attribute])) {
                         return true;
@@ -175,6 +179,11 @@
                 }
             }
             return false;
+        }
+
+        function getFormattedTime(str) {
+            var secondToLast = str.length - 2;
+            return str.substring(0, secondToLast) + ":" + str.substring(secondToLast, str.length);
         }
 
         init();
