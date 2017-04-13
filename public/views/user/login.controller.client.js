@@ -9,7 +9,7 @@
         vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
 
         if (vm.loggedInUser) {
-            $location.url("/schedule-submission/");
+            $location.url("/schedule-submission");
         }
 
         vm.login = login;

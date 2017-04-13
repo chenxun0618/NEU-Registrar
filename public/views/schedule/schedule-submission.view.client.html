@@ -1,7 +1,13 @@
 <div class="container">
     <h1 class="margin-bottom-20">
         Semester Course Offerings—Office of the Registrar
+        <div class="float-right">
+            <a class="logout" ng-click="model.logout()">
+                Logout
+            </a>
+        </div>
     </h1>
+
 
     <div ng-if="model.error" class="alert alert-danger error-box">{{model.error}}</div>
 

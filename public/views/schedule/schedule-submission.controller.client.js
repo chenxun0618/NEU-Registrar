@@ -15,12 +15,13 @@
         vm.navigateToAddClass = navigateToAddClass;
         vm.getScheduleSummaryLine = getScheduleSummaryLine;
         vm.getScheduleStatusLine = getScheduleStatusLine;
+        vm.logout = logout;
 
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
 
             if (!vm.loggedInUser) {
-                $location.url("/login");
+                $location.url("/login/");
             } else {
                 vm.subjectCodes = ClassService.getAllSubjectCodes();
                 vm.schedules = ScheduleService.getAllSchedules();
@@ -57,7 +58,6 @@
             if (r == true) {
                 if (vm.schedule && vm.schedule.length) {
                     ScheduleService.submitSchedule(vm.schedule);
-                    $window.sessionStorage.clear();
                     $location.url("/submitted/");
                 } else {
                     vm.error = "No schedule found";
@@ -126,6 +126,11 @@
             } else if (schedule.status === 'S') {
                 return "Submitted by " + schedule.last_modifying_user_name + " on " + schedule.timestamp;
             }
+        }
+
+        function logout() {
+            $window.sessionStorage.clear();
+            $location.url("/login/");
         }
 
         init();
