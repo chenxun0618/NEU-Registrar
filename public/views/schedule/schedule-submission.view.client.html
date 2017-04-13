@@ -1,0 +1,98 @@
+<div class="container">
+    <h1 class="margin-bottom-20">
+        Semester Course Offerings—Office of the Registrar
+        <div class="float-right">
+            <a class="logout" ng-click="model.logout()">
+                Logout
+            </a>
+        </div>
+    </h1>
+
+
+    <div ng-if="model.error" class="alert alert-danger error-box">{{model.error}}</div>
+
+    <div ng-if="model.schedule && model.schedule.rejectionMessage" class="alert alert-danger error-box">
+        {{model.schedule.rejectionMessage}}
+    </div>
+
+    <span ng-show="model.schedule" class="search-box">
+        <input style="float: right" type="text" id="filterText" ng-model="filterText"
+               placeholder="Search a class number, class name...">
+    </span>
+    <br>
+    <form name="getSchedules">
+        <label for="departmentSelect"> Department: </label>
+        <select name="departmentSelect" id="departmentSelect" ng-model="model.selectedDepartment"
+                ng-options="option as model.getScheduleSummaryLine(option) for option in model.allDepartments track by option.departmentCode"
+                ng-change="model.getScheduleDetail(model.selectedDepartment)">
+        </select>
+    </form>
+    <table ng-show="model.schedule" class="table">
+        <thead>
+        <tr>
+            <th>Course No.</th>
+            <th>Title</th>
+            <th>Meeting Time</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-show="model.schedule && model.schedule.classes && model.schedule.classes.length === 0">
+            <td colspan="4">No data found</td>
+        </tr>
+        <tr ng-class="{'added': (class.metadata && class.metadata.added), 'deleted': (class.metadata && !class.metadata.added && class.metadata.deleted), 'modified': (class.metadata && !class.metadata.deleted && !class.metadata.added && class.metadata.modified)}"
+            ng-repeat="class in model.schedule.classes | filterClass:filterText">
+            <td>{{class.subjectCode}} {{class.courseNumber}}</td>
+            <td>{{class.courseTitle}}</td>
+            <td>{{model.getReadableMeetingTime(class)}}</td>
+            <td>
+                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">{{model.loggedInUser.admin ? "View"
+                    : "Edit"}}</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div ng-show="model.schedule" class="color-legend">
+        <div class="color-legend-item">
+            <div class="color-box added"/>
+            <div class="text-box">Added</div>
+        </div>
+        <div class="color-legend-item">
+            <div class="color-box modified"/>
+            <div class="text-box">Modified</div>
+        </div>
+        <div class="color-legend-item">
+            <div class="color-box deleted"/>
+            <div class="text-box">Cancelled</div>
+        </div>
+        <div class="color-legend-item">
+            <div class="color-box unmodified"/>
+            <div class="text-box">Unmodified</div>
+        </div>
+    </div>
+
+    <div class="float-right">
+        <button ng-click="model.navigateToAddClass()" ng-show="model.schedule && !model.loggedInUser.admin"
+                type="button" class="btn btn-info">Add
+            Class
+        </button>
+        <button ng-click="model.saveSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button"
+                class="btn btn-success">
+            Save
+        </button>
+        <button ng-click="model.submitSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button"
+                class="btn btn-primary" ng-disabled="model.selectedDepartment.scheduleStatus === 'S'">
+            Submit
+        </button>
+        <button ng-click="model.rejectSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button"
+                class="btn btn-danger" ng-disabled="model.selectedDepartment.scheduleStatus === 'R'">
+            Reject
+        </button>
+        <button ng-click="model.approveSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button"
+                class="btn btn-success" ng-disabled="model.selectedDepartment.scheduleStatus === 'A'">
+            Approve
+        </button>
+    </div>
+</div>

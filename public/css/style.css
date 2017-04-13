@@ -1,0 +1,128 @@
+.margin-bottom-20 {
+    margin-bottom: 20px;
+}
+
+.margin-bottom-30 {
+    margin-bottom: 30px;
+}
+
+.margin-right-10 {
+    margin-right: 10px;
+}
+
+body {
+    padding-top: 30px;
+    padding-bottom: 60px;
+}
+
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.error {
+    border: .5px solid red;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.narrow {
+    width: 70%;
+}
+
+textarea {
+    width: 300px;
+    height: 120px;
+}
+
+table {
+    padding-bottom: 5px;
+}
+
+div.color-legend {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 15px;
+}
+
+div.color-legend div {
+    display: inline-block;
+}
+
+div.color-legend-item {
+    padding-right: 40px;
+}
+
+div.color-box {
+    width: 15px;
+    height: 15px;
+    border: 1px solid #000;
+}
+
+div.text-box {
+    position: relative;
+    top: -2px;
+}
+
+div.color-legend .add-class-button {
+    position: relative;
+    top: -8px;
+}
+
+.added {
+    background-color: lightgreen;
+}
+
+.modified {
+    background-color: #fff6d6
+}
+
+.deleted {
+    background-color: #ffb1b6;
+}
+
+.unmodified {
+    background-color: white;
+}
+
+.changedFrom {
+    font-style: italic;
+    color: #c8c8c8;
+}
+
+div.color-legend2 {
+    padding-top: 0px;
+}
+
+.italics {
+    font-style: italic;
+}
+
+.error-box {
+    white-space: pre;
+}
+
+label {
+    font-weight: normal;
+}
+
+.logout {
+    font-size: 14px;
+    font-weight: normal;
+    position: relative;
+    top: -5px;
+}
