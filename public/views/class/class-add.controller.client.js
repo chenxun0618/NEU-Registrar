@@ -17,6 +17,7 @@
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
             vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
+            vm.schedule = JSON.parse($window.sessionStorage.schedule);
 
             if (!vm.loggedInUser || vm.loggedInUser.admin) {
                 $location.url("/login");
@@ -43,7 +44,7 @@
                             vm.all = res.data;
                         },
                         function (error) {
-                            vm.error = error.data;
+                            vm.error = error.data ? error.data : error.statusText;
                         }
                     );
 
@@ -53,7 +54,7 @@
                             vm.allInstructors = res.data;
                         },
                         function (error) {
-                            vm.error = error.data;
+                            vm.error = error.data ? error.data : error.statusText;
                         }
                     );
             }
@@ -66,7 +67,26 @@
                 vm.error = "Invalid course number";
             } else {
                 vm.error = "";
-                vm.class = ClassService.getCourseDataFromCatalog(subjectCode, courseNumber);
+
+                ClassService.getCourseDataFromCatalog(subjectCode, courseNumber)
+                    .then(
+                        function (res) {
+                            // server should return better value if no data found... TODO
+                            if (res.data === "null") {
+                                vm.error = "Class not found";
+                            } else {
+                                vm.class = {};
+                                vm.class.termCode = res.data.termCode;
+                                vm.class.subjectCode = res.data.subjectCode;
+                                vm.class.courseNumber = res.data.courseNumber;
+                                vm.class.courseTitle = res.data.title;
+                                ClassService.fillDefaultData(vm.class, vm.schedule);
+                            }
+                        },
+                        function (error) {
+                            vm.error = error.data ? error.data : error.statusText;
+                        }
+                    );
             }
         }
 
@@ -81,9 +101,8 @@
                 $window.scrollTo(0, 0);
             } else {
                 prepareAddedClass(vm.class);
-                var schedule = JSON.parse($window.sessionStorage.schedule);
-                schedule.classes.push(vm.class);
-                $window.sessionStorage.schedule = JSON.stringify(schedule);
+                vm.schedule.classes.push(vm.class);
+                $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
                 $location.url("/schedule-submission");
             }
         }

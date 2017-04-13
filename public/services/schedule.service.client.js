@@ -47,6 +47,7 @@
                 currentClass.maxEnrollment = parseInt(currentClass.maxEnrollment);
                 currentClass.priorEnrollment = parseInt(currentClass.priorEnrollment);
                 currentClass.waitlistCapacity = parseInt(currentClass.waitlistCapacity);
+                currentClass.section = parseInt(currentClass.section);
 
                 // marks all modified classes in a schedule as modified
                 // currentClass.metadata = currentClass.metadata || {};
