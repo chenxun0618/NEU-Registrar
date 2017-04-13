@@ -5,7 +5,7 @@
         /**
          * Temporarily sets the given private method to be accessible for tests.
          *
-         * @param $methodName       the private method to be set accessible
+         * @param string $methodName       the private method to be set accessible
          * @return ReflectionMethod     the accessible method
          */
         protected static function getMethod($methodName) {

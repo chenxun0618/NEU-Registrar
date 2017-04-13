@@ -2,6 +2,9 @@
 use PHPUnit\Framework\TestCase;
 
     class DropdownsTest extends TestCase {
+        /**
+         * Tests that the output for the getInstructionalMethods method is correct.
+         */
         public function testGetInstructionalMethods() {
             $dd = new Dropdowns();
             $instructionalMethods = $dd->getInstructionalMethods();
@@ -12,6 +15,9 @@ use PHPUnit\Framework\TestCase;
             );
         }
 
+        /**
+         * Tests that the output for the getMeetingSequences method is correct.
+         */
         public function testGetMeetingSequences() {
             $dd = new Dropdowns();
             $meetingSequences = $dd->getMeetingSequences();
@@ -22,6 +28,9 @@ use PHPUnit\Framework\TestCase;
             );
         }
 
+        /**
+         * Tests that the output for the getCampuses method is correct.
+         */
         public function testGetCampuses() {
             $dd = new Dropdowns();
             $campuses = $dd->getCampuses();
@@ -32,6 +41,9 @@ use PHPUnit\Framework\TestCase;
             );
         }
 
+        /**
+         * Tests that the output for the getBillingAttributes method is correct.
+         */
         public function testGetBillingAttributes() {
             $dd = new Dropdowns();
             $billingAttributes = $dd->getBillingAttributes();
@@ -42,6 +54,9 @@ use PHPUnit\Framework\TestCase;
             );
         }
 
+        /**
+         * Tests that the output for the getMajorRestrictions method is correct.
+         */
         public function testGetMajorRestrictions() {
             $dd = new Dropdowns();
             $majorRestrictions = $dd->getMajorRestrictions();
@@ -52,6 +67,9 @@ use PHPUnit\Framework\TestCase;
             );
         }
 
+        /**
+         * Tests that the output for the getClassRestrictions method is correct.
+         */
         public function testGetClassRestrictions() {
             $dd = new Dropdowns();
             $classRestrictions = $dd->getClassRestrictions();
@@ -62,6 +80,9 @@ use PHPUnit\Framework\TestCase;
             );
         }
 
+        /**
+         * Tests that the output for the getLevelRestrictions method is correct.
+         */
         public function testGetLevelRestrictions() {
             $dd = new Dropdowns();
             $levelRestrictions = $dd->getLevelRestrictions();
@@ -72,9 +93,12 @@ use PHPUnit\Framework\TestCase;
             );
         }
 
+        /**
+         * Tests that the output for the getProgramRestrictions method is correct.
+         */
         public function testGetProgramRestrictions() {
             $dd = new Dropdowns();
-            $programRestrictions = $dd->getProgramResrictions();
+            $programRestrictions = $dd->getProgramRestrictions();
 
             $this->assertEquals(
                 1169,
@@ -82,6 +106,9 @@ use PHPUnit\Framework\TestCase;
             );
         }
 
+        /**
+         * Tests that the output for the getCollegeRestrictions method is correct.
+         */
         public function testGetCollegeRestrictions() {
             $dd = new Dropdowns();
             $collegeRestrictions = $dd->getCollegeRestrictions();
