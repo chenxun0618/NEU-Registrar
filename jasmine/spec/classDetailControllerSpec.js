@@ -185,5 +185,19 @@ describe("ClassDetailController", function() {
     expect(ctrl.differentFromLastYear([0])).toEqual(true);
   })
 
+  it("should distinguish attributes from different years (1 attribute)", function() {
+    ctrl.class = {};
+    ctrl.class[0] = [0,1];
+    ctrl.class.old = {};
+    ctrl.class.old[0] = [0,2];
+    expect(ctrl.differentFromLastYear([0])).toEqual(true);
+  })
 
+  it("should distinguish attributes from different years (1 attribute)", function() {
+    ctrl.class = {};
+    ctrl.class[0] = true;
+    ctrl.class.old = {};
+    ctrl.class.old[0] = [0,2];
+    expect(ctrl.differentFromLastYear([0])).toEqual(true);
+  })
 });
