@@ -2,11 +2,11 @@
 include 'DB.php';
 
 $db = new DB();
-$id = $db->get('NUID');
-$dept = $db->get('dept');
-$timeStamp = $db->get('timeStamp');
-$action = $db->get('action');
-$classes = $db->get('classes');
+$id = $db->post('NUID');
+$dept = $db->post('dept');
+$timeStamp = $db->post('timeStamp');
+$action = $db->post('action');
+$classes = $db->post('classes');
 $query = "CALL userUpdateSchedule('$id', '$dept', '$timeStamp', '$action', '$classes')";
 $result = $db->query($query);
 

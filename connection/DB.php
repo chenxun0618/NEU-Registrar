@@ -37,11 +37,23 @@ class DB
     }
 
     /*
-     * get the value from front-end query
+     * get the value from front-end get request
      */
     function get($val)
     {
         if (!isset($_GET[$val])) {
+            $this->header(400, $val . " is not valid");
+            die;
+        }
+        return $_GET[$val];
+    }
+
+    /*
+     * get the value from front-end post request
+     */
+    function post($val)
+    {
+        if (!isset($_POST[$val])) {
             $this->header(400, $val . " is not valid");
             die;
         }
