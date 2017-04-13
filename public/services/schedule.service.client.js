@@ -18,7 +18,7 @@
             if (user.admin) {
                 var url = "/connection/adminGetSched.php?dept=" + schedule.departmentCode;
             } else {
-                var url = "/connection/getMostRecentSched.php?dept=" + schedule.departmentCode;
+                var url = "/connection/getScheduleByDept.php?dept=" + schedule.departmentCode;
             }
             return $http.get(url);
         }
