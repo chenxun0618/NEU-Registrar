@@ -15,6 +15,7 @@ describe("ScheduleService", function() {
                     courseNumber: "1225",
                     section: "03",
                     crn: "41251",
+                    // status: "A", ------ unnecessary?
                     partOfTerm: "1",
                     shortTitle: "Principles of Accounting",
                     instructionalMethod: "TR",
@@ -44,6 +45,7 @@ describe("ScheduleService", function() {
                         courseNumber: "1225",
                         section: "03",
                         crn: "41251",
+                        // status: "A", ------ unnecessary?
                         partOfTerm: "1",
                         shortTitle: "Principles of Accounting",
                         instructionalMethod: "TR",
@@ -75,6 +77,7 @@ describe("ScheduleService", function() {
                     courseNumber: "1265",
                     section: "01",
                     crn: "11561",
+                    // status: "A", ------ unnecessary?
                     partOfTerm: "1",
                     shortTitle: "Principles of Accounting 2",
                     instructionalMethod: "TR",
@@ -104,6 +107,7 @@ describe("ScheduleService", function() {
                         courseNumber: "1265",
                         section: "01",
                         crn: "11561",
+                        // status: "A", ------ unnecessary?
                         partOfTerm: "1",
                         shortTitle: "Principles of Accounting 2",
                         instructionalMethod: "TR",
@@ -135,6 +139,7 @@ describe("ScheduleService", function() {
                     courseNumber: "2245",
                     section: "03",
                     crn: "85192",
+                    // status: "A", ------ unnecessary?
                     partOfTerm: "1",
                     shortTitle: "Accounting for Geniuses",
                     instructionalMethod: "TR",
@@ -164,6 +169,7 @@ describe("ScheduleService", function() {
                         courseNumber: "2245",
                         section: "03",
                         crn: "85192",
+                        // status: "A", ------ unnecessary?
                         partOfTerm: "1",
                         shortTitle: "Accounting for Geniuses",
                         instructionalMethod: "TR",
@@ -195,6 +201,7 @@ describe("ScheduleService", function() {
                     courseNumber: "3112",
                     section: "03",
                     crn: "01886",
+                    // status: "A", ------ unnecessary?
                     partOfTerm: "1",
                     shortTitle: "Corporate Accounting",
                     instructionalMethod: "TR",
@@ -224,6 +231,7 @@ describe("ScheduleService", function() {
                         courseNumber: "3112",
                         section: "03",
                         crn: "01886",
+                        // status: "A", ------ unnecessary?
                         partOfTerm: "1",
                         shortTitle: "Corporate Accounting",
                         instructionalMethod: "TR",
@@ -255,6 +263,7 @@ describe("ScheduleService", function() {
                     courseNumber: "3455",
                     section: "01",
                     crn: "02120",
+                    // status: "A", ------ unnecessary?
                     partOfTerm: "1",
                     shortTitle: "Corporate Accounting 2",
                     instructionalMethod: "TR",
@@ -284,6 +293,7 @@ describe("ScheduleService", function() {
                         courseNumber: "3455",
                         section: "01",
                         crn: "02120",
+                        // status: "A", ------ unnecessary?
                         partOfTerm: "1",
                         shortTitle: "Corporate Accounting 2",
                         instructionalMethod: "TR",
@@ -315,6 +325,7 @@ describe("ScheduleService", function() {
                     courseNumber: "4424",
                     section: "01",
                     crn: "17472",
+                    // status: "A", ------ unnecessary?
                     partOfTerm: "1",
                     shortTitle: "The Regulatory Framework",
                     instructionalMethod: "TR",
@@ -344,6 +355,7 @@ describe("ScheduleService", function() {
                         courseNumber: "4424",
                         section: "01",
                         crn: "17472",
+                        // status: "A", ------ unnecessary?
                         partOfTerm: "1",
                         shortTitle: "The Regulatory Framework",
                         instructionalMethod: "TR",
@@ -401,83 +413,31 @@ describe("ScheduleService", function() {
       expect(api).toBeDefined();
   }) 
 
-  it("should have the schedule for a given term", function() {
-    
-    expect(api.getScheduleByTerm("201810")).toEqual(schedule);
-
-    
-  });
-
-it("Should be able to identify modified classes (0)", function() {
-    expect(api.isClassModified(schedule[0])).toEqual(false);
-
-}) ;
-
-it("Should be able to identify modified classes (1)", function() {
-  schedule[2].college = "CS";
-    expect(api.isClassModified(schedule[2])).toEqual(true);
-
-}) ;
-
-it("Should be able to identify modified classes (2)", function() {
-  schedule[1].secondaryInstructors.push("testInstructor");
-    expect(api.isClassModified(schedule[1])).toEqual(true);
-
-}) ;
-
-
-it("Should be able to identify modified classes (2)", function() {
-  schedule[1].secondaryInstructors[0] = "testInstructor2";
-    expect(api.isClassModified(schedule[1])).toEqual(true);
-
-}) ;
-
 it("should get all schedules for a given dept leader's nuid", function() {
   var tempsched = [
                 {
-                    term: "201810",
+                    departmentCode: "ACCT",
+                    termCode: "201810",
                     term_readable: "Spring 2018",
-                    status: "S",
-                    submitter_nuid: "001104152",
-                    submitter_name: "John Smith",
-                    timestamp: "20170324122500"
+                    status: "D",
+                    last_modifying_user_nuid: "001104152",
+                    last_modifying_user_name: "John Smith",
+                    timestamp: new Date()
                 },
                 {
-                    term: "201720",
-                    term_readable: "Summer 1 2017",
-                    status: "A"
+                    departmentCode: "ENTR",
+                    termCode: "201810",
+                    term_readable: "Spring 2018"
                 },
                 {
-                    term: "201721",
-                    term_readable: "Summer 2 2017",
-                    status: "A"
+                    departmentCode: "MKTG",
+                    termCode: "201810",
+                    term_readable: "Spring 2018"
                 },
-                {
-                    term: "201730",
-                    term_readable: "Fall 2017",
-                    status: "A"
-                }
+
             ];
 
   expect(api.getAllSchedules(012345678)).toEqual(tempsched);
 });
-
-it("should get all non-approved schedules for a given dept leader's nuid", function() {
-  var tempsched = [
-                {
-                    term: "201810",
-                    term_readable: "Spring 2018",
-                    status: "S",
-                    submitter_nuid: "001104152",
-                    submitter_name: "John Smith",
-                    timestamp: "20170324122500"
-                },
-            ];
-
-  expect(api.getAllNonApprovedSchedules(012345678)).toEqual(tempsched);
-});
-
-
-
 
 });

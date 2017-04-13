@@ -44,56 +44,17 @@ describe("ClassService", function() {
     
   });
 
-  it("should have all crns", function () {
-            expect(api.getAllCRNs()).toEqual(["57182", "45124", "91752", "45188", "42144", "58225"]);
-  });
-
   it("should have the current term", function () {
             expect(api.getCurrentTerm()).toEqual("201810");
   });
 
   it("should have all statuses", function () {
-            expect(api.getAllStatuses()).toEqual(["A", "C", "I"]);
+            expect(api.getAllStatuses()).toEqual([{ code: 'A', description: 'Active' },{ code: 'I', description: 'Inactive' }, { code: 'C', description: 'Cancelled' }]);
   });
 
-  it("should get all parts of term", function () {
-            expect(api.getAllPartOfTerms()).toEqual(["1", "2", "A", "B", "(none)"]);
-  });
-
-  it("should have all instructional methods", function () {
-            expect(api.getAllInstructionalMethods()).toEqual(["HY", "OL", "OOO", "SA", "SAFL", "TR", "VS"]);
-  });
-
-  it("should have the credit hours", function () {
-            expect(api.getAllCreditHours()).toEqual(["4", "1", "2", "3", "8", "16"]);
-  });
 
   it("should have the meeting days", function () {
             expect(api.getAllMeetingDays()).toEqual(["MWR", "TF", "MW", "M", "T", "W", "R", "F", "S"]);
-  });
-
-  it("should get all campuses", function () {
-            expect(api.getAllCampuses()).toEqual(["BOS", "SEA", "VTL", "XCR"]);
-  });
-
-  it("should get all sections", function () {
-            expect(api.getAllSections()).toEqual(["01", "02", "03", "04"]);
-  });
-
-  it("should get all waitlist", function () {
-            expect(api.getAllWaitlist()).toEqual(["Y", "N"]);
-  });
-
-  it("should get all DNP", function () {
-            expect(api.getAllDoNotPublish()).toEqual(["Y", "N"]);
-  });
-
-  it("should get all honors", function () {
-            expect(api.getAllHonors()).toEqual(["Y", "N"]);
-  });
-
-  it("should get all cancelled", function () {
-            expect(api.getAllCancel()).toEqual(["Y", "N"]);
   });
 
   it("should get all special approvals", function () {
@@ -107,14 +68,44 @@ describe("ClassService", function() {
   it("should get the most recent course data's subject code", function () {
     var sc = "ACCT"
     var cn = "1000"
-      expect(api.getMostRecentCourseData(sc,cn).subjectCode).toEqual(sc);
+      expect(api.getCourseDataFromCatalog(sc,cn).subjectCode).toEqual(sc);
   });
 
   it("should get the most recent course data's course number ", function () {
     var sc = "ACCT"
     var cn = "1000"
-      expect(api.getMostRecentCourseData(sc,cn).courseNumber).toEqual(cn);
+      expect(api.getCourseDataFromCatalog(sc,cn).courseNumber).toEqual(cn);
   });
 
 
+  it("should be able to detect invalid classes", function() {
+    var blank = {};
+    blank.termCode = "12345";
+    var lis = api.getInvalidClassReasons(blank);
+    expect(lis.length).toEqual(15);
+
+    var blank2 = {};
+    blank2.termCode = "12346";
+    blank2.crn = "1234";
+    blank2.subjectCode = "2hierg";
+    blank2.courseNumber = "123"
+    blank2.section = "123"
+    blank2.meetingBeginTime = 200;
+    blank2.meetingEndTime = 199;
+    blank2.secondaryInstructors = 6;
+    blank2.maxEnrollment = -2;
+    blank2.priorEnrollment = -1;
+    blank2.majorRestrictions = 1;
+    blank2.classRestrictions = 2;
+    blank2.levelRestrictions = 3;
+    blank2.programRestrictions = 4;
+    blank2.collegeRestrictions = 5;
+    blank2.waitListCapacity = -1;
+    var lis2 = api.getInvalidClassReasons(blank2);
+    expect(lis2.length).toEqual(24);
+
+    var lis3 = api.getInvalidClassReasons(api.getCourseDataFromCatalog("ACCT","1000"));
+    expect(lis3.length).toEqual(7);
+
+  });
 });
