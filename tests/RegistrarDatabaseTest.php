@@ -29,6 +29,16 @@ class RegistrarDatabaseTest extends TestCase {
     }
 
     /**
+     * Tests that the config file exists and is readable.
+     */
+    public function testConfigFileExists() {
+        $configFilePath = 'config/config.ini';
+
+        $this->assertFileExists($configFilePath);
+        $this->assertFileIsReadable($configFilePath);
+    }
+
+    /**
      * Tests that the output for the getHost method is correct.
      */
     public function testGetHost() {

@@ -1,4 +1,5 @@
 <?php
+// @codeCoverageIgnoreStart
 include 'DB.php';
 
 $db = new DB();
@@ -14,3 +15,4 @@ if ($result->num_rows <= 0)
     $db->header(200, "OK");
 else
     $db->return_json(400, $result);
+// @codeCoverageIgnoreEnd
