@@ -1,4 +1,5 @@
 <?php
+// @codeCoverageIgnoreStart
 include 'DB.php';
 
 $db = new DB();
@@ -12,3 +13,4 @@ if (isset($_POST['comment'])) {
 $query = "CALL adminUpdateSchedule('$action', '$dept', $comment)";
 $db->query($query);
 $db->header(200, "OK");
+// @codeCoverageIgnoreEnd
