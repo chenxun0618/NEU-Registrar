@@ -57,7 +57,7 @@ class DB
             $this->header(400, $val . " is not valid");
             die;
         }
-        return $_GET[$val];
+        return $_POST[$val];
     }
 
     /*
