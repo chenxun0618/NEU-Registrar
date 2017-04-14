@@ -22,10 +22,12 @@ class DB
         }
 
         // If connection was not established
+        // @codeCoverageIgnoreStart
         if ($this->conn->connect_errno) {
             $this->header(500, $this->conn->connect_error);
             die;
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /*
@@ -37,8 +39,9 @@ class DB
     }
 
     /*
-     * get the value from front-end query
+     * get the value from front-end get request
      */
+    // @codeCoverageIgnoreStart
     function get($val)
     {
         if (!isset($_GET[$val])) {
@@ -49,12 +52,25 @@ class DB
     }
 
     /*
+     * get the value from front-end post request
+     */
+    function post($val)
+    {
+        if (!isset($_POST[$val])) {
+            $this->header(400, $val . " is not valid");
+            die;
+        }
+        return $_POST[$val];
+    }
+
+    /*
      * set the response header
      */
     function header($code, $text)
     {
         header("HTTP/1.1 " . $code . ' ' . $text);
     }
+    // @codeCoverageIgnoreEnd
 
     /*
      * perform a query on the database and return the retrieved data in an array
@@ -65,10 +81,12 @@ class DB
         $result = $this->conn->query($query);
 
         // If database cannot process the query
+        // @codeCoverageIgnoreStart
         if (!$result) {
             $this->header(400, $this->conn->error);
             die;
         }
+        // @codeCoverageIgnoreEnd
 
         // If there is no rows in the result
         if ($result->num_rows <= 0)
@@ -99,6 +117,7 @@ class DB
     /*
      * set the header of the response and return json_encoded result
      */
+    // @codeCoverageIgnoreStart
     function return_json($code, $json)
     {
         if ($code / 100 == 2)
@@ -110,4 +129,5 @@ class DB
         header("Content-Type: application/json");
         echo json_encode($json);
     }
+    // @codeCoverageIgnoreEnd
 }

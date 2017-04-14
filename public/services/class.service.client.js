@@ -37,7 +37,8 @@
         }
 
         function getAllSpecialApprovals() {
-            return ["", "A", "D", "G", "I"];
+            return [{code: "", desc: ""}, {code: "A", desc: "Advisor"}, {code: "D", desc: "Department"},
+                {code: "G", desc: "Graduate Director"}, {code: "I", desc: "Instructor"}];
         }
 
         function getAllStatuses() {
@@ -202,8 +203,8 @@
             if (!getYesOrNo().includes(aClass.publish)) {
                 invalidReasons.push("Invalid publish indicator: " + aClass.publish);
             }
-            if (!getAllSpecialApprovals().includes(aClass.specialApprovalCode)) {
-                invalidReasons.push("Invalid special approval indicator: " + aClass.specialApprovalCode);
+            if (!["", "A", "D", "G", "I"].includes(aClass.specialApprovalCode)) {
+                invalidReasons.push("Invalid special approval code: " + aClass.specialApprovalCode);
             }
 
             return invalidReasons;

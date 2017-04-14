@@ -65,8 +65,18 @@
             }
         }
 
-        function saveSchedule(schedule) {
-            // communicate with web service
+        function saveSchedule(nuid, departmentCode, lastEditTime, classes) {
+            var newScheduleStatus = "D";
+            lastEditTime = lastEditTime || new Date();
+            var url = "/connection/userUpdateSchedule.php";
+            var obj = {
+                NUID: nuid,
+                dept: departmentCode,
+                timeStamp: lastEditTime,
+                action: newScheduleStatus,
+                classes: classes
+            };
+            return $http.post(url, obj);
         }
 
         function submitSchedule(schedule) {

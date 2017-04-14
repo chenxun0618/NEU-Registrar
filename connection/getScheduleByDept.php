@@ -1,4 +1,5 @@
 <?php
+// @codeCoverageIgnoreStart
 include 'DB.php';
 
 $db = new DB();
@@ -13,3 +14,4 @@ if ($schedule["classes"] != "") {
     $schedule["classes"] = $classes;
     $db->return_json(200, $schedule);
 }
+// @codeCoverageIgnoreEnd
