@@ -67,14 +67,12 @@
 
         function saveSchedule(nuid, departmentCode, lastEditTime, classes) {
             var newScheduleStatus = "D";
-            lastEditTime = lastEditTime || new Date();
             var url = "/lib/userUpdateSchedule.php";
             var obj = {
                 NUID: nuid,
                 dept: departmentCode,
-                timeStamp: lastEditTime,
                 action: newScheduleStatus,
-                classes: classes
+                classes: JSON.stringify(classes)
             };
             return $http.post(url, obj);
         }

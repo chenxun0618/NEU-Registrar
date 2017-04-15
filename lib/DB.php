@@ -56,6 +56,10 @@ class DB
      */
     function post($val)
     {
+        // this snippet necessary because $_POST contains nothing otherwise. TODO: why?
+        $rest_json = file_get_contents("php://input");
+        $_POST = json_decode($rest_json, true);
+
         if (!isset($_POST[$val])) {
             $this->header(400, $val . " is not valid");
             die;
