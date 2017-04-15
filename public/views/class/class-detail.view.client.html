@@ -87,10 +87,10 @@
                 <input ng-if="!model.loggedInUser.admin" ng-model="model.class.maxEnrollment" type="number" min="1"
                        step="1"/>
                 <div ng-if="!model.loggedInUser.admin" class="italics">
-                    {{model.class.priorEnrollment ? ("Prior enrollment: " + model.class.priorEnrollment) : "")}}
+                    {{model.class.priorEnrollment ? ("Prior enrollment: " + model.class.priorEnrollment) : ""}}
                 </div>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.maxEnrollment}}
-                    {{model.class.priorEnrollment ? ("Prior enrollment: " + model.class.priorEnrollment) : "")}}
+                    {{model.class.priorEnrollment ? ("Prior enrollment: " + model.class.priorEnrollment) : ""}}
                 </div>
             </td>
             <td>
