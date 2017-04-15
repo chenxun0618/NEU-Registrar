@@ -16,7 +16,7 @@ class DB
         // If a connection has not been established yet, establish it
         if (!isset($this->conn)) {
             // Load configuration
-            $config = parse_ini_file('config.ini');
+            $config = parse_ini_file('config/config.ini');
             $this->conn = new mysqli($config['hostname'], $config['username'],
                 $config['password'], $config['database']);
         }
