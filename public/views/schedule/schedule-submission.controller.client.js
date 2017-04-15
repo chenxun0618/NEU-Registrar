@@ -15,7 +15,7 @@
         vm.navigateToAddClass = navigateToAddClass;
         vm.getScheduleSummaryLine = getScheduleSummaryLine;
         vm.getScheduleStatusLine = getScheduleStatusLine;
-        vm.getReadableMeetingTime = getReadableMeetingTime;
+        vm.getReadableMeetingTimes = ClassService.getReadableMeetingTimes;
         vm.logout = logout;
 
         function init() {
@@ -24,6 +24,7 @@
             if (!vm.loggedInUser) {
                 $location.url("/login/");
             } else {
+                $window.scrollTo(0, 0);
                 vm.allDepartments = vm.loggedInUser.depts;
 
                 if ($window.sessionStorage.selectedDepartment) {
@@ -162,19 +163,6 @@
         function logout() {
             $window.sessionStorage.clear();
             $location.url("/login/");
-        }
-
-        function getReadableMeetingTime(aClass) {
-            if (!aClass.meetingDays || !aClass.meetingBeginTime || !aClass.meetingEndTime) {
-                return "(not found)";
-            } else {
-                return aClass.meetingDays + " " + getFormattedTime(aClass.meetingBeginTime) + "–" + getFormattedTime(aClass.meetingEndTime);
-            }
-        }
-
-        function getFormattedTime(str) {
-            var secondToLast = str.length - 2;
-            return str.substring(0, secondToLast) + ":" + str.substring(secondToLast, str.length);
         }
 
         init();

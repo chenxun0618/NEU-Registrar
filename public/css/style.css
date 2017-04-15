@@ -10,6 +10,10 @@
     margin-right: 10px;
 }
 
+.margin-left-15 {
+    margin-left: 15px;
+}
+
 body {
     padding-top: 30px;
     padding-bottom: 60px;
@@ -114,6 +118,10 @@ div.color-legend2 {
 
 .error-box {
     white-space: pre;
+}
+
+.meetingTimeCell {
+    white-space: pre-wrap;
 }
 
 label {

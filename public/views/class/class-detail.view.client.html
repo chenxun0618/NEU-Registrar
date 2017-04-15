@@ -32,7 +32,8 @@
         <tr ng-class="{'modified': model.differentFromLastYear(['courseTitle'])}">
             <td>Title</td>
             <td>
-                <input style="width:200px" ng-if="!model.loggedInUser.admin" type="text" ng-model="model.class.courseTitle"/>
+                <input style="width:200px" ng-if="!model.loggedInUser.admin" type="text"
+                       ng-model="model.class.courseTitle"/>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.courseTitle}}</div>
             </td>
             <td>
@@ -41,32 +42,22 @@
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': model.differentFromLastYear(['meetingDays', 'meetingBeginTime', 'meetingEndTime'])}">
+        <tr ng-class="{'modified': !model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes)}">
             <td>Meeting Times</td>
             <td>
-                <div ng-if="!model.loggedInUser.admin">
-                    <select ng-model="model.class.meetingDays"
-                            ng-options="option for option in model.allMeetingDays"
-                            ng-change="model.updateOnChangeOfTime(0)">
-                    </select>
-
-                    <select ng-model="model.class.meetingBeginTime"
-                            ng-options="option as model.getFormattedTime(option) for option in model.allMeetingStartTimes"
-                            ng-change="model.updateOnChangeOfTime(1)">
-                    </select>
-                    —
-                    <select ng-model="model.class.meetingEndTime"
-                            ng-options="option as model.getFormattedTime(option) for option in model.allMeetingEndTimes"
-                            ng-change="model.updateOnChangeOfTime(0)">
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" style="width: 200px" ng-model="model.class.meetingTimes" multiple="multiple"
+                            ng-options="aMeetingTime as model.getReadableMeetingTime(aMeetingTime) for aMeetingTime in model.all.meetingTimes track by aMeetingTime.days+aMeetingTime.beginTime+aMeetingTime.endTime"
+                            ng-change="model.toastMessage(model.scheduleViolatesPeakPeriodProperty(model.schedule))">
                     </select>
                 </div>
                 <div ng-if="model.loggedInUser.admin" class="italics">
-                    {{model.getReadableMeetingTime(model.class)}}
+                    {{model.getReadableMeetingTimes(model.class)}}
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['meetingDays', 'meetingBeginTime', 'meetingEndTime'])}"
-                     class="changedFrom">{{model.class.old ? model.getReadableMeetingTime(model.class.old) : ""}}
+                <div ng-class="{hidden: model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes)}"
+                     class="changedFrom">{{model.class.old ? model.getReadableMeetingTimes(model.class.old) : ""}}
                 </div>
             </td>
         </tr>
@@ -74,7 +65,7 @@
             <td>Primary Instructor</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.primaryInstructorID"
+                    <select class="largeSelect2" style="width: 200px" ng-model="model.class.primaryInstructorID"
                             ng-options="option.nuid as option.name for option in model.allInstructors">
                     </select>
                 </div>
@@ -95,8 +86,12 @@
             <td>
                 <input ng-if="!model.loggedInUser.admin" ng-model="model.class.maxEnrollment" type="number" min="1"
                        step="1"/>
-                <div ng-if="!model.loggedInUser.admin" class="italics">(Prior enrollment: {{model.class.priorEnrollment}})</div>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.maxEnrollment}} (Prior enrollment: {{model.class.priorEnrollment}})</div>
+                <div ng-if="!model.loggedInUser.admin" class="italics">
+                    {{model.class.priorEnrollment ? ("Prior enrollment: " + model.class.priorEnrollment) : ""}}
+                </div>
+                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.maxEnrollment}}
+                    {{model.class.priorEnrollment ? ("Prior enrollment: " + model.class.priorEnrollment) : ""}}
+                </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['maxEnrollment'])}"
@@ -107,13 +102,11 @@
         <tr ng-class="{'modified': model.differentFromLastYear(['waitlistCapacity'])}">
             <td>Waitlist?</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.waitlistCapacity">
-                    <option ng-repeat="option in [{capacity: 99, indicator: 'Y'}, {capacity: 0, indicator: 'N'}]"
-                            ng-value="option.capacity">
-                        {{option.indicator}}
-                    </option>
-                </select>
-
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" ng-model="model.class.waitlistCapacity" style="width: 40px"
+                        ng-options="option.capacity as option.indicator for option in [{capacity: 99, indicator: 'Y'}, {capacity: 0, indicator: 'N'}]">
+                    </select>
+                </div>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.waitlistCapacity ? "Y" : "N"}}</div>
             </td>
             <td>
@@ -134,7 +127,8 @@
                 <div ng-if="model.loggedInUser.admin" class="italics">
                     {{model.extractTargetAttributes("desc", "code",
                     model.all.campus,
-                    [model.class.campusCode])}}</div>
+                    [model.class.campusCode])}}
+                </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['campusCode'])}" class="changedFrom">
@@ -156,7 +150,8 @@
                 <div ng-if="model.loggedInUser.admin" class="italics">
                     {{model.extractTargetAttributes("desc", "code",
                     model.all.instructionalMethod,
-                    [model.class.instructionalMethodCode])}}</div>
+                    [model.class.instructionalMethodCode])}}
+                </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['instructionalMethodCode'])}"
@@ -173,20 +168,24 @@
                 <div ng-show="!model.loggedInUser.admin">
                     <select class="select2" style="width: 150px;"
                             ng-model="model.class.specialApprovalCode"
-                            ng-options="option.code as (option.code ? (option.desc + ' (' + option.code + ')') : '') for option in model.allSpecialApprovals">
+                            ng-options="option.code as option.desc + (option.code ? (' (' + option.code + ')') : '') for option in model.all.specialApprovals">
                     </select>
                 </div>
                 <div ng-if="model.loggedInUser.admin" class="italics">
-                    {{model.extractTargetAttributes("desc", "code", model.allSpecialApprovals, [model.class.old.specialApprovalCode]) ?
-                    model.extractTargetAttributes("desc", "code", model.allSpecialApprovals, [model.class.old.specialApprovalCode]) :
+                    {{model.extractTargetAttributes("desc", "code", model.all.specialApprovals,
+                    [model.class.specialApprovalCode]) ?
+                    model.extractTargetAttributes("desc", "code", model.all.specialApprovals,
+                    [model.class.specialApprovalCode]) :
                     "(none)"}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['specialApprovalCode'])}"
                      class="changedFrom">
-                    {{model.extractTargetAttributes("desc", "code", model.allSpecialApprovals, [model.class.old.specialApprovalCode]) ?
-                    model.extractTargetAttributes("desc", "code", model.allSpecialApprovals, [model.class.old.specialApprovalCode]) :
+                    {{model.extractTargetAttributes("desc", "code", model.all.specialApprovals,
+                    [model.class.old.specialApprovalCode]) ?
+                    model.extractTargetAttributes("desc", "code", model.all.specialApprovals,
+                    [model.class.old.specialApprovalCode]) :
                     "(none)"}}
                 </div>
             </td>
@@ -357,7 +356,7 @@
             </td>
         </tr>
         <tr ng-class="{'modified': model.differentFromLastYear(['attributeCode'])}">
-            <td>Attributes</td>
+            <td>Billing Attributes & Honors</td>
             <td>
                 <div ng-show="!model.loggedInUser.admin">
                     <select class="select2" style="width: 200px" ng-model="model.class.attributeCode"
@@ -382,10 +381,12 @@
         <tr ng-class="{'modified': model.differentFromLastYear(['publish'])}">
             <td>Show on Banner Schedule?</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin"
-                        ng-model="model.class.publish"
-                        ng-options="option for option in model.yesOrNo">
-                </select>
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" style="width: 40px"
+                            ng-model="model.class.publish"
+                            ng-options="option for option in ['Y', 'N']">
+                    </select>
+                </div>
                 <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.publish}}</div>
             </td>
             <td>
@@ -397,15 +398,22 @@
         <tr ng-class="{'modified': model.differentFromLastYear(['status'])}">
             <td>Status</td>
             <td>
-                <select ng-if="!model.loggedInUser.admin" ng-model="model.class.status"
-                    ng-options="option for option in model.allStatuses">
-                </select>
-                <div ng-if="model.loggedInUser.admin" class="italics">{{model.class.status}}
+                <div ng-show="!model.loggedInUser.admin">
+                    <select class="select2" ng-model="model.class.status" style="width: 150px"
+                            ng-options="option.code as option.desc for option in model.allStatuses">
+                    </select>
+                </div>
+                <div ng-if="model.loggedInUser.admin" class="italics">
+                    {{model.extractTargetAttributes("desc",
+                    "code", model.allStatuses,
+                    model.class.old.status)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['status'])}" class="changedFrom">
-                    {{model.class.old.status}}
+                    {{model.extractTargetAttributes("desc",
+                    "code", model.allStatuses,
+                    model.class.old.status)}}
                 </div>
             </td>
         </tr>

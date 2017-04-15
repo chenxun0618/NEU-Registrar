@@ -48,7 +48,7 @@
             ng-repeat="class in model.schedule.classes | filterClass:filterText">
             <td>{{class.subjectCode}} {{class.courseNumber}}</td>
             <td>{{class.courseTitle}}</td>
-            <td>{{model.getReadableMeetingTime(class)}}</td>
+            <td class="meetingTimeCell">{{model.getReadableMeetingTimes(class)}}</td>
             <td>
                 <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">{{model.loggedInUser.admin ? "View"
                     : "Edit"}}</a>

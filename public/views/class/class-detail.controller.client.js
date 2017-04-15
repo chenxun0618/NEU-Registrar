@@ -7,14 +7,15 @@
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
-        vm.isPeakPeriod = isPeakPeriod;
-        vm.updateEndingTimes = updateEndingTimes;
-        vm.updateOnChangeOfTime = updateOnChangeOfTime;
-        vm.toastMessage = toastMessage;
         vm.extractTargetAttributes = extractTargetAttributes;
         vm.differentFromLastYear = differentFromLastYear;
-        vm.getReadableMeetingTime = getReadableMeetingTime;
-        vm.getFormattedTime = getFormattedTime;
+        vm.changeHonors = changeHonors;
+        vm.isEqualMeetingTimes = ClassService.isEqualMeetingTimes;
+        vm.getReadableMeetingTime = ClassService.getReadableMeetingTime;
+        vm.getReadableMeetingTimes = ClassService.getReadableMeetingTimes;
+        vm.getFormattedTime = ClassService.getFormattedTime;
+        vm.scheduleViolatesPeakPeriodProperty = ScheduleService.scheduleViolatesPeakPeriodProperty;
+        vm.toastMessage = toastMessage;
 
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
@@ -22,20 +23,19 @@
             if (!vm.loggedInUser) {
                 $location.url("/login");
             } else {
+                vm.schedule = JSON.parse($window.sessionStorage.schedule);
                 vm.class = findClassInSessionState($routeParams.unique_id); // find in session state for now until I figure out how to pass the specified course to this controller
 
                 vm.currentTerm = ClassService.getCurrentTerm();
-                vm.allMeetingDays = ClassService.getAllMeetingDays();
                 vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
                 vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
                 vm.allStatuses = ClassService.getAllStatuses();
-                vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
-                vm.yesOrNo = ClassService.getYesOrNo();
 
                 ClassService.getDropdownValues()
                     .then(
                         function (res) {
                             vm.all = res.data;
+                            vm.all.specialApprovals = [{code: '', desc: ''}].concat(vm.all.specialApprovals); // prepend empty option
                         },
                         function (error) {
                             vm.error = error.data ? error.data : error.statusText;
@@ -69,17 +69,15 @@
                 vm.class.metadata.deleted = (vm.class.status === "C");
                 vm.class.metadata.modifiedInSession = true;
 
-                var schedule = JSON.parse($window.sessionStorage.schedule);
-                schedule.classes[vm.class.sessionStateIndex] = vm.class;
-                $window.sessionStorage.schedule = JSON.stringify(schedule);
+                vm.schedule.classes[vm.class.sessionStateIndex] = vm.class;
+                $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
                 $location.url("/schedule-submission");
             }
         }
 
         function findClassInSessionState(unique_id) {
-            var schedule = JSON.parse($window.sessionStorage.schedule);
-            for (var x = 0; x < schedule.classes.length; x++) {
-                var current = schedule.classes[x];
+            for (var x = 0; x < vm.schedule.classes.length; x++) {
+                var current = vm.schedule.classes[x];
                 if (current.metadata.unique_id === unique_id) {
                     current.sessionStateIndex = x;
                     return current;
@@ -97,46 +95,6 @@
             } else {
                 x.className = "";
             }
-        }
-
-        function isPeakPeriod(day, time) {
-            var isPeakPeriod = 0;
-            var x = document.getElementById("toast");
-            if (day === "M" || day === "W" || day === "R" ||
-                day === "MW" || day === "MWR") {
-                if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
-                    (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
-                    (time.slice(0, 2) == 9 && time.slice(-2) >= 15)) {
-                    isPeakPeriod = 1;
-                }
-            }
-            if (day === "T" || day === "F" || day === "TF") {
-                if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
-                    (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
-                    (time.slice(0, 2) == 9 && time.slice(-2) >= 50)) {
-                    isPeakPeriod = 1;
-                }
-            }
-            if (isPeakPeriod) {
-                if (x.className !== "show")
-                    toastMessage(1);
-            }
-            return isPeakPeriod;
-        }
-
-        function updateEndingTimes() {
-            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingBeginTime);
-            var classMinDuration = 65;
-            var classMaxDuration = 210;
-            vm.allMeetingEndTimes = vm.allMeetingStartTimes
-                .slice(startTimeIdx + classMinDuration / 5, startTimeIdx + classMaxDuration / 5 + 1);
-        }
-
-        function updateOnChangeOfTime(isMeetingStart) {
-            if (isMeetingStart)
-                updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingBeginTime) ||
-                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEndTime);
         }
 
         function extractTargetAttributes(targetAttribute, sourceAttribute, allData, localData) {
@@ -177,19 +135,6 @@
                 }
             }
             return false;
-        }
-
-        function getReadableMeetingTime(aClass) {
-            if (!aClass.meetingDays || !aClass.meetingBeginTime || !aClass.meetingEndTime) {
-                return "(not found)";
-            } else {
-                return aClass.meetingDays + " " + getFormattedTime(aClass.meetingBeginTime) + "–" + getFormattedTime(aClass.meetingEndTime);
-            }
-        }
-
-        function getFormattedTime(str) {
-            var secondToLast = str.length - 2;
-            return str.substring(0, secondToLast) + ":" + str.substring(secondToLast, str.length);
         }
 
         init();
