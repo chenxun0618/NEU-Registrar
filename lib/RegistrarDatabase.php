@@ -12,10 +12,10 @@ class RegistrarDatabase {
     public function __construct() {
         // loads configuration file as an array
         $config = parse_ini_file('config/config.ini');
-        $this->host = $config['host'];
+        $this->host = $config['hostname'];
         $this->username = $config['username'];
         $this->password = $config['password'];
-        $this->dbName = $config['db_name'];
+        $this->dbName = $config['database'];
     }
 
     /**

@@ -137,7 +137,7 @@ class RegistrarDatabaseTest extends TestCase {
         );
 
         $this->assertEquals(
-                782,
+                6272,
                 count($db->selectAllQuery('select_ssbsect'))
         );
     }

@@ -11,10 +11,13 @@ $classRestrictions = $dd->getClassRestrictions();
 $levelRestrictions = $dd->getLevelRestrictions();
 $programRestrictions = $dd->getProgramRestrictions();
 $collegeRestrictions = $dd->getCollegeRestrictions();
+$specialApprovals = $dd->getSpecialApprovals();
+$scheduleTypes = $dd->getScheduleTypes();
 
 $dropdownData = ["instructionalMethod" => $instructionalMethod, "meetingSequences" => $meetingSequences, "campus" => $campus,
         "attributeCode" => $attributeCode, "majorRestrictions" => $majorRestrictions, "classRestrictions" => $classRestrictions,
-        "levelRestrictions" => $levelRestrictions, "programRestrictions" => $programRestrictions, "collegeRestrictions" => $collegeRestrictions
+        "levelRestrictions" => $levelRestrictions, "programRestrictions" => $programRestrictions, "collegeRestrictions" => $collegeRestrictions,
+        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes
 ];
 
 echo json_encode($dropdownData);
@@ -209,5 +212,43 @@ class Dropdowns {
         }
 
         return $collegeRestrictions;
+    }
+
+    /**
+     * Retrieves all the special approvals data.
+     *
+     * @return array        the special approvals data
+     */
+    public function getSpecialApprovals() {
+        $rows = $this->db->selectAllQuery('special_approvals_lookup');
+        $specialApprovals = array();
+
+        // loops through rows
+        for ($i = 0; $i < count($rows); $i++) {
+            $rowObj['code'] = $rows[$i]['code'];
+            $rowObj['desc'] = $rows[$i]['desc'];
+            $specialApprovals[] = $rowObj;
+        }
+
+        return $specialApprovals;
+    }
+
+    /**
+     * Retrieves all the schedule types data.
+     *
+     * @return array        the schedule types data
+     */
+    public function getScheduleTypes() {
+        $rows = $this->db->selectAllQuery('schedule_types_lookup');
+        $scheduleTypes = array();
+
+        // loops through rows
+        for ($i = 0; $i < count($rows); $i++) {
+            $rowObj['code'] = $rows[$i]['code'];
+            $rowObj['desc'] = $rows[$i]['desc'];
+            $scheduleTypes[] = $rowObj;
+        }
+
+        return $scheduleTypes;
     }
 }
