@@ -59,7 +59,6 @@
         function fillDefaultData(aClass, schedule) {
             aClass.termCode = getCurrentTerm();
             aClass.status = "A";
-            aClass.primaryInstructorID = "00000000";
             aClass.majorRestrictions = [];
             aClass.classRestrictions = [];
             aClass.levelRestrictions = [];
@@ -195,13 +194,15 @@
         }
 
         function isEqualMeetingTimes(meetingTimes1, meetingTimes2) {
+            if (meetingTimes1.length !== meetingTimes2.length) {
+                return false;
+            }
+            var set = {};
             for (var x = 0; x < meetingTimes1.length; x++) {
-                var m1 = meetingTimes1[x];
-                for (var y = 0; y < meetingTimes2.length; y++) {
-                    var m2 = meetingTimes2[y];
-                    if (isEqualMeetingTime(m1, m2)) {
-                        break;
-                    }
+                set[getReadableMeetingTime(meetingTimes1[x])] = true;
+            }
+            for (var x = 0; x < meetingTimes2.length; x++) {
+                if (!set.hasOwnProperty(getReadableMeetingTime(meetingTimes2[x]))) {
                     return false;
                 }
             }

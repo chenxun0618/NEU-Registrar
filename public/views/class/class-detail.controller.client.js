@@ -9,7 +9,6 @@
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
         vm.extractTargetAttributes = extractTargetAttributes;
         vm.differentFromLastYear = differentFromLastYear;
-        vm.changeHonors = changeHonors;
         vm.isEqualMeetingTimes = ClassService.isEqualMeetingTimes;
         vm.getReadableMeetingTime = ClassService.getReadableMeetingTime;
         vm.getReadableMeetingTimes = ClassService.getReadableMeetingTimes;

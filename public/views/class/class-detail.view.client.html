@@ -51,13 +51,13 @@
                             ng-change="model.toastMessage(model.scheduleViolatesPeakPeriodProperty(model.schedule))">
                     </select>
                 </div>
-                <div ng-if="model.loggedInUser.admin" class="italics">
+                <div class="meetingTimeCell" ng-if="model.loggedInUser.admin" class="italics">
                     {{model.getReadableMeetingTimes(model.class)}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes)}"
-                     class="changedFrom">{{model.class.old ? model.getReadableMeetingTimes(model.class.old) : ""}}
+                     class="changedFrom meetingTimeCell">{{model.class.old ? model.getReadableMeetingTimes(model.class.old) : ""}}
                 </div>
             </td>
         </tr>
