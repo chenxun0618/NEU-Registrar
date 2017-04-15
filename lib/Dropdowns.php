@@ -66,7 +66,7 @@ class Dropdowns {
         // loops through rows
         for ($i = 0; $i < count($rows); $i++) {
             $rowObj['code'] = $rows[$i]['code'];
-            $rowObj['dow'] = $rows[$i]['dow'];
+            $rowObj['days'] = $rows[$i]['days'];
             $rowObj['beginTime'] = $rows[$i]['beginTime'];
             $rowObj['endTime'] = $rows[$i]['endTime'];
             // adds instructional method code to array

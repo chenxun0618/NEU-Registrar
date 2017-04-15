@@ -70,6 +70,17 @@ class DBTest extends TestCase {
         );
     }
 
+    public function testQuery3() {
+        $db = new DB();
+        $queryStr = "CALL get_all_instructors()";
+        $results = $db->query($queryStr);
+
+        $this->assertCount(
+                7067,
+                $results
+        );
+    }
+
     public function testEmptyQuery() {
         $db = new DB();
         $queryStr = "SELECT * FROM gtvinsm WHERE 0 = 1";
