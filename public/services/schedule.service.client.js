@@ -66,14 +66,16 @@
             }
         }
 
-        function saveSchedule(nuid, departmentCode, lastEditTime, classes) {
+        function saveSchedule(nuid, departmentCode, schedule) {
             var newScheduleStatus = "D";
             var url = "/lib/userUpdateSchedule.php";
+            schedule.lastEditTime = schedule.lastEditTime || generateDBCompatibleTimestamp();
             var obj = {
                 NUID: nuid,
                 dept: departmentCode,
+                timestamp: schedule.lastEditTime,
                 action: newScheduleStatus,
-                classes: JSON.stringify(classes)
+                classes: JSON.stringify(schedule.classes)
             };
             return $http.post(url, obj);
         }
@@ -105,6 +107,10 @@
             }
 
             return (peakPeriodClasses / schedule.classes.length >= .6);
+        }
+
+        function generateDBCompatibleTimestamp() {
+            return (new Date()).toISOString().substring(0, 19).replace('T', ' ');
         }
 
         return api;

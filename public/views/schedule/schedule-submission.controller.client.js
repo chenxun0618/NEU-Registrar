@@ -60,11 +60,10 @@
 
         function saveSchedule() {
             if (vm.schedule) {
-                ScheduleService.saveSchedule(vm.loggedInUser.nuid, vm.selectedDepartment.departmentCode,
-                    findScheduleTimestamp(vm.selectedDepartment.departmentCode), vm.schedule.classes)
+                ScheduleService.saveSchedule(vm.loggedInUser.nuid, vm.selectedDepartment.departmentCode, vm.schedule)
                     .then(
                         function (res) {
-                            console.log(res);
+                            alert("Successfully saved!");
                         },
                         function (error) {
                             vm.error = error.data ? error.data : error.statusText;
@@ -74,15 +73,6 @@
                 vm.error = "No schedule found";
                 $window.scrollTo(0, 0);
             }
-
-            function findScheduleTimestamp(deptCode) {
-                for (var x = 0; x < vm.allDepartments.length; x++) {
-                    if (deptCode === vm.allDepartments[x].departmentCode) {
-                        return vm.allDepartments[x].lastEditTime;
-                    }
-                }
-            }
-
         }
 
         function submitSchedule() {

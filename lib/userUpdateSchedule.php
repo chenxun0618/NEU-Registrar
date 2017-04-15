@@ -5,11 +5,10 @@ include 'DB.php';
 $db = new DB();
 $id = $db->post('NUID');
 $dept = $db->post('dept');
-date_default_timezone_set('America/New_York'); // needed to ensure date in correct format
-$timeStamp = date("Y-m-d H:i:s"); // create new date for mysql
+$timestamp = $db->post('timestamp');
 $action = $db->post('action');
 $classes = $db->post('classes');
-$query = "CALL userUpdateSchedule('$id', '$dept', '$timeStamp', '$action', '$classes')";
+$query = "CALL userUpdateSchedule('$id', '$dept', '$timestamp', '$action', '$classes')";
 $result = $db->query($query);
 
 if ($result->num_rows <= 0)
