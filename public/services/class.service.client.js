@@ -12,14 +12,16 @@
             getAllStatuses: getAllStatuses,
             getCourseDataFromCatalog: getCourseDataFromCatalog,
             fillDefaultData: fillDefaultData,
-            getAllMeetingDays: getAllMeetingDays,
             getAllTimeIntervals: getAllTimeIntervals,
             getAllInstructors: getAllInstructors,
-            getAllSpecialApprovals: getAllSpecialApprovals,
-            getYesOrNo: getYesOrNo,
             generateUniqueIdForClass: generateUniqueIdForClass,
             isClassModified: isClassModified,
-            getInvalidClassReasons: getInvalidClassReasons
+            getInvalidClassReasons: getInvalidClassReasons,
+            isEqualMeetingTimes: isEqualMeetingTimes,
+            isPeakPeriod: isPeakPeriod,
+            getFormattedTime: getFormattedTime,
+            getReadableMeetingTime: getReadableMeetingTime,
+            getReadableMeetingTimes: getReadableMeetingTimes
         };
 
         function getDropdownValues() {
@@ -36,17 +38,8 @@
             return $http.get(url);
         }
 
-        function getAllSpecialApprovals() {
-            return [{code: "", desc: ""}, {code: "A", desc: "Advisor"}, {code: "D", desc: "Department"},
-                {code: "G", desc: "Graduate Director"}, {code: "I", desc: "Instructor"}];
-        }
-
         function getAllStatuses() {
-            return ["Active", "Cancelled"];
-        }
-
-        function getAllMeetingDays() {
-            return ["MWR", "TF", "MW", "M", "T", "W", "R", "F", "S"];
+            return [{code: "A", desc: "Active"}, {code: "C", desc: "Cancelled"}];
         }
 
         function getAllTimeIntervals() {
@@ -58,10 +51,6 @@
             return $http.get(url);
         }
 
-        function getYesOrNo() {
-            return ["Y", "N"];
-        }
-
         function getCourseDataFromCatalog(subjectCode, courseNumber) {
             var url = "/lib/courseCatalogLookup.php?subjectCode=" + subjectCode + "&courseNumber=" + courseNumber;
             return $http.get(url);
@@ -69,7 +58,8 @@
 
         function fillDefaultData(aClass, schedule) {
             aClass.termCode = getCurrentTerm();
-            aClass.status = "Active";
+            aClass.status = "A";
+            aClass.primaryInstructorID = "00000000";
             aClass.majorRestrictions = [];
             aClass.classRestrictions = [];
             aClass.levelRestrictions = [];
@@ -108,36 +98,34 @@
         // determines if a given class has been modified from its old data by examining all properties
         function isClassModified(aClass) {
             return (!aClass.old) || !(
-                (aClass.termCode === aClass.old.termCode) &&
-                (aClass.status === aClass.old.status) &&
-                (aClass.crn === aClass.old.crn) &&
-                (aClass.subjectCode === aClass.old.subjectCode) &&
-                (aClass.courseNumber === aClass.old.courseNumber) &&
-                (aClass.section === aClass.old.section) &&
-                (aClass.courseTitle === aClass.old.courseTitle) &&
-                (aClass.meetingDays === aClass.old.meetingDays) &&
-                (aClass.meetingBeginTime === aClass.old.meetingBeginTime) &&
-                (aClass.meetingEndTime === aClass.old.meetingEndTime) &&
-                (aClass.primaryInstructorID === aClass.old.primaryInstructorID) &&
-                (aClass.maxEnrollment === aClass.old.maxEnrollment) &&
-                (aClass.priorEnrollment === aClass.old.priorEnrollment) &&
-                (arraysEqual(aClass.majorRestrictions, aClass.old.majorRestrictions)) &&
-                (arraysEqual(aClass.classRestrictions, aClass.old.classRestrictions)) &&
-                (arraysEqual(aClass.levelRestrictions, aClass.old.levelRestrictions)) &&
-                (arraysEqual(aClass.programRestrictions, aClass.old.programRestrictions)) &&
-                (arraysEqual(aClass.collegeRestrictions, aClass.old.collegeRestrictions)) &&
-                (aClass.includeMajorRestriction === aClass.old.includeMajorRestriction) &&
-                (aClass.includeClassRestriction === aClass.old.includeClassRestriction) &&
-                (aClass.includeLevelRestriction === aClass.old.includeLevelRestriction) &&
-                (aClass.includeProgramRestriction === aClass.old.includeProgramRestriction) &&
-                (aClass.includeCollegeRestriction === aClass.old.includeCollegeRestriction) &&
-                (aClass.waitlistCapacity === aClass.old.waitlistCapacity) &&
-                (aClass.campusCode === aClass.old.campusCode) &&
-                (aClass.instructionalMethodCode === aClass.old.instructionalMethodCode) &&
-                (aClass.specialApprovalCode === aClass.old.specialApprovalCode) &&
-                (arraysEqual(aClass.attributeCode, aClass.old.attributeCode)) &&
-                (aClass.publish === aClass.old.publish)
-            );
+                    (aClass.termCode === aClass.old.termCode) &&
+                    (aClass.status === aClass.old.status) &&
+                    (aClass.crn === aClass.old.crn) &&
+                    (aClass.subjectCode === aClass.old.subjectCode) &&
+                    (aClass.courseNumber === aClass.old.courseNumber) &&
+                    (aClass.section === aClass.old.section) &&
+                    (aClass.courseTitle === aClass.old.courseTitle) &&
+                    (isEqualMeetingTimes(aClass.meetingTimes, aClass.old.meetingTimes)) &&
+                    (aClass.primaryInstructorID === aClass.old.primaryInstructorID) &&
+                    (aClass.maxEnrollment === aClass.old.maxEnrollment) &&
+                    (aClass.priorEnrollment === aClass.old.priorEnrollment) &&
+                    (arraysEqual(aClass.majorRestrictions, aClass.old.majorRestrictions)) &&
+                    (arraysEqual(aClass.classRestrictions, aClass.old.classRestrictions)) &&
+                    (arraysEqual(aClass.levelRestrictions, aClass.old.levelRestrictions)) &&
+                    (arraysEqual(aClass.programRestrictions, aClass.old.programRestrictions)) &&
+                    (arraysEqual(aClass.collegeRestrictions, aClass.old.collegeRestrictions)) &&
+                    (aClass.includeMajorRestriction === aClass.old.includeMajorRestriction) &&
+                    (aClass.includeClassRestriction === aClass.old.includeClassRestriction) &&
+                    (aClass.includeLevelRestriction === aClass.old.includeLevelRestriction) &&
+                    (aClass.includeProgramRestriction === aClass.old.includeProgramRestriction) &&
+                    (aClass.includeCollegeRestriction === aClass.old.includeCollegeRestriction) &&
+                    (aClass.waitlistCapacity === aClass.old.waitlistCapacity) &&
+                    (aClass.campusCode === aClass.old.campusCode) &&
+                    (aClass.instructionalMethodCode === aClass.old.instructionalMethodCode) &&
+                    (aClass.specialApprovalCode === aClass.old.specialApprovalCode) &&
+                    (arraysEqual(aClass.attributeCode, aClass.old.attributeCode)) &&
+                    (aClass.publish === aClass.old.publish)
+                );
         }
 
         function getInvalidClassReasons(aClass) {
@@ -146,7 +134,7 @@
             if (!aClass.termCode || !(/^\d{6}$/.test(aClass.termCode))) { // 6 digit number
                 invalidReasons.push("Invalid term code: " + aClass.termCode);
             }
-            if (!["Active", "Cancelled"].includes(aClass.status)) {
+            if (!["A", "C"].includes(aClass.status)) {
                 invalidReasons.push("Invalid status: " + aClass.status);
             }
             if (aClass.crn && !(/^\d{5}$/.test(aClass.crn))) { // 5 digit number
@@ -160,15 +148,6 @@
             }
             if (!aClass.courseTitle) {
                 invalidReasons.push("Invalid title: " + aClass.courseTitle);
-            }
-            if (!aClass.meetingDays) {
-                invalidReasons.push("Invalid meeting days: " + aClass.meetingDays);
-            }
-            if (!aClass.meetingBeginTime || (aClass.meetingBeginTime > aClass.meetingEndTime)) {
-                invalidReasons.push("Invalid meeting start time: " + aClass.meetingBeginTime);
-            }
-            if (!aClass.meetingEndTime || (aClass.meetingBeginTime > aClass.meetingEndTime)) {
-                invalidReasons.push("Invalid meeting end time: " + aClass.meetingEndTime);
             }
             if (!aClass.primaryInstructorID) {
                 invalidReasons.push("Invalid primary instructor: " + aClass.primaryInstructorID);
@@ -200,7 +179,7 @@
             if (!aClass.campusCode) {
                 invalidReasons.push("Campus code is required");
             }
-            if (!getYesOrNo().includes(aClass.publish)) {
+            if (!['Y', 'N'].includes(aClass.publish)) {
                 invalidReasons.push("Invalid publish indicator: " + aClass.publish);
             }
             if (!["", "A", "D", "G", "I"].includes(aClass.specialApprovalCode)) {
@@ -208,6 +187,52 @@
             }
 
             return invalidReasons;
+        }
+
+        function isEqualMeetingTime(meetingTime1, meetingTime2) {
+            return (meetingTime1.days === meetingTime2.days && meetingTime1.beginTime === meetingTime2.beginTime &&
+            meetingTime1.endTime === meetingTime2.endTime);
+        }
+
+        function isEqualMeetingTimes(meetingTimes1, meetingTimes2) {
+            for (var x = 0; x < meetingTimes1.length; x++) {
+                var m1 = meetingTimes1[x];
+                for (var y = 0; y < meetingTimes2.length; y++) {
+                    var m2 = meetingTimes2[y];
+                    if (isEqualMeetingTime(m1, m2)) {
+                        break;
+                    }
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function isPeakPeriod(meetingTime) {
+            return (meetingTime === "MWR" && meetingTime.beginTime >= '0950' && meetingTime.endTime <= '1525') ||
+                (meetingTime.days === "TF" && meetingTime.beginTime >= '0915' && meetingTime.endTime <= '1525');
+        }
+
+        function getFormattedTime(str) {
+            var secondToLast = str.length - 2;
+            return str.substring(0, secondToLast) + ":" + str.substring(secondToLast, str.length);
+        }
+
+        function getReadableMeetingTime(aMeetingTime) {
+            return aMeetingTime.days + " " + getFormattedTime(aMeetingTime.beginTime) + "–" + getFormattedTime(aMeetingTime.endTime);
+        }
+
+        function getReadableMeetingTimes(aClass) {
+            var str = "";
+            if (aClass.meetingTimes.length) {
+                for (var x = 0; x < aClass.meetingTimes.length; x++) {
+                    var aMeetingTime = aClass.meetingTimes[x];
+                    str += getReadableMeetingTime(aMeetingTime) + "\n";
+                }
+                return str.trim();
+            } else {
+                return "(none)";
+            }
         }
 
         return api;

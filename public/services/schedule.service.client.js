@@ -11,7 +11,8 @@
             saveSchedule: saveSchedule,
             submitSchedule: submitSchedule,
             rejectSchedule: rejectSchedule,
-            approveSchedule: approveSchedule
+            approveSchedule: approveSchedule,
+            scheduleViolatesPeakPeriodProperty: scheduleViolatesPeakPeriodProperty
         };
 
         function getScheduleDetail(schedule, user) {
@@ -88,6 +89,22 @@
 
         function approveSchedule(schedule) {
             // communicate with web service
+        }
+
+        function scheduleViolatesPeakPeriodProperty(schedule) {
+            var peakPeriodClasses = 0;
+            for (var x = 0; x < schedule.classes.length; x++) {
+                var aClass = schedule.classes[x];
+                for (var y = 0; y < aClass.meetingTimes.length; y++) {
+                    var aMeetingTime = aClass.meetingTimes[y];
+                    if (ClassService.isPeakPeriod(aMeetingTime)) {
+                        peakPeriodClasses++;
+                        break;
+                    }
+                }
+            }
+
+            return (peakPeriodClasses / schedule.classes.length >= .6);
         }
 
         return api;

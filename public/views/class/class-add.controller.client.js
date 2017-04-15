@@ -8,11 +8,8 @@
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
         vm.getCourseDataFromCatalog = getCourseDataFromCatalog;
-        vm.isPeakPeriod = isPeakPeriod;
-        vm.updateEndingTimes = updateEndingTimes;
-        vm.updateOnChangeOfTime = updateOnChangeOfTime;
+        vm.getReadableMeetingTime = ClassService.getReadableMeetingTime;
         vm.toastMessage = toastMessage;
-        vm.getFormattedTime = getFormattedTime;
 
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
@@ -32,11 +29,8 @@
                         }
                     );
                 vm.currentTerm = ClassService.getCurrentTerm();
-                vm.allMeetingDays = ClassService.getAllMeetingDays();
                 vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
                 vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
-                vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
-                vm.yesOrNo = ClassService.getYesOrNo();
 
                 ClassService.getDropdownValues()
                     .then(
@@ -123,54 +117,6 @@
             } else {
                 x.className = "";
             }
-        }
-
-        function isPeakPeriod(day, time) {
-            if (!day || !time) {
-                return false;
-            }
-            var isPeakPeriod = 0;
-            var x = document.getElementById("toast");
-            if (day === "M" || day === "W" || day === "R" ||
-                day === "MW" || day === "MWR") {
-                if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
-                    (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
-                    (time.slice(0, 2) == 9 && time.slice(-2) >= 15)) {
-                    isPeakPeriod = 1;
-                }
-            }
-            if (day === "T" || day === "F" || day === "TF") {
-                if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
-                    (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
-                    (time.slice(0, 2) == 9 && time.slice(-2) >= 50)) {
-                    isPeakPeriod = 1;
-                }
-            }
-            if (isPeakPeriod) {
-                if (x.className !== "show")
-                    toastMessage(1);
-            }
-            return isPeakPeriod;
-        }
-
-        function updateEndingTimes() {
-            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingBeginTime);
-            var classMinDuration = 65;
-            var classMaxDuration = 210;
-            vm.allMeetingEndTimes = vm.allMeetingStartTimes
-                .slice(startTimeIdx + classMinDuration / 5, startTimeIdx + classMaxDuration / 5 + 1);
-        }
-
-        function updateOnChangeOfTime(isMeetingStart) {
-            if (isMeetingStart)
-                updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingBeginTime) ||
-                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEndTime);
-        }
-
-        function getFormattedTime(str) {
-            var secondToLast = str.length - 2;
-            return str.substring(0, secondToLast) + ":" + str.substring(secondToLast, str.length);
         }
 
         init();
