@@ -10,7 +10,7 @@
         Add Class
     </h1>
 
-    <div ng-if="model.error" class="alert alert-danger error-box">{{model.error}}</div>
+    <div ng-if="model.error" class="alert alert-danger status-box">{{model.error}}</div>
 
     <table class="table narrow">
         <tbody>
@@ -65,13 +65,11 @@
             </td>
         </tr>
         <tr>
-            <td>Meeting Times*</td>
+            <td>Meeting Times</td>
             <td>
-                <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2" style="width: 200px" ng-model="model.class.meetingTimes" multiple="multiple"
-                            ng-options="aMeetingTime as model.getReadableMeetingTime(aMeetingTime) for aMeetingTime in model.all.meetingTimes track by aMeetingTime.days+aMeetingTime.beginTime+aMeetingTime.endTime">
-                    </select>
-                </div>
+                <select class="select2" style="width: 200px" ng-model="model.class.meetingTimes" multiple="multiple"
+                        ng-options="aMeetingTime as model.getReadableMeetingTime(aMeetingTime) for aMeetingTime in model.all.meetingTimes track by aMeetingTime.days+aMeetingTime.beginTime+aMeetingTime.endTime">
+                </select>
             </td>
         </tr>
         <tr>
@@ -99,27 +97,23 @@
         <tr>
             <td>Campus*</td>
             <td>
-                <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2" style="width: 150px"
-                            ng-model="model.class.campusCode"
-                            ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.campus">
-                    </select>
-                </div>
+                <select class="select2" style="width: 150px"
+                        ng-model="model.class.campusCode"
+                        ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.campus">
+                </select>
             </td>
         </tr>
         <tr>
             <td>Instructional Method*</td>
             <td>
-                <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2" style="width: 150px"
-                            ng-model="model.class.instructionalMethodCode"
-                            ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.instructionalMethod">
-                    </select>
-                </div>
+                <select class="select2" style="width: 150px"
+                        ng-model="model.class.instructionalMethodCode"
+                        ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.instructionalMethod">
+                </select>
             </td>
         </tr>
         <tr>
-            <td>Special Approvals*</td>
+            <td>Special Approvals</td>
             <td>
                 <select class="select2" style="width: 150px;"
                         ng-model="model.class.specialApprovalCode"
@@ -232,9 +226,11 @@
         </tr>
         </tbody>
     </table>
-    <div id="toast" ng-click="model.toastMessage(0)">
-        Time selected is during peak hours <b>MWR 9:15-15:25, TF 9:50-15:25</b>, please proceed with caution.
+
+    <div id="toast" class="toast-warning" ng-click="model.toastMessage(false)">
+        Over 60% of classes in schedule occur during peak periods, <b>MWR 9:15-15:25, TF 9:50-15:25</b>. Please proceed with caution.
     </div>
+
     <div>
         <button ng-if="model.class" ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Add to Schedule
         </button>

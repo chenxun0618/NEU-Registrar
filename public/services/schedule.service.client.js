@@ -80,8 +80,18 @@
             return $http.post(url, obj);
         }
 
-        function submitSchedule(schedule) {
-            // communicate with web service
+        function submitSchedule(nuid, departmentCode, schedule) {
+            var newScheduleStatus = "S";
+            var url = "/lib/userUpdateSchedule.php";
+            schedule.lastEditTime = schedule.lastEditTime || generateDBCompatibleTimestamp();
+            var obj = {
+                NUID: nuid,
+                dept: departmentCode,
+                timestamp: schedule.lastEditTime,
+                action: newScheduleStatus,
+                classes: JSON.stringify(schedule.classes)
+            };
+            return $http.post(url, obj);
         }
 
         function rejectSchedule(schedule, rejectionMessage) {

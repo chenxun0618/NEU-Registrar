@@ -3,7 +3,7 @@
         .module("NEURegistrar")
         .controller("ClassDetailController", ClassDetailController);
 
-    function ClassDetailController($location, $window, $routeParams, ClassService, ScheduleService) {
+    function ClassDetailController($location, $window, $routeParams, ClassService, ScheduleService, UserService) {
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
@@ -23,7 +23,9 @@
                 $location.url("/login");
             } else {
                 vm.schedule = JSON.parse($window.sessionStorage.schedule);
+                vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
                 vm.class = findClassInSessionState($routeParams.unique_id); // find in session state for now until I figure out how to pass the specified course to this controller
+                vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
 
                 vm.currentTerm = ClassService.getCurrentTerm();
                 vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
@@ -87,12 +89,12 @@
         function toastMessage(show) {
             var x = document.getElementById("toast");
             if (show) {
-                x.className = "show";
+                x.classList.add("show");
                 setTimeout(function () {
-                    x.className = "";
+                    x.classList.remove("show");
                 }, 6000);
             } else {
-                x.className = "";
+                x.classList.remove("show");
             }
         }
 

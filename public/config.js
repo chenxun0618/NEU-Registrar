@@ -25,9 +25,6 @@
                 controller: "ClassAddController",
                 controllerAs: "model"
             })
-            .when("/submitted", {
-                templateUrl: "public/views/schedule/schedule-submission-done.view.client.html"
-            })
             .when("/", {
                 redirectTo: "/login"
             })
