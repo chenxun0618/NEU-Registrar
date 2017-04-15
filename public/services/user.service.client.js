@@ -10,7 +10,7 @@
         };
 
         function login(email, nuid) {
-            var url = "/connection/login.php?NUID=" + nuid + "&email=" + encodeURIComponent(email);
+            var url = "/lib/login.php?NUID=" + nuid + "&email=" + encodeURIComponent(email);
             return $http.get(url);
         }
 

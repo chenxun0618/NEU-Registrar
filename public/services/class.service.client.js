@@ -32,7 +32,7 @@
         }
 
         function getAllSubjectCodesInDept(dept) {
-            var url = "/connection/getAllSubjectCodesInDept.php?dept=" + dept;
+            var url = "/lib/getAllSubjectCodesInDept.php?dept=" + dept;
             return $http.get(url);
         }
 
@@ -54,7 +54,7 @@
         }
 
         function getAllInstructors() {
-            var url = "/connection/getInstructors.php";
+            var url = "/lib/getInstructors.php";
             return $http.get(url);
         }
 

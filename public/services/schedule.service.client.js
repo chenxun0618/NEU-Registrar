@@ -16,9 +16,9 @@
 
         function getScheduleDetail(schedule, user) {
             if (user.admin) {
-                var url = "/connection/adminGetSched.php?dept=" + schedule.departmentCode;
+                var url = "/lib/adminGetSched.php?dept=" + schedule.departmentCode;
             } else {
-                var url = "/connection/getScheduleByDept.php?dept=" + schedule.departmentCode;
+                var url = "/lib/getScheduleByDept.php?dept=" + schedule.departmentCode;
             }
             return $http.get(url);
         }
@@ -67,14 +67,12 @@
 
         function saveSchedule(nuid, departmentCode, lastEditTime, classes) {
             var newScheduleStatus = "D";
-            lastEditTime = lastEditTime || new Date();
-            var url = "/connection/userUpdateSchedule.php";
+            var url = "/lib/userUpdateSchedule.php";
             var obj = {
                 NUID: nuid,
                 dept: departmentCode,
-                timeStamp: lastEditTime,
                 action: newScheduleStatus,
-                classes: classes
+                classes: JSON.stringify(classes)
             };
             return $http.post(url, obj);
         }

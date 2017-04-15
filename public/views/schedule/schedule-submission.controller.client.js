@@ -27,8 +27,10 @@
                 vm.allDepartments = vm.loggedInUser.depts;
 
                 if ($window.sessionStorage.selectedDepartment) {
+                    vm.loadingSchedule = true;
                     vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
                     vm.schedule = JSON.parse($window.sessionStorage.schedule);
+                    vm.loadingSchedule = false;
                 }
             }
         }
@@ -39,14 +41,17 @@
                 r = confirm("Are you sure you want to load new schedule? Unsaved progress will be lost.");
             }
             if (r == true || !vm.schedule) {
+                vm.loadingSchedule = true;
                 ScheduleService.getScheduleDetail(selectedDepartment, vm.loggedInUser)
                     .then(
                         function (res) {
                             vm.schedule = res.data;
                             ScheduleService.preprocessSchedule(vm.schedule);
+                            vm.loadingSchedule = false;
                         },
                         function (error) {
                             vm.error = error.data ? error.data : error.statusText;
+                            vm.loadingSchedule = false;
                         }
                     );
             }
