@@ -3,7 +3,7 @@
         .module("NEURegistrar")
         .controller("ClassAddController", ClassAddController);
 
-    function ClassAddController($location, $window, ClassService) {
+    function ClassAddController($location, $window, ClassService, UserService) {
         var vm = this;
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
@@ -16,7 +16,7 @@
             vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
             vm.schedule = JSON.parse($window.sessionStorage.schedule);
 
-            if (!vm.loggedInUser || vm.loggedInUser.admin) {
+            if (!UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status)) {
                 $location.url("/login");
             } else {
                 ClassService.getAllSubjectCodesInDept(vm.selectedDepartment.departmentCode)
@@ -110,12 +110,12 @@
         function toastMessage(show) {
             var x = document.getElementById("toast");
             if (show) {
-                x.className = "show";
+                x.classList.add("show");
                 setTimeout(function () {
-                    x.className = "";
+                    x.classList.remove("show");
                 }, 6000);
             } else {
-                x.className = "";
+                x.classList.remove("show");
             }
         }
 

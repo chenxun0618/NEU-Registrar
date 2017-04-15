@@ -3,7 +3,7 @@
         .module("NEURegistrar")
         .controller("ScheduleSubmissionController", ScheduleSubmissionController);
 
-    function ScheduleSubmissionController($location, $window, ClassService, ScheduleService) {
+    function ScheduleSubmissionController($location, $window, ClassService, ScheduleService, UserService) {
         var vm = this;
 
         vm.getScheduleDetail = getScheduleDetail;
@@ -17,9 +17,11 @@
         vm.getScheduleStatusLine = getScheduleStatusLine;
         vm.getReadableMeetingTimes = ClassService.getReadableMeetingTimes;
         vm.logout = logout;
+        vm.toastMessage = toastMessage;
 
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
+            clearStatusMessages();
 
             if (!vm.loggedInUser) {
                 $location.url("/login/");
@@ -32,11 +34,14 @@
                     vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
                     vm.schedule = JSON.parse($window.sessionStorage.schedule);
                     vm.loadingSchedule = false;
+                    vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
                 }
             }
         }
 
         function getScheduleDetail(selectedDepartment) {
+            clearStatusMessages();
+
             var r = true;
             if (vm.schedule) {
                 r = confirm("Are you sure you want to load new schedule? Unsaved progress will be lost.");
@@ -49,6 +54,7 @@
                             vm.schedule = res.data;
                             ScheduleService.preprocessSchedule(vm.schedule);
                             vm.loadingSchedule = false;
+                            vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
                         },
                         function (error) {
                             vm.error = error.data ? error.data : error.statusText;
@@ -59,14 +65,23 @@
         }
 
         function saveSchedule() {
+            clearStatusMessages();
             if (vm.schedule) {
                 ScheduleService.saveSchedule(vm.loggedInUser.nuid, vm.selectedDepartment.departmentCode, vm.schedule)
                     .then(
                         function (res) {
-                            alert("Successfully saved!");
+                            if (!res.data) {
+                                changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'D');
+                                toastMessage(true);
+                            } else { // merge needed
+                                // merge classes TODO
+                                vm.error = "Someone else worked on this schedule while you were. Their changes have been merged into yours. Please save again when ready.";
+                                $window.scrollTo(0, 0);
+                            }
                         },
                         function (error) {
                             vm.error = error.data ? error.data : error.statusText;
+                            $window.scrollTo(0, 0);
                         }
                     );
             } else {
@@ -76,11 +91,29 @@
         }
 
         function submitSchedule() {
-            var r = confirm("Are you sure you want to submit this schedule?");
+            var r = confirm("Are you sure you want to submit this schedule? This action is final.");
             if (r == true) {
+                clearStatusMessages();
                 if (vm.schedule) {
-                    ScheduleService.submitSchedule(vm.schedule);
-                    $location.url("/submitted/");
+                    ScheduleService.submitSchedule(vm.loggedInUser.nuid, vm.selectedDepartment.departmentCode, vm.schedule)
+                        .then(
+                            function (res) {
+                                if (!res.data) {
+                                    changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'S');
+                                    clearSelectedDepartmentAndSchedule();
+                                    $window.scrollTo(0, 0);
+                                    vm.success = "Schedule submitted!";
+                                } else {
+                                    // merge classes TODO
+                                    vm.error = "Someone else worked on this schedule while you were. Their changes have been merged into yours. Please resubmit when ready.";
+                                    $window.scrollTo(0, 0);
+                                }
+                            },
+                            function (error) {
+                                vm.error = error.data ? error.data : error.statusText;
+                                $window.scrollTo(0, 0);
+                            }
+                        );
                 } else {
                     vm.error = "No schedule found";
                     $window.scrollTo(0, 0);
@@ -88,9 +121,26 @@
             }
         }
 
+        function changeStatusOfSchedule(departmentCode, newStatus) {
+            for (var x = 0; x < vm.allDepartments.length; x++) {
+                if (vm.allDepartments[x].departmentCode === departmentCode) {
+                    vm.allDepartments[x].status = newStatus;
+                    return;
+                }
+            }
+        }
+
+        function clearSelectedDepartmentAndSchedule() {
+            delete vm.selectedDepartment;
+            $window.sessionStorage.removeItem("selectedDepartment");
+            delete vm.schedule;
+            $window.sessionStorage.removeItem("schedule");
+        }
+
         function rejectSchedule() {
             var rejection_message = prompt("Enter a reason for the rejection (optional):", "");
             if (rejection_message !== null) {
+                clearStatusMessages();
                 if (vm.schedule) {
                     ScheduleService.rejectSchedule(vm.schedule, rejection_message);
                     $window.sessionStorage.schedule = JSON.stringify(null);
@@ -103,8 +153,9 @@
         }
 
         function approveSchedule() {
-            var r = confirm("Are you sure you want to approve this schedule?");
+            var r = confirm("Are you sure you want to approve this schedule? This action is final.");
             if (r == true) {
+                clearStatusMessages();
                 if (vm.schedule) {
                     ScheduleService.approveSchedule(vm.schedule);
                     $window.sessionStorage.schedule = JSON.stringify(null);
@@ -134,7 +185,8 @@
             } else if (schedule.status === 'D') {
                 return schedule.departmentCode + " (draft)";
             } else if (schedule.status === 'S') {
-                return schedule.departmentCode + " (waiting approval)";
+                var paranthetical = vm.loggedInUser.admin ? "(waiting approval)" : "(submitted)";
+                return schedule.departmentCode + " " + paranthetical;
             } else if (schedule.status === 'R') {
                 return schedule.departmentCode + " (rejected)";
             }
@@ -153,6 +205,23 @@
         function logout() {
             $window.sessionStorage.clear();
             $location.url("/login/");
+        }
+
+        function toastMessage(show) {
+            var x = document.getElementById("toast");
+            if (show) {
+                x.classList.add("show");
+                setTimeout(function () {
+                    x.classList.remove("show");
+                }, 6000);
+            } else {
+                x.classList.remove("show");
+            }
+        }
+
+        function clearStatusMessages() {
+            vm.error = "";
+            vm.success = "";
         }
 
         init();

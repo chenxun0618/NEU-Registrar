@@ -8,10 +8,11 @@
         </div>
     </h1>
 
+    <div ng-if="model.success" class="alert alert-success status-box">{{model.success}}</div>
 
-    <div ng-if="model.error" class="alert alert-danger error-box">{{model.error}}</div>
+    <div ng-if="model.error" class="alert alert-danger status-box">{{model.error}}</div>
 
-    <div ng-if="model.schedule && model.schedule.rejectionMessage" class="alert alert-danger error-box">
+    <div ng-if="model.schedule && model.schedule.rejectionMessage" class="alert alert-danger status-box">
         {{model.schedule.rejectionMessage}}
     </div>
 
@@ -50,8 +51,7 @@
             <td>{{class.courseTitle}}</td>
             <td class="meetingTimeCell">{{model.getReadableMeetingTimes(class)}}</td>
             <td>
-                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">{{model.loggedInUser.admin ? "View"
-                    : "Edit"}}</a>
+                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">{{model.userCanEditSchedule ? "Edit" : "View"}}</a>
             </td>
         </tr>
         </tbody>
@@ -76,25 +76,29 @@
         </div>
     </div>
 
+    <div id="toast" class="toast-success" ng-click="model.toastMessage(false)">
+        Schedule successfully saved!
+    </div>
+
     <div class="float-right">
         <button ng-click="model.navigateToAddClass()" ng-show="model.schedule && !model.loggedInUser.admin"
-                type="button" class="btn btn-info">Add
-            Class
+                type="button" class="btn btn-info" ng-disabled="!model.userCanEditSchedule">
+            Add Class
         </button>
         <button ng-click="model.saveSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button"
-                class="btn btn-success">
+                class="btn btn-success" ng-disabled="!model.userCanEditSchedule">
             Save
         </button>
         <button ng-click="model.submitSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button"
-                class="btn btn-primary" ng-disabled="model.selectedDepartment.scheduleStatus === 'S'">
+                class="btn btn-primary" ng-disabled="!model.userCanEditSchedule">
             Submit
         </button>
         <button ng-click="model.rejectSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button"
-                class="btn btn-danger" ng-disabled="model.selectedDepartment.scheduleStatus === 'R'">
+                class="btn btn-danger" ng-disabled="model.selectedDepartment.status !== 'S'">
             Reject
         </button>
         <button ng-click="model.approveSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button"
-                class="btn btn-success" ng-disabled="model.selectedDepartment.scheduleStatus === 'A'">
+                class="btn btn-success" ng-disabled="model.selectedDepartment.status !== 'S'">
             Approve
         </button>
     </div>
