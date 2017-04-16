@@ -61,12 +61,32 @@
                 });
             }
 
-            user.depts = newDepts;
+            user.depts = sortDepartments(newDepts);
             user.admin = parseInt(user.isAdmin) ? true : false;
             user.nuid = user.NUID;
             delete user.dept;
             delete user.isAdmin;
             delete user.NUID;
+        }
+
+        // input: (boolean, [{departmentCode: "CS", status: "S"}, {departmentCode: "IS", status: ""} ...]
+        // output: array sorted first by status according to map, then alphabetically
+        function sortDepartments(admin, depts) {
+            if (admin) {
+                var map = {"S": 1, "A": 2, "D": 3, "D": 4, "": 5};
+            } else {
+                var map = {"D": 1, "D": 2, "": 3, "A": 4, "S": 5};
+            }
+
+            var scheduleStatusComparator = function(a, b) {
+                if (a.status === b.status) {
+                    return a.departmentCode.localeCompare(b.departmentCode); // alphabetical if same status
+                } else {
+                    return (map[a.status] - map[b.status]);
+                }
+            };
+
+            return depts.sort(scheduleStatusComparator);
         }
     }
 })();

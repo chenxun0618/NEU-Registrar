@@ -21,13 +21,11 @@
                placeholder="Search a class number, class name...">
     </span>
     <br>
-    <form name="getSchedules">
-        <label for="departmentSelect"> Department: </label>
-        <select name="departmentSelect" id="departmentSelect" ng-model="model.selectedDepartment"
-                ng-options="option as model.getScheduleSummaryLine(option) for option in model.allDepartments track by option.departmentCode"
-                ng-change="model.getScheduleDetail(model.selectedDepartment)">
-        </select>
-    </form>
+    <span>Department: </span>
+    <select ng-model="model.selectedDepartment"
+            ng-options="option as option.departmentCode group by model.getScheduleGroupName(option.status) disable when model.getScheduleDisabled(option.status) for option in model.allDepartments track by option.departmentCode"
+            ng-change="model.getScheduleDetail(model.selectedDepartment)">
+    </select>
 
     <div class="loader" ng-show="model.loadingSchedule">Loading...</div>
 
