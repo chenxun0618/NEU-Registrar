@@ -13,9 +13,10 @@
         vm.approveSchedule = approveSchedule;
         vm.navigateToClassDetail = navigateToClassDetail;
         vm.navigateToAddClass = navigateToAddClass;
-        vm.getScheduleSummaryLine = getScheduleSummaryLine;
+        vm.getScheduleGroupName = getScheduleGroupName;
         vm.getScheduleStatusLine = getScheduleStatusLine;
         vm.getReadableMeetingTimes = ClassService.getReadableMeetingTimes;
+        vm.getScheduleDisabled = getScheduleDisabled;
         vm.logout = logout;
         vm.toastMessage = toastMessage;
 
@@ -179,16 +180,17 @@
             $location.url("/class-add/");
         }
 
-        function getScheduleSummaryLine(schedule) {
-            if (!schedule.status) {
-                return schedule.departmentCode;
-            } else if (schedule.status === 'D') {
-                return schedule.departmentCode + " (draft)";
-            } else if (schedule.status === 'S') {
-                var paranthetical = vm.loggedInUser.admin ? "(waiting approval)" : "(submitted)";
-                return schedule.departmentCode + " " + paranthetical;
-            } else if (schedule.status === 'R') {
-                return schedule.departmentCode + " (rejected)";
+        function getScheduleGroupName(scheduleStatus) {
+            if (scheduleStatus === 'D') {
+                return "Draft";
+            } else if (scheduleStatus === 'S') {
+                return vm.loggedInUser.admin ? "Waiting Approval" : "Submitted";
+            } else if (scheduleStatus === 'R') {
+                return "Rejected";
+            } else if (scheduleStatus === 'A') {
+                return "Approved";
+            } else {
+                return "Untouched";
             }
         }
 
@@ -199,6 +201,14 @@
                 return "Rejected by " + schedule.lastEditedBy + " on " + schedule.lastEditTime + " because: \n\n" + schedule.rejectionMessage;
             } else if (schedule.scheduleStatus === 'S') {
                 return "Submitted by " + schedule.lastEditedBy + " on " + schedule.lastEditTime;
+            }
+        }
+
+        function getScheduleDisabled(scheduleStatus) {
+            if (vm.loggedInUser.admin) {
+                return (!scheduleStatus || scheduleStatus === 'D' || scheduleStatus === 'R');
+            } else {
+                return (scheduleStatus === 'S');
             }
         }
 
