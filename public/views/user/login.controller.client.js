@@ -61,8 +61,8 @@
                 });
             }
 
-            user.depts = sortDepartments(newDepts);
             user.admin = parseInt(user.isAdmin) ? true : false;
+            user.depts = sortDepartments(user.admin, newDepts);
             user.nuid = user.NUID;
             delete user.dept;
             delete user.isAdmin;
