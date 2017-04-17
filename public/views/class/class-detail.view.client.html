@@ -419,8 +419,7 @@
             <td>Comment</td>
             <td>
                 <textarea ng-if="model.userCanEditSchedule" ng-model="model.class.comment"/>
-                <div ng-if="!model.userCanEditSchedule" class="italics">{{model.class.comment ? model.class.comment :
-                    "(none)"}}
+                <div ng-if="!model.userCanEditSchedule" class="italics">{{model.class.comment || "(none)"}}
                 </div>
             </td>
             <td>

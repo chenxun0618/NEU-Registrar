@@ -178,6 +178,9 @@
             if (!aClass.campusCode) {
                 invalidReasons.push("Campus code is required");
             }
+            if (!aClass.instructionalMethodCode) {
+                invalidReasons.push("Instructional method is required");
+            }
             if (!['Y', 'N'].includes(aClass.publish)) {
                 invalidReasons.push("Invalid publish indicator: " + aClass.publish);
             }

@@ -21,7 +21,7 @@
         vm.toastMessage = toastMessage;
 
         function init() {
-            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser || null);
             clearStatusMessages();
 
             if (!vm.loggedInUser) {
@@ -31,10 +31,12 @@
                     vm.loadingSchedule = true;
                     vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
                     vm.schedule = JSON.parse($window.sessionStorage.schedule);
+                    vm.searchTerm = JSON.parse($window.sessionStorage.schedule);
                     vm.loadingSchedule = false;
+                    vm.filterText = JSON.parse($window.sessionStorage.filterText || "");
                     vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
                     $timeout(function () {
-                        $window.scrollTo(0, JSON.parse($window.sessionStorage.scrollPosition ? $window.sessionStorage.scrollPosition : 0));
+                        $window.scrollTo(0, JSON.parse($window.sessionStorage.scrollPosition || 0));
                     });
                 }
             }
@@ -63,7 +65,7 @@
                         vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
                     },
                     function (error) {
-                        vm.error = error.data ? error.data : error.statusText;
+                        vm.error = error.data || error.statusText;
                         vm.loadingSchedule = false;
                     }
                 );
@@ -86,7 +88,7 @@
                             }
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
                             $window.scrollTo(0, 0);
                         }
                     );
@@ -116,7 +118,7 @@
                                 }
                             },
                             function (error) {
-                                vm.error = error.data ? error.data : error.statusText;
+                                vm.error = error.data || error.statusText;
                                 $window.scrollTo(0, 0);
                             }
                         );
@@ -158,7 +160,7 @@
                                 vm.success = "Schedule rejected!";
                             },
                             function (error) {
-                                vm.error = error.data ? error.data : error.statusText;
+                                vm.error = error.data || error.statusText;
                                 $window.scrollTo(0, 0);
                             }
                         );
@@ -183,7 +185,7 @@
                                 vm.success = "Schedule approved!";
                             },
                             function (error) {
-                                vm.error = error.data ? error.data : error.statusText;
+                                vm.error = error.data || error.statusText;
                                 $window.scrollTo(0, 0);
                             }
                         );
@@ -199,6 +201,7 @@
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
             $window.sessionStorage.scrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
+            $window.sessionStorage.filterText = JSON.stringify(vm.filterText || "");
             $location.url("/class-detail/" + unique_class_id);
         }
 
@@ -207,6 +210,7 @@
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
             $window.sessionStorage.scrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
+            $window.sessionStorage.filterText = JSON.stringify(vm.filterText || "");
             $location.url("/class-add/");
         }
 

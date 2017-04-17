@@ -12,7 +12,7 @@
         vm.toastMessage = toastMessage;
 
         function init() {
-            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser || null);
             vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
             vm.schedule = JSON.parse($window.sessionStorage.schedule);
 
@@ -25,7 +25,7 @@
                             vm.allSubjectCodesInDept = res.data.subjectCodes;
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
                         }
                     );
                 vm.currentTerm = ClassService.getCurrentTerm();
@@ -38,7 +38,7 @@
                             vm.all = res.data;
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
                         }
                     );
 
@@ -48,7 +48,7 @@
                             vm.allInstructors = res.data;
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
                         }
                     );
             }
@@ -78,7 +78,7 @@
                             }
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
                         }
                     );
             }

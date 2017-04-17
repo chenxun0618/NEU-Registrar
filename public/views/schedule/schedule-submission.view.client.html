@@ -17,7 +17,7 @@
     </div>
 
     <span ng-show="model.schedule" class="search-box">
-        <input style="float: right" type="text" id="filterText" ng-model="filterText"
+        <input style="float: right" type="text" id="filterText" ng-model="model.filterText"
                placeholder="Search a class number, class name...">
     </span>
     <br>
@@ -44,7 +44,7 @@
             <td colspan="4">No data found</td>
         </tr>
         <tr ng-class="{'added': (class.metadata && class.metadata.added), 'deleted': (class.metadata && !class.metadata.added && class.metadata.deleted), 'modified': (class.metadata && !class.metadata.deleted && !class.metadata.added && class.metadata.modified)}"
-            ng-repeat="class in model.schedule.classes | filterClass:filterText">
+            ng-repeat="class in model.schedule.classes | filterClass:model.filterText">
             <td>{{class.subjectCode}} {{class.courseNumber}}</td>
             <td>{{class.courseTitle}}</td>
             <td class="meetingTimeCell">{{model.getReadableMeetingTimes(class)}}</td>
