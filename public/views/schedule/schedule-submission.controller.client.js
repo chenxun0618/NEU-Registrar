@@ -3,7 +3,7 @@
         .module("NEURegistrar")
         .controller("ScheduleSubmissionController", ScheduleSubmissionController);
 
-    function ScheduleSubmissionController($location, $window, ClassService, ScheduleService, UserService) {
+    function ScheduleSubmissionController($location, $window, ClassService, ScheduleService, UserService, $timeout) {
         var vm = this;
 
         vm.getScheduleDetail = getScheduleDetail;
@@ -27,14 +27,16 @@
             if (!vm.loggedInUser) {
                 $location.url("/login/");
             } else {
-                $window.scrollTo(0, 0);
-
                 if ($window.sessionStorage.selectedDepartment) {
                     vm.loadingSchedule = true;
                     vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
                     vm.schedule = JSON.parse($window.sessionStorage.schedule);
                     vm.loadingSchedule = false;
                     vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
+                    $timeout(function () {
+                        //At this time window scroll length is still showing for previous div
+                        $window.scrollTo(0, JSON.parse($window.sessionStorage.scrollPosition ? $window.sessionStorage.scrollPosition : 0));
+                    });
                 }
             }
         }
@@ -197,6 +199,7 @@
             $window.sessionStorage.selectedDepartment = JSON.stringify(vm.selectedDepartment);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
+            $window.sessionStorage.scrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
             $location.url("/class-detail/" + unique_class_id);
         }
 
@@ -204,6 +207,7 @@
             $window.sessionStorage.selectedDepartment = JSON.stringify(vm.selectedDepartment);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
+            $window.sessionStorage.scrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
             $location.url("/class-add/");
         }
 
