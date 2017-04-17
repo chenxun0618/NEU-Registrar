@@ -27,12 +27,12 @@
         function preprocessSchedule(schedule) {
 
             // if no classes found for a given subject code, server currently returns a strange object in the
-            // classes field -- it should just be an empty array, need to update this
+            // classes field -- it should just be an empty array, need to update this TODO
             if (!(schedule.classes.constructor === Array)) {
                 schedule.classes = [];
             }
 
-            // misnamed column in database
+            // misnamed column in database TODO
             schedule.lastEditedBy = schedule.submitterName;
             delete schedule.submitterName;
 
@@ -50,15 +50,13 @@
                 currentClass.waitlistCapacity = parseInt(currentClass.waitlistCapacity);
                 currentClass.section = parseInt(currentClass.section);
 
-                // marks all modified classes in a schedule as modified
-                // currentClass.metadata = currentClass.metadata || {};
-                // currentClass.metadata.modified = ClassService.isClassModified(currentClass);
-                // currentClass.metadata.added = !currentClass.old;
-                // currentClass.metadata.deleted = (currentClass.status === "C");
-
                 // generate unique id for each class for angular routing
                 currentClass.metadata = currentClass.metadata || {};
                 currentClass.metadata.unique_id = ClassService.generateUniqueIdForClass(currentClass);
+
+                if (!schedule.scheduleStatus) { // if initial schedule load
+                    currentClass.old = angular.copy(currentClass);
+                }
             }
         }
 

@@ -43,7 +43,7 @@
             </td>
         </tr>
         <tr ng-class="{'modified': model.class.old ? !model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes) : false}">
-            <td>Meeting Times {{model.class.old}}</td>
+            <td>Meeting Times</td>
             <td>
                 <div ng-show="model.userCanEditSchedule">
                     <select class="select2" style="width: 200px" ng-model="model.class.meetingTimes" multiple="multiple"

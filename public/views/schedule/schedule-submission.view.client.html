@@ -12,10 +12,6 @@
 
     <div ng-if="model.error" class="alert alert-danger status-box">{{model.error}}</div>
 
-    <div ng-if="model.schedule && model.schedule.rejectionMessage" class="alert alert-danger status-box">
-        {{model.schedule.rejectionMessage}}
-    </div>
-
     <span ng-show="model.schedule" class="search-box">
         <input style="float: right" type="text" id="filterText" ng-model="model.filterText"
                placeholder="Search a class number, class name...">
@@ -26,6 +22,11 @@
             ng-options="option as option.departmentCode group by model.getScheduleGroupName(option.status) disable when model.getScheduleDisabled(option.status) for option in model.loggedInUser.depts track by option.departmentCode+option.status"
             ng-change="model.getScheduleDetail(model.selectedDepartment)">
     </select>
+
+    <div ng-if="model.schedule && model.getScheduleStatusLine(model.schedule)" class="alert alert-info margin-top-20">
+        {{model.getScheduleStatusLine(model.schedule)}}
+        <div ng-if="model.schedule.scheduleStatus === 'R' && model.schedule.comment"><br>Reason: <span class="bold">{{model.schedule.comment}}</span></div>
+    </div>
 
     <div class="loader" ng-show="model.loadingSchedule">Loading...</div>
 

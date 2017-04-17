@@ -55,6 +55,7 @@
         }
 
         function loadSchedule(selectedDepartment) {
+            delete vm.schedule;
             vm.loadingSchedule = true;
             var scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
             ScheduleService.getScheduleDetail(selectedDepartment, vm.loggedInUser)
@@ -233,11 +234,13 @@
             }
         }
 
-        function getScheduleStatusLine(dept) {
-            if (dept.scheduleStatus === 'D') {
-                return "Last saved by " + dept.lastEditedBy + " on " + dept.lastEditTime;
+        function getScheduleStatusLine(schedule) {
+            if (schedule.scheduleStatus === 'D') {
+                return "Last saved by " + schedule.lastEditedBy + " on " + schedule.lastEditTime;
             } else if (schedule.scheduleStatus === 'R') {
-                return "Rejected by " + schedule.lastEditedBy + " on " + schedule.lastEditTime + " because: \n\n" + schedule.rejectionMessage;
+                return "Rejected on " + schedule.lastEditTime;
+            } else if (schedule.scheduleStatus === 'A') {
+                return "Approved on " + schedule.lastEditTime;
             } else if (schedule.scheduleStatus === 'S') {
                 return "Submitted by " + schedule.lastEditedBy + " on " + schedule.lastEditTime;
             }
