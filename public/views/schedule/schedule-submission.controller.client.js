@@ -48,21 +48,25 @@
                 r = confirm("Are you sure you want to load new schedule? Unsaved progress will be lost.");
             }
             if (r == true || !vm.schedule) {
-                vm.loadingSchedule = true;
-                ScheduleService.getScheduleDetail(selectedDepartment, vm.loggedInUser)
-                    .then(
-                        function (res) {
-                            vm.schedule = res.data;
-                            ScheduleService.preprocessSchedule(vm.schedule);
-                            vm.loadingSchedule = false;
-                            vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
-                        },
-                        function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
-                            vm.loadingSchedule = false;
-                        }
-                    );
+                loadSchedule(selectedDepartment);
             }
+        }
+
+        function loadSchedule(selectedDepartment) {
+            vm.loadingSchedule = true;
+            ScheduleService.getScheduleDetail(selectedDepartment, vm.loggedInUser)
+                .then(
+                    function (res) {
+                        vm.schedule = res.data;
+                        ScheduleService.preprocessSchedule(vm.schedule);
+                        vm.loadingSchedule = false;
+                        vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
+                    },
+                    function (error) {
+                        vm.error = error.data ? error.data : error.statusText;
+                        vm.loadingSchedule = false;
+                    }
+                );
         }
 
         function saveSchedule() {
@@ -73,6 +77,7 @@
                         function (res) {
                             if (!res.data) {
                                 changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'D');
+                                loadSchedule(vm.selectedDepartment);
                                 toastMessage(true);
                             } else { // merge needed
                                 // merge classes TODO

@@ -22,6 +22,7 @@
             if (!vm.loggedInUser) {
                 $location.url("/login");
             } else {
+                $window.scrollTo(0, 0);
                 vm.schedule = JSON.parse($window.sessionStorage.schedule);
                 vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
                 vm.class = findClassInSessionState($routeParams.unique_id); // find in session state for now until I figure out how to pass the specified course to this controller

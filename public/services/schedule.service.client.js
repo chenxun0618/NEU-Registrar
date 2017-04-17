@@ -15,11 +15,11 @@
             scheduleViolatesPeakPeriodProperty: scheduleViolatesPeakPeriodProperty
         };
 
-        function getScheduleDetail(schedule, user) {
+        function getScheduleDetail(selectedDepartment, user) {
             if (user.admin) {
-                var url = "/lib/adminGetSched.php?dept=" + schedule.departmentCode;
+                var url = "/lib/adminGetSched.php?dept=" + selectedDepartment.departmentCode;
             } else {
-                var url = "/lib/getScheduleByDept.php?dept=" + schedule.departmentCode;
+                var url = "/lib/getScheduleByDept.php?dept=" + selectedDepartment.departmentCode;
             }
             return $http.get(url);
         }
