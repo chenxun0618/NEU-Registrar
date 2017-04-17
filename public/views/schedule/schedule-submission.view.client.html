@@ -23,7 +23,7 @@
     <br>
     <span>Department: </span>
     <select ng-model="model.selectedDepartment"
-            ng-options="option as option.departmentCode group by model.getScheduleGroupName(option.status) disable when model.getScheduleDisabled(option.status) for option in model.allDepartments track by option.departmentCode"
+            ng-options="option as option.departmentCode group by model.getScheduleGroupName(option.status) disable when model.getScheduleDisabled(option.status) for option in model.loggedInUser.depts track by option.departmentCode+option.status"
             ng-change="model.getScheduleDetail(model.selectedDepartment)">
     </select>
 

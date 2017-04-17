@@ -28,7 +28,6 @@
                 $location.url("/login/");
             } else {
                 $window.scrollTo(0, 0);
-                vm.allDepartments = vm.loggedInUser.depts;
 
                 if ($window.sessionStorage.selectedDepartment) {
                     vm.loadingSchedule = true;
@@ -77,7 +76,7 @@
                         function (res) {
                             if (!res.data) {
                                 changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'D');
-                                loadSchedule(vm.selectedDepartment);
+                                loadSchedule(vm.selectedDepartment); // TODO may not want to reload entire schedule
                                 toastMessage(true);
                             } else { // merge needed
                                 // merge classes TODO
@@ -128,9 +127,10 @@
         }
 
         function changeStatusOfSchedule(departmentCode, newStatus) {
-            for (var x = 0; x < vm.allDepartments.length; x++) {
-                if (vm.allDepartments[x].departmentCode === departmentCode) {
-                    vm.allDepartments[x].status = newStatus;
+            vm.selectedDepartment.status = newStatus;
+            for (var x = 0; x < vm.loggedInUser.depts.length; x++) {
+                if (vm.loggedInUser.depts[x].departmentCode === departmentCode) {
+                    vm.loggedInUser.depts[x].status = newStatus;
                     return;
                 }
             }
@@ -196,12 +196,14 @@
         function navigateToClassDetail(unique_class_id) {
             $window.sessionStorage.selectedDepartment = JSON.stringify(vm.selectedDepartment);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
+            $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
             $location.url("/class-detail/" + unique_class_id);
         }
 
         function navigateToAddClass() {
             $window.sessionStorage.selectedDepartment = JSON.stringify(vm.selectedDepartment);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
+            $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
             $location.url("/class-add/");
         }
 
