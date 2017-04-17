@@ -34,7 +34,6 @@
                     vm.loadingSchedule = false;
                     vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
                     $timeout(function () {
-                        //At this time window scroll length is still showing for previous div
                         $window.scrollTo(0, JSON.parse($window.sessionStorage.scrollPosition ? $window.sessionStorage.scrollPosition : 0));
                     });
                 }
