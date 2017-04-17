@@ -42,8 +42,8 @@
                 </div>
             </td>
         </tr>
-        <tr ng-class="{'modified': !model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes)}">
-            <td>Meeting Times</td>
+        <tr ng-class="{'modified': model.class.old ? !model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes) : false}">
+            <td>Meeting Times {{model.class.old}}</td>
             <td>
                 <div ng-show="model.userCanEditSchedule">
                     <select class="select2" style="width: 200px" ng-model="model.class.meetingTimes" multiple="multiple"
@@ -54,8 +54,8 @@
                 <div ng-if="!model.userCanEditSchedule" class="meetingTimeCell italics">{{model.getReadableMeetingTimes(model.class)}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes)}"
-                     class="changedFrom meetingTimeCell">{{model.class.old ? model.getReadableMeetingTimes(model.class.old) : ""}}
+                <div ng-class="{hidden: model.class.old ? model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes) : true}"
+                     class="changedFrom meetingTimeCell">{{model.class.old ? model.getReadableMeetingTimes(model.class.old) : "(none)"}}
                 </div>
             </td>
         </tr>

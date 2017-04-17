@@ -56,6 +56,7 @@
 
         function loadSchedule(selectedDepartment) {
             vm.loadingSchedule = true;
+            var scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
             ScheduleService.getScheduleDetail(selectedDepartment, vm.loggedInUser)
                 .then(
                     function (res) {
@@ -63,6 +64,10 @@
                         ScheduleService.preprocessSchedule(vm.schedule);
                         vm.loadingSchedule = false;
                         vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
+
+                        $timeout(function () {
+                            $window.scrollTo(0, scrollPos);
+                        });
                     },
                     function (error) {
                         vm.error = error.data || error.statusText;
