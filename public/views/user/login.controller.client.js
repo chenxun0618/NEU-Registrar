@@ -73,9 +73,9 @@
         // output: array sorted first by status according to map, then alphabetically
         function sortDepartments(admin, depts) {
             if (admin) {
-                var map = {"S": 1, "A": 2, "D": 3, "D": 4, "": 5};
+                var map = {"S": 1, "A": 2, "R": 3, "D": 4, "": 5};
             } else {
-                var map = {"D": 1, "D": 2, "": 3, "A": 4, "S": 5};
+                var map = {"D": 1, "R": 2, "": 3, "A": 4, "S": 5};
             }
 
             var scheduleStatusComparator = function(a, b) {
