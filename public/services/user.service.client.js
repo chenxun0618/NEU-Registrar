@@ -16,7 +16,7 @@
         }
 
         function userCanEditSchedule(user, scheduleStatus) {
-            return (user && !user.admin && (scheduleStatus === 'D' || scheduleStatus === ''));
+            return (user && !user.admin && (scheduleStatus === 'D' || scheduleStatus === '' || scheduleStatus === 'R'));
         }
 
         return api;

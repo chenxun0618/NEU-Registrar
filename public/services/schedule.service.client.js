@@ -94,13 +94,25 @@
             return $http.post(url, obj);
         }
 
-        function rejectSchedule(schedule, rejectionMessage) {
-            schedule.rejectionMessage = rejectionMessage;
-            // communicate with web service
+        function rejectSchedule(departmentCode, rejectionMessage) {
+            var newScheduleStatus = "R";
+            var url = "/lib/adminUpdateSchedule.php";
+            var obj = {
+                dept: departmentCode,
+                action: newScheduleStatus,
+                comment: rejectionMessage
+            };
+            return $http.post(url, obj);
         }
 
-        function approveSchedule(schedule) {
-            // communicate with web service
+        function approveSchedule(departmentCode) {
+            var newScheduleStatus = "A";
+            var url = "/lib/adminUpdateSchedule.php";
+            var obj = {
+                dept: departmentCode,
+                action: newScheduleStatus
+            };
+            return $http.post(url, obj);
         }
 
         function scheduleViolatesPeakPeriodProperty(schedule) {
