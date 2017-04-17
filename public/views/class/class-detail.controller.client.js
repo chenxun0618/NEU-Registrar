@@ -126,7 +126,7 @@
         function differentFromLastYear(attributes) {
             for (var x = 0; x < attributes.length; x++) {
                 var attribute = attributes[x];
-                if (vm.class[attribute].constructor === Array) {
+                if (vm.class[attribute] && vm.class[attribute].constructor === Array) {
                     if (vm.class.old && !arraysEqual(vm.class[attribute], vm.class.old[attribute])) {
                         return true;
                     }

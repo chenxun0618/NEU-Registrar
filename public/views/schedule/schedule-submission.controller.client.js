@@ -234,8 +234,6 @@
         function getScheduleDisabled(scheduleStatus) {
             if (vm.loggedInUser.admin) {
                 return (!scheduleStatus || scheduleStatus === 'D' || scheduleStatus === 'R');
-            } else {
-                return (scheduleStatus === 'S');
             }
         }
 
