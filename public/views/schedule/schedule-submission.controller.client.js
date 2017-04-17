@@ -148,9 +148,19 @@
             if (rejection_message !== null) {
                 clearStatusMessages();
                 if (vm.schedule) {
-                    ScheduleService.rejectSchedule(vm.schedule, rejection_message);
-                    $window.sessionStorage.schedule = JSON.stringify(null);
-                    $location.url("/schedule-submission/");
+                    ScheduleService.rejectSchedule(vm.selectedDepartment.departmentCode, rejection_message)
+                        .then(
+                            function (res) {
+                                changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'R');
+                                clearSelectedDepartmentAndSchedule();
+                                $window.scrollTo(0, 0);
+                                vm.success = "Schedule rejected!";
+                            },
+                            function (error) {
+                                vm.error = error.data ? error.data : error.statusText;
+                                $window.scrollTo(0, 0);
+                            }
+                        );
                 } else {
                     vm.error = "No schedule found";
                     $window.scrollTo(0, 0);
@@ -163,9 +173,19 @@
             if (r == true) {
                 clearStatusMessages();
                 if (vm.schedule) {
-                    ScheduleService.approveSchedule(vm.schedule);
-                    $window.sessionStorage.schedule = JSON.stringify(null);
-                    $location.url("/schedule-submission/");
+                    ScheduleService.approveSchedule(vm.selectedDepartment.departmentCode)
+                        .then(
+                            function (res) {
+                                changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'A');
+                                clearSelectedDepartmentAndSchedule();
+                                $window.scrollTo(0, 0);
+                                vm.success = "Schedule approved!";
+                            },
+                            function (error) {
+                                vm.error = error.data ? error.data : error.statusText;
+                                $window.scrollTo(0, 0);
+                            }
+                        );
                 } else {
                     vm.error = "No schedule found";
                     $window.scrollTo(0, 0);
