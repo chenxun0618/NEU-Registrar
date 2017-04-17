@@ -17,7 +17,7 @@
     </div>
 
     <span ng-show="model.schedule" class="search-box">
-        <input style="float: right" type="text" id="filterText" ng-model="filterText"
+        <input style="float: right" type="text" id="filterText" ng-model="model.filterText"
                placeholder="Search a class number, class name...">
     </span>
     <br>
@@ -33,6 +33,8 @@
         <thead>
         <tr>
             <th>Course No.</th>
+            <th>Section</th>
+            <th>CRN</th>
             <th>Title</th>
             <th>Meeting Time</th>
             <th></th>
@@ -44,10 +46,12 @@
             <td colspan="4">No data found</td>
         </tr>
         <tr ng-class="{'added': (class.metadata && class.metadata.added), 'deleted': (class.metadata && !class.metadata.added && class.metadata.deleted), 'modified': (class.metadata && !class.metadata.deleted && !class.metadata.added && class.metadata.modified)}"
-            ng-repeat="class in model.schedule.classes | filterClass:filterText">
+            ng-repeat="class in model.schedule.classes | filterClass:model.filterText">
             <td>{{class.subjectCode}} {{class.courseNumber}}</td>
+            <td>{{class.section}}</td>
+            <td ng-class="{'italics': (!class.crn)}">{{class.crn || "(to be generated)"}}</td>
             <td>{{class.courseTitle}}</td>
-            <td class="meetingTimeCell">{{model.getReadableMeetingTimes(class)}}</td>
+            <td ng-class="{'italics': (!class.meetingTimes.length)}" class="meetingTimeCell">{{model.getReadableMeetingTimes(class)}}</td>
             <td>
                 <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">{{model.userCanEditSchedule ? "Edit" : "View"}}</a>
             </td>

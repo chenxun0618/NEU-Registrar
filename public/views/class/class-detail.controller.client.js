@@ -17,7 +17,7 @@
         vm.toastMessage = toastMessage;
 
         function init() {
-            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser || null);
 
             if (!vm.loggedInUser) {
                 $location.url("/login");
@@ -40,7 +40,7 @@
                             vm.all.specialApprovals = [{code: '', desc: ''}].concat(vm.all.specialApprovals); // prepend empty option
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
                         }
                     );
 
@@ -50,7 +50,7 @@
                             vm.allInstructors = res.data;
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
                         }
                     );
             }
@@ -126,7 +126,7 @@
         function differentFromLastYear(attributes) {
             for (var x = 0; x < attributes.length; x++) {
                 var attribute = attributes[x];
-                if (vm.class[attribute].constructor === Array) {
+                if (vm.class[attribute] && vm.class[attribute].constructor === Array) {
                     if (vm.class.old && !arraysEqual(vm.class[attribute], vm.class.old[attribute])) {
                         return true;
                     }

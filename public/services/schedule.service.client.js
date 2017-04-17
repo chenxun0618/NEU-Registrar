@@ -59,10 +59,6 @@
                 // generate unique id for each class for angular routing
                 currentClass.metadata = currentClass.metadata || {};
                 currentClass.metadata.unique_id = ClassService.generateUniqueIdForClass(currentClass);
-
-                if (!currentClass.old) {
-                    currentClass.old = angular.copy(currentClass);
-                }
             }
         }
 

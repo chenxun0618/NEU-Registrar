@@ -3,7 +3,7 @@
         .module("NEURegistrar")
         .controller("ScheduleSubmissionController", ScheduleSubmissionController);
 
-    function ScheduleSubmissionController($location, $window, ClassService, ScheduleService, UserService) {
+    function ScheduleSubmissionController($location, $window, ClassService, ScheduleService, UserService, $timeout) {
         var vm = this;
 
         vm.getScheduleDetail = getScheduleDetail;
@@ -21,20 +21,23 @@
         vm.toastMessage = toastMessage;
 
         function init() {
-            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser || null);
             clearStatusMessages();
 
             if (!vm.loggedInUser) {
                 $location.url("/login/");
             } else {
-                $window.scrollTo(0, 0);
-
                 if ($window.sessionStorage.selectedDepartment) {
                     vm.loadingSchedule = true;
                     vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
                     vm.schedule = JSON.parse($window.sessionStorage.schedule);
+                    vm.searchTerm = JSON.parse($window.sessionStorage.schedule);
                     vm.loadingSchedule = false;
+                    vm.filterText = JSON.parse($window.sessionStorage.filterText || "");
                     vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
+                    $timeout(function () {
+                        $window.scrollTo(0, JSON.parse($window.sessionStorage.scrollPosition || 0));
+                    });
                 }
             }
         }
@@ -53,6 +56,7 @@
 
         function loadSchedule(selectedDepartment) {
             vm.loadingSchedule = true;
+            var scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
             ScheduleService.getScheduleDetail(selectedDepartment, vm.loggedInUser)
                 .then(
                     function (res) {
@@ -60,9 +64,13 @@
                         ScheduleService.preprocessSchedule(vm.schedule);
                         vm.loadingSchedule = false;
                         vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
+
+                        $timeout(function () {
+                            $window.scrollTo(0, scrollPos);
+                        });
                     },
                     function (error) {
-                        vm.error = error.data ? error.data : error.statusText;
+                        vm.error = error.data || error.statusText;
                         vm.loadingSchedule = false;
                     }
                 );
@@ -85,7 +93,7 @@
                             }
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
                             $window.scrollTo(0, 0);
                         }
                     );
@@ -115,7 +123,7 @@
                                 }
                             },
                             function (error) {
-                                vm.error = error.data ? error.data : error.statusText;
+                                vm.error = error.data || error.statusText;
                                 $window.scrollTo(0, 0);
                             }
                         );
@@ -157,7 +165,7 @@
                                 vm.success = "Schedule rejected!";
                             },
                             function (error) {
-                                vm.error = error.data ? error.data : error.statusText;
+                                vm.error = error.data || error.statusText;
                                 $window.scrollTo(0, 0);
                             }
                         );
@@ -182,7 +190,7 @@
                                 vm.success = "Schedule approved!";
                             },
                             function (error) {
-                                vm.error = error.data ? error.data : error.statusText;
+                                vm.error = error.data || error.statusText;
                                 $window.scrollTo(0, 0);
                             }
                         );
@@ -197,6 +205,8 @@
             $window.sessionStorage.selectedDepartment = JSON.stringify(vm.selectedDepartment);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
+            $window.sessionStorage.scrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
+            $window.sessionStorage.filterText = JSON.stringify(vm.filterText || "");
             $location.url("/class-detail/" + unique_class_id);
         }
 
@@ -204,6 +214,8 @@
             $window.sessionStorage.selectedDepartment = JSON.stringify(vm.selectedDepartment);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
+            $window.sessionStorage.scrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
+            $window.sessionStorage.filterText = JSON.stringify(vm.filterText || "");
             $location.url("/class-add/");
         }
 
@@ -234,8 +246,6 @@
         function getScheduleDisabled(scheduleStatus) {
             if (vm.loggedInUser.admin) {
                 return (!scheduleStatus || scheduleStatus === 'D' || scheduleStatus === 'R');
-            } else {
-                return (scheduleStatus === 'S');
             }
         }
 

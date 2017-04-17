@@ -59,6 +59,7 @@
         function fillDefaultData(aClass, schedule) {
             aClass.termCode = getCurrentTerm();
             aClass.status = "A";
+            aClass.meetingTimes = [];
             aClass.majorRestrictions = [];
             aClass.classRestrictions = [];
             aClass.levelRestrictions = [];
@@ -151,25 +152,28 @@
             if (!aClass.primaryInstructorID) {
                 invalidReasons.push("Invalid primary instructor: " + aClass.primaryInstructorID);
             }
+            if (aClass.meetingTimes.constructor !== Array) {
+                invalidReasons.push("Invalid meeting times: " + aClass.meetingTimes);
+            }
             if (!aClass.maxEnrollment || !(typeof aClass.maxEnrollment === 'number') || !(aClass.maxEnrollment > 0)) {
                 invalidReasons.push("Invalid maximum enrollment: " + aClass.maxEnrollment);
             }
             if (aClass.priorEnrollment && (!(typeof aClass.priorEnrollment === 'number') || !(aClass.priorEnrollment > 0))) {
                 invalidReasons.push("Invalid prior enrollment: " + aClass.priorEnrollment);
             }
-            if (!(aClass.majorRestrictions === undefined || aClass.majorRestrictions === null || aClass.majorRestrictions.constructor === Array)) {
+            if (aClass.majorRestrictions.constructor !== Array) {
                 invalidReasons.push("Invalid major restrictions: " + aClass.majorRestrictions);
             }
-            if (!(aClass.classRestrictions === undefined || aClass.classRestrictions === null || aClass.classRestrictions.constructor === Array)) {
+            if (aClass.classRestrictions.constructor !== Array) {
                 invalidReasons.push("Invalid class restrictions: " + aClass.classRestrictions);
             }
-            if (!(aClass.levelRestrictions === undefined || aClass.levelRestrictions === null || aClass.levelRestrictions.constructor === Array)) {
+            if (aClass.levelRestrictions.constructor !== Array) {
                 invalidReasons.push("Invalid level restrictions: " + aClass.levelRestrictions);
             }
-            if (!(aClass.programRestrictions === undefined || aClass.programRestrictions === null || aClass.programRestrictions.constructor === Array)) {
+            if (aClass.programRestrictions.constructor !== Array) {
                 invalidReasons.push("Invalid program restrictions: " + aClass.programRestrictions);
             }
-            if (!(aClass.collegeRestrictions === undefined || aClass.collegeRestrictions === null || aClass.collegeRestrictions.constructor === Array)) {
+            if (aClass.collegeRestrictions.constructor !== Array) {
                 invalidReasons.push("Invalid college restrictions: " + aClass.collegeRestrictions);
             }
             if (!(typeof aClass.waitlistCapacity === 'number' && aClass.waitlistCapacity >= 0)) {
@@ -177,6 +181,9 @@
             }
             if (!aClass.campusCode) {
                 invalidReasons.push("Campus code is required");
+            }
+            if (!aClass.instructionalMethodCode) {
+                invalidReasons.push("Instructional method is required");
             }
             if (!['Y', 'N'].includes(aClass.publish)) {
                 invalidReasons.push("Invalid publish indicator: " + aClass.publish);
@@ -188,15 +195,11 @@
             return invalidReasons;
         }
 
-        function isEqualMeetingTime(meetingTime1, meetingTime2) {
-            return (meetingTime1.days === meetingTime2.days && meetingTime1.beginTime === meetingTime2.beginTime &&
-            meetingTime1.endTime === meetingTime2.endTime);
-        }
-
         function isEqualMeetingTimes(meetingTimes1, meetingTimes2) {
             if (meetingTimes1.length !== meetingTimes2.length) {
                 return false;
             }
+
             var set = {};
             for (var x = 0; x < meetingTimes1.length; x++) {
                 set[getReadableMeetingTime(meetingTimes1[x])] = true;
