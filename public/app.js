@@ -1,5 +1,9 @@
 (function () {
+
+    // set up angular app with required dependencies
     var app = angular.module("NEURegistrar", ["ngRoute"]);
+
+    // filter for search box on Schedule Submission page
     app.filter("filterClass", function () {
         return function (classes, filterText) {
             var re = new RegExp(filterText, "i");

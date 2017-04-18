@@ -3,6 +3,7 @@
         .module("NEURegistrar")
         .config(Config);
 
+    // routing process
     function Config($routeProvider) {
         $routeProvider
             .when("/login", {

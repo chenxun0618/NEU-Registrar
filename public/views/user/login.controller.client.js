@@ -3,17 +3,23 @@
         .module("NEURegistrar")
         .controller("LoginController", LoginController);
 
+    // controller for the Login page
     function LoginController($window, $location, UserService) {
         var vm = this;
 
-        vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser || null);
-
-        if (vm.loggedInUser) {
-            $location.url("/schedule-submission");
-        }
-
+        // functions used in view
         vm.login = login;
 
+        // load initial data for login page
+        function init() {
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser || null);
+
+            if (vm.loggedInUser) {
+                $location.url("/schedule-submission");
+            }
+        }
+
+        // error check given email and nuid and then log in user (store user data in sessionStorage)
         function login(email, nuid) {
 
             if (!validateEmail(email)) {
@@ -42,11 +48,14 @@
                 );
         };
 
+        // regular expression check; returns true if given string is in format of email
         function validateEmail(email) {
             var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(email);
         }
 
+        // given a user object directly from database, do some miscellaneous preprocessing before it reaches the UI
+        // TODO get the database to return it in a more usable format
         function reformatSchedule(user) {
             var newDepts = [];
 
@@ -78,7 +87,7 @@
                 var map = {"D": 1, "R": 2, "": 3, "A": 4, "S": 5};
             }
 
-            var scheduleStatusComparator = function(a, b) {
+            var scheduleStatusComparator = function (a, b) {
                 if (a.status === b.status) {
                     return a.departmentCode.localeCompare(b.departmentCode); // alphabetical if same status
                 } else {
@@ -88,5 +97,7 @@
 
             return depts.sort(scheduleStatusComparator);
         }
+
+        init();
     }
 })();
