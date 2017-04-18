@@ -3,11 +3,11 @@
         .module("NEURegistrar")
         .factory("ClassService", ClassService);
 
+    // a service for handling all class-related operations
     function ClassService($http) {
 
         var api = {
             getDropdownValues: getDropdownValues,
-            getCurrentTerm: getCurrentTerm,
             getAllSubjectCodesInDept: getAllSubjectCodesInDept,
             getAllStatuses: getAllStatuses,
             getCourseDataFromCatalog: getCourseDataFromCatalog,
@@ -19,43 +19,46 @@
             getInvalidClassReasons: getInvalidClassReasons,
             isEqualMeetingTimes: isEqualMeetingTimes,
             isPeakPeriod: isPeakPeriod,
-            getFormattedTime: getFormattedTime,
             getReadableMeetingTime: getReadableMeetingTime,
             getReadableMeetingTimes: getReadableMeetingTimes
         };
 
+        // returns http promise for getting all dropdown values except instructors and Y/N values
         function getDropdownValues() {
             var url = "/lib/Dropdowns.php";
             return $http.get(url);
         }
 
-        function getCurrentTerm() {
-            return "201810";
-        }
-
-        function getAllSubjectCodesInDept(dept) {
-            var url = "/lib/getAllSubjectCodesInDept.php?dept=" + dept;
+        // returns all subject codes associated with the specified department code
+        function getAllSubjectCodesInDept(deptCode) {
+            var url = "/lib/getAllSubjectCodesInDept.php?dept=" + deptCode;
             return $http.get(url);
         }
 
+        // returns array of all possible class statuses and their associated database code
         function getAllStatuses() {
             return [{code: "A", desc: "Active"}, {code: "C", desc: "Cancelled"}];
         }
 
+        // returns array of all possible class start/end times; TODO to be used for custom start/end dates
         function getAllTimeIntervals() {
             return ["0800", "0805", "0810", "0815", "0820", "0825", "0830", "0835", "0840", "0845", "0850", "0855", "0900", "0905", "0910", "0915", "0920", "0925", "0930", "0935", "0940", "0945", "0950", "0955", "1000", "1005", "1010", "1015", "1020", "1025", "1030", "1035", "1040", "1045", "1050", "1055", "1100", "1105", "1110", "1115", "1120", "1125", "1130", "1135", "1140", "1145", "1150", "1155", "1200", "1205", "1210", "1215", "1220", "1225", "1230", "1235", "1240", "1245", "1250", "1255", "1300", "1305", "1310", "1315", "1320", "1325", "1330", "1335", "1340", "1345", "1350", "1355", "1400", "1405", "1410", "1415", "1420", "1425", "1430", "1435", "1440", "1445", "1450", "1455", "1500", "1505", "1510", "1515", "1520", "1525", "1530", "1535", "1540", "1545", "1550", "1555", "1600", "1605", "1610", "1615", "1620", "1625", "1630", "1635", "1640", "1645", "1650", "1655", "1700", "1705", "1710", "1715", "1720", "1725", "1730", "1735", "1740", "1745", "1750", "1755", "1800", "1805", "1810", "1815", "1820", "1825", "1830", "1835", "1840", "1845", "1850", "1855", "1900", "1905", "1910", "1915", "1920", "1925", "1930", "1935", "1940", "1945", "1950", "1955", "2000", "2005", "2010", "2015", "2020", "2025", "2030", "2035", "2040", "2045", "2050", "2055", "2100", "2105", "2110", "2115", "2120", "2125", "2130", "2135", "2140", "2145", "2150", "2155", "2200"];
         }
 
+        // return http promise for getting array of all instructors (nuid and name)
         function getAllInstructors() {
             var url = "/lib/getInstructors.php";
             return $http.get(url);
         }
 
+        // given a subject code and course number, returns all catalog data (e.g. title) for that course
         function getCourseDataFromCatalog(subjectCode, courseNumber) {
             var url = "/lib/courseCatalogLookup.php?subjectCode=" + subjectCode + "&courseNumber=" + courseNumber;
             return $http.get(url);
         }
 
+        // fills in default values for a new class; needs the schedule in which this class is contained
+        // to find what section number to use
         function fillDefaultData(aClass, schedule) {
             aClass.termCode = getCurrentTerm();
             aClass.status = "A";
@@ -75,9 +78,15 @@
             aClass.publish = "Y";
             aClass.comment = "";
 
-            aClass.section = findMinimalSection(aClass, schedule);
+            aClass.section = findMinimalSection(aClass, schedule) + 1;
         }
 
+        // TODO move to database
+        function getCurrentTerm() {
+            return "201810";
+        }
+
+        // searches schedule for largest section number associated with given class (subject code and course number)
         function findMinimalSection(aClass, schedule) {
             var minSection = 0;
 
@@ -88,9 +97,11 @@
                 }
             }
 
-            return minSection + 1;
+            return minSection;
         }
 
+        // returns a string uniquely identifying the given class (crn, or, if an added class [no crn], combination
+        // of term code + subject code + course number + section)
         function generateUniqueIdForClass(aClass) {
             return (aClass.crn) || (aClass.termCode + aClass.subjectCode + aClass.courseNumber + aClass.section);
         }
@@ -128,6 +139,7 @@
                 );
         }
 
+        // returns an array containing strings explaining all applicable reasons why this class is invalid
         function getInvalidClassReasons(aClass) {
             var invalidReasons = [];
 
@@ -195,6 +207,7 @@
             return invalidReasons;
         }
 
+        // determines if two arrays of meeting time objects have the same elements (in any order)
         function isEqualMeetingTimes(meetingTimes1, meetingTimes2) {
             if (meetingTimes1.length !== meetingTimes2.length) {
                 return false;
@@ -212,20 +225,24 @@
             return true;
         }
 
+        // returns whether the given meeting time occurs during a "peak period": MWR 9:50 - 3:25pm, or TF 9:15 - 3:25pm
         function isPeakPeriod(meetingTime) {
-            return (meetingTime === "MWR" && meetingTime.beginTime >= '0950' && meetingTime.endTime <= '1525') ||
+            return (meetingTime.days === "MWR" && meetingTime.beginTime >= '0950' && meetingTime.endTime <= '1525') ||
                 (meetingTime.days === "TF" && meetingTime.beginTime >= '0915' && meetingTime.endTime <= '1525');
         }
 
+        // returns formatted time, e.g. 0915 -> 09:15, 1345 -> 13:45
         function getFormattedTime(str) {
             var secondToLast = str.length - 2;
             return str.substring(0, secondToLast) + ":" + str.substring(secondToLast, str.length);
         }
 
+        // given a meetingTime object, returns readable version, e.g. "MWR 09:15 - 10:20"
         function getReadableMeetingTime(aMeetingTime) {
             return aMeetingTime.days + " " + getFormattedTime(aMeetingTime.beginTime) + "–" + getFormattedTime(aMeetingTime.endTime);
         }
 
+        // given a class, returns its meeting times in a readable format (new lines between each)
         function getReadableMeetingTimes(aClass) {
             var str = "";
             if (aClass.meetingTimes.length) {

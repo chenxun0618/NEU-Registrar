@@ -3,9 +3,12 @@
         .module("NEURegistrar")
         .controller("ScheduleSubmissionController", ScheduleSubmissionController);
 
+    // controller for the Schedule Submission page (main page). schedule cannot be saved/submitted/rejected/approved
+    // unless user and schedule are in the appropriate states.
     function ScheduleSubmissionController($location, $window, ClassService, ScheduleService, UserService, $timeout) {
         var vm = this;
 
+        // functions used in view
         vm.getScheduleDetail = getScheduleDetail;
         vm.saveSchedule = saveSchedule;
         vm.submitSchedule = submitSchedule;
@@ -16,10 +19,11 @@
         vm.getScheduleGroupName = getScheduleGroupName;
         vm.getScheduleStatusLine = getScheduleStatusLine;
         vm.getReadableMeetingTimes = ClassService.getReadableMeetingTimes;
-        vm.getScheduleDisabled = getScheduleDisabled;
+        vm.shouldDisableSchedule = shouldDisableSchedule;
         vm.logout = logout;
         vm.toastMessage = toastMessage;
 
+        // load initial data for schedule submission page
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser || null);
             clearStatusMessages();
@@ -36,13 +40,14 @@
                     vm.filterText = JSON.parse($window.sessionStorage.filterText || "");
                     vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
                     $timeout(function () {
-                        $window.scrollTo(0, JSON.parse($window.sessionStorage.scrollPosition || 0));
+                        $window.scrollTo(0, JSON.parse($window.sessionStorage.previousScrollPosition || 0));
                     });
                 }
             }
         }
 
-        function getScheduleDetail(selectedDepartment) {
+        // asks user if they want to load a new schedule
+        function getScheduleDetail() {
             clearStatusMessages();
 
             var r = true;
@@ -50,15 +55,16 @@
                 r = confirm("Are you sure you want to load new schedule? Unsaved progress will be lost.");
             }
             if (r == true || !vm.schedule) {
-                loadSchedule(selectedDepartment);
+                loadSchedule();
             }
         }
 
-        function loadSchedule(selectedDepartment) {
+        // loads the selected schedule (vm.selectedDepartment) from the database, throwing away the old one
+        function loadSchedule() {
             delete vm.schedule;
             vm.loadingSchedule = true;
             var scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
-            ScheduleService.getScheduleDetail(selectedDepartment, vm.loggedInUser)
+            ScheduleService.getScheduleDetail(vm.selectedDepartment.departmentCode, vm.loggedInUser.admin)
                 .then(
                     function (res) {
                         vm.schedule = res.data;
@@ -77,6 +83,7 @@
                 );
         }
 
+        // saves the current state of the schedule to the database
         function saveSchedule() {
             clearStatusMessages();
             if (vm.schedule) {
@@ -88,7 +95,7 @@
                                 loadSchedule(vm.selectedDepartment); // TODO may not want to reload entire schedule
                                 toastMessage(true);
                             } else { // merge needed
-                                // merge classes TODO
+                                // TODO merge classes
                                 vm.error = "Someone else worked on this schedule while you were. Their changes have been merged into yours. Please save again when ready.";
                                 $window.scrollTo(0, 0);
                             }
@@ -104,6 +111,7 @@
             }
         }
 
+        // submits the current schedule to the database
         function submitSchedule() {
             var r = confirm("Are you sure you want to submit this schedule? This action is final.");
             if (r == true) {
@@ -135,6 +143,7 @@
             }
         }
 
+        // goes through all user's editable departments and manually alters the status to reflect the given status
         function changeStatusOfSchedule(departmentCode, newStatus) {
             vm.selectedDepartment.status = newStatus;
             for (var x = 0; x < vm.loggedInUser.depts.length; x++) {
@@ -145,6 +154,7 @@
             }
         }
 
+        // deletes sessionStorage entries for the currently selected department and the current schedule
         function clearSelectedDepartmentAndSchedule() {
             delete vm.selectedDepartment;
             $window.sessionStorage.removeItem("selectedDepartment");
@@ -152,6 +162,7 @@
             $window.sessionStorage.removeItem("schedule");
         }
 
+        // rejects the current schedule, prompting the admin for a rejection message
         function rejectSchedule() {
             var rejection_message = prompt("Enter a reason for the rejection (optional):", "");
             if (rejection_message !== null) {
@@ -177,6 +188,7 @@
             }
         }
 
+        // approves the current schedule (admin only)
         function approveSchedule() {
             var r = confirm("Are you sure you want to approve this schedule? This action is final.");
             if (r == true) {
@@ -202,24 +214,27 @@
             }
         }
 
+        // navigate to "Class Detail" page
         function navigateToClassDetail(unique_class_id) {
             $window.sessionStorage.selectedDepartment = JSON.stringify(vm.selectedDepartment);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
-            $window.sessionStorage.scrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
+            $window.sessionStorage.previousScrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
             $window.sessionStorage.filterText = JSON.stringify(vm.filterText || "");
             $location.url("/class-detail/" + unique_class_id);
         }
 
+        // navigate to "Add Class" page
         function navigateToAddClass() {
             $window.sessionStorage.selectedDepartment = JSON.stringify(vm.selectedDepartment);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
             $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
-            $window.sessionStorage.scrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
+            $window.sessionStorage.previousScrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
             $window.sessionStorage.filterText = JSON.stringify(vm.filterText || "");
             $location.url("/class-add/");
         }
 
+        // given schedule status code ('D', 'S', 'R', 'A', or ''), gets associated dropdown group category
         function getScheduleGroupName(scheduleStatus) {
             if (scheduleStatus === 'D') {
                 return "Draft";
@@ -234,6 +249,7 @@
             }
         }
 
+        // given a schedule, gets a message detailing the status of the schedule
         function getScheduleStatusLine(schedule) {
             if (schedule.scheduleStatus === 'D') {
                 return "Last saved by " + schedule.lastEditedBy + " on " + schedule.lastEditTime;
@@ -246,17 +262,20 @@
             }
         }
 
-        function getScheduleDisabled(scheduleStatus) {
+        // whether the department line-item should be disabled in the Department dropdown (so user cannot load)
+        function shouldDisableSchedule(scheduleStatus) {
             if (vm.loggedInUser.admin) {
                 return (!scheduleStatus || scheduleStatus === 'D' || scheduleStatus === 'R');
             }
         }
 
+        // logs out (clears sessionStorage)
         function logout() {
             $window.sessionStorage.clear();
             $location.url("/login/");
         }
 
+        // if input is truthy, show peak period toast message at bottom of screen
         function toastMessage(show) {
             var x = document.getElementById("toast");
             if (show) {
@@ -269,6 +288,7 @@
             }
         }
 
+        // clears error / success box at top of screen
         function clearStatusMessages() {
             vm.error = "";
             vm.success = "";

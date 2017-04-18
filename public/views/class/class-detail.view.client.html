@@ -1,7 +1,7 @@
 <script type="text/javascript">
     $('select.select2').select2();
     $('select.largeSelect2').select2({
-        minimumInputLength: 2
+        minimumInputLength: 3
     });
 </script>
 
@@ -55,8 +55,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: model.class.old ? model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes) : true}"
-                     class="changedFrom meetingTimeCell">{{model.class.old ? model.getReadableMeetingTimes(model.class.old) : "(none)"}}
-                </div>
+                     class="changedFrom meetingTimeCell">{{model.class.old ? model.getReadableMeetingTimes(model.class.old) : "(none)"}}</div>
             </td>
         </tr>
         <tr ng-class="{'modified': model.differentFromLastYear(['primaryInstructorID'])}">
@@ -102,10 +101,11 @@
             <td>
                 <div ng-show="model.userCanEditSchedule">
                     <select class="select2" ng-model="model.class.waitlistCapacity" style="width: 40px"
-                        ng-options="option.capacity as option.indicator for option in [{capacity: 99, indicator: 'Y'}, {capacity: 0, indicator: 'N'}]">
+                            ng-options="option.capacity as option.indicator for option in [{capacity: 99, indicator: 'Y'}, {capacity: 0, indicator: 'N'}]">
                     </select>
                 </div>
-                <div ng-if="!model.userCanEditSchedule" class="italics">{{model.class.waitlistCapacity ? "Y" : "N"}}</div>
+                <div ng-if="!model.userCanEditSchedule" class="italics">{{model.class.waitlistCapacity ? "Y" : "N"}}
+                </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['waitlistCapacity'])}"
@@ -200,7 +200,7 @@
                         <input type="radio" ng-model="model.class.includeMajorRestriction" ng-value="0">
                         Exclude
                     </label><br/>
-                    <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.majorRestrictions"
+                    <select class="largeSelect2" style="width: 200px" ng-model="model.class.majorRestrictions"
                             multiple="multiple"
                             ng-options="option.code as option.desc for option in model.all.majorRestrictions">
                     </select>
@@ -299,7 +299,7 @@
                         <input type="radio" ng-model="model.class.includeProgramRestriction" ng-value="0">
                         Exclude
                     </label><br/>
-                    <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.programRestrictions"
+                    <select class="largeSelect2" style="width: 200px" ng-model="model.class.programRestrictions"
                             multiple="multiple"
                             ng-options="option.code as option.desc for option in model.all.programRestrictions">
                     </select>
@@ -404,7 +404,7 @@
                 <div ng-if="!model.userCanEditSchedule" class="italics">
                     {{model.extractTargetAttributes("desc",
                     "code", model.allStatuses,
-                    model.class.old.status)}}
+                    model.class.status)}}
                 </div>
             </td>
             <td>
@@ -447,7 +447,8 @@
     </table>
 
     <div id="toast" class="toast-warning" ng-click="model.toastMessage(false)">
-        Over 60% of classes in schedule occur during peak periods, <b>MWR 9:15-15:25, TF 9:50-15:25</b>. Please proceed with caution.
+        Over 60% of classes in schedule occur during peak periods, <b>MWR 9:15-15:25, TF 9:50-15:25</b>. Please proceed
+        with caution.
     </div>
 
     <div ng-if="model.userCanEditSchedule">

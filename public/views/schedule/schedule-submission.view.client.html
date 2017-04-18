@@ -19,13 +19,15 @@
     <br>
     <span>Department: </span>
     <select ng-model="model.selectedDepartment"
-            ng-options="option as option.departmentCode group by model.getScheduleGroupName(option.status) disable when model.getScheduleDisabled(option.status) for option in model.loggedInUser.depts track by option.departmentCode+option.status"
-            ng-change="model.getScheduleDetail(model.selectedDepartment)">
+            ng-options="option as option.departmentCode group by model.getScheduleGroupName(option.status) disable when model.shouldDisableSchedule(option.status) for option in model.loggedInUser.depts track by option.departmentCode+option.status"
+            ng-change="model.getScheduleDetail()">
     </select>
 
     <div ng-if="model.schedule && model.getScheduleStatusLine(model.schedule)" class="alert alert-info margin-top-20">
         {{model.getScheduleStatusLine(model.schedule)}}
-        <div ng-if="model.schedule.scheduleStatus === 'R' && model.schedule.comment"><br>Reason: <span class="bold">{{model.schedule.comment}}</span></div>
+        <div ng-if="model.schedule.scheduleStatus === 'R' && model.schedule.comment">
+            <br>Reason: <span class="bold">{{model.schedule.comment}}</span>
+        </div>
     </div>
 
     <div class="loader" ng-show="model.loadingSchedule">Loading...</div>
@@ -52,9 +54,13 @@
             <td>{{class.section}}</td>
             <td ng-class="{'italics': (!class.crn)}">{{class.crn || "(to be generated)"}}</td>
             <td>{{class.courseTitle}}</td>
-            <td ng-class="{'italics': (!class.meetingTimes.length)}" class="meetingTimeCell">{{model.getReadableMeetingTimes(class)}}</td>
+            <td ng-class="{'italics': (!class.meetingTimes.length)}">
+                <div class="meetingTimeCell">{{model.getReadableMeetingTimes(class)}}</div>
+            </td>
             <td>
-                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">{{model.userCanEditSchedule ? "Edit" : "View"}}</a>
+                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">
+                    {{model.userCanEditSchedule ? "Edit" : "View"}}
+                </a>
             </td>
         </tr>
         </tbody>

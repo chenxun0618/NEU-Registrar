@@ -3,14 +3,18 @@
         .module("NEURegistrar")
         .controller("ClassAddController", ClassAddController);
 
+    // controller for the "Add Class" page, which is only accessible to non-admins
     function ClassAddController($location, $window, ClassService, UserService) {
         var vm = this;
+
+        // functions used in view
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
         vm.getCourseDataFromCatalog = getCourseDataFromCatalog;
         vm.getReadableMeetingTime = ClassService.getReadableMeetingTime;
         vm.toastMessage = toastMessage;
 
+        // load initial data for add class page
         function init() {
             vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser || null);
             vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
@@ -19,6 +23,7 @@
             if (!UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status)) {
                 $location.url("/login");
             } else {
+
                 ClassService.getAllSubjectCodesInDept(vm.selectedDepartment.departmentCode)
                     .then(
                         function (res) {
@@ -28,9 +33,6 @@
                             vm.error = error.data || error.statusText;
                         }
                     );
-                vm.currentTerm = ClassService.getCurrentTerm();
-                vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
-                vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
 
                 ClassService.getDropdownValues()
                     .then(
@@ -54,6 +56,7 @@
             }
         }
 
+        // load misc. course data, e.g. title, for specified course, if it exists
         function getCourseDataFromCatalog(subjectCode, courseNumber) {
             if (!subjectCode) {
                 vm.error = "Must supply subject code";
@@ -65,7 +68,7 @@
                 ClassService.getCourseDataFromCatalog(subjectCode, courseNumber)
                     .then(
                         function (res) {
-                            // server should return better value if no data found... TODO
+                            // TODO server should return better value if no data found
                             if (res.data === "null") {
                                 vm.error = "Class not found";
                             } else {
@@ -84,10 +87,12 @@
             }
         }
 
+        // return to schedule page without adding class
         function returnToSchedule() {
             $location.url("/schedule-submission");
         }
 
+        // add class to schedule and return to schedule page
         function saveAndReturnToSchedule() {
             var invalidClassReasons = ClassService.getInvalidClassReasons(vm.class);
             if (invalidClassReasons.length) {
@@ -101,12 +106,14 @@
             }
         }
 
+        // add necessary metadata to class before adding it to schedule
         function prepareAddedClass(aClass) {
             aClass.metadata = aClass.metadata || {};
             aClass.metadata.added = true;
             aClass.metadata.unique_id = ClassService.generateUniqueIdForClass(aClass);
         }
 
+        // if input is truthy, show peak period toast message at bottom of screen
         function toastMessage(show) {
             var x = document.getElementById("toast");
             if (show) {

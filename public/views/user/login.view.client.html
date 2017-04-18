@@ -12,13 +12,14 @@
         </div>
         <div>
             <span class="margin-right-10"> NUID: </span>
-            <input autocorrect="off" type="password" ng-model="nuid" ng-init="nuid='000141940'" ng-keyup="$event.keyCode == 13 && model.login(email, nuid)"/>
+            <input autocorrect="off" type="password" ng-model="nuid" ng-init="nuid='000141940'"
+                   ng-keyup="$event.keyCode == 13 && model.login(email, nuid)"/>
         </div>
     </div>
 
     <div>
         <button ng-click=" model.login(email, nuid)" type="button" class="btn btn-primary">
             Login
-            </button>
-        </div>
+        </button>
     </div>
+</div>
