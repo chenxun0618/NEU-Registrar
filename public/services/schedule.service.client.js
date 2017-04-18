@@ -3,6 +3,9 @@
         .module("NEURegistrar")
         .factory("ScheduleService", ScheduleService);
 
+    // a service for handling all schedule-related operations, where a schedule is a
+    // collection of classes along with a status ("D"raft, "S"ubmitted, "R"ejected, "A"pproved, or "",
+    // meaning not yet loaded into UI) and various metadata about its submission (e.g. submitter name)
     function ScheduleService(ClassService, $http) {
 
         var api = {
@@ -11,27 +14,32 @@
             saveSchedule: saveSchedule,
             submitSchedule: submitSchedule,
             rejectSchedule: rejectSchedule,
-            approveSchedule: approveSchedule
+            approveSchedule: approveSchedule,
+            scheduleViolatesPeakPeriodProperty: scheduleViolatesPeakPeriodProperty
         };
 
-        function getScheduleDetail(schedule, user) {
-            if (user.admin) {
-                var url = "/connection/adminGetSched.php?dept=" + schedule.departmentCode;
+        // returns http promise for getting all schedule info (classes, submission time if exists, etc.)
+        // for given department code. uses different endpoints for admins and non-admins, but this could be consolidated
+        function getScheduleDetail(departmentCode, admin) {
+            if (admin) {
+                var url = "/lib/adminGetSched.php?dept=" + departmentCode;
             } else {
-                var url = "/connection/getScheduleByDept.php?dept=" + schedule.departmentCode;
+                var url = "/lib/getScheduleByDept.php?dept=" + departmentCode;
             }
             return $http.get(url);
         }
 
+        // given a schedule directly from database, do some miscellaneous preprocessing before it reaches the UI
+        // TODO get the database to return it in a more usable format
         function preprocessSchedule(schedule) {
 
             // if no classes found for a given subject code, server currently returns a strange object in the
-            // classes field -- it should just be an empty array, need to update this
+            // classes field -- TODO it should just be an empty array, need to update this
             if (!(schedule.classes.constructor === Array)) {
                 schedule.classes = [];
             }
 
-            // misnamed column in database
+            // TODO misnamed column in database
             schedule.lastEditedBy = schedule.submitterName;
             delete schedule.submitterName;
 
@@ -49,47 +57,93 @@
                 currentClass.waitlistCapacity = parseInt(currentClass.waitlistCapacity);
                 currentClass.section = parseInt(currentClass.section);
 
-                // marks all modified classes in a schedule as modified
-                // currentClass.metadata = currentClass.metadata || {};
-                // currentClass.metadata.modified = ClassService.isClassModified(currentClass);
-                // currentClass.metadata.added = !currentClass.old;
-                // currentClass.metadata.deleted = (currentClass.status === "C");
-
-                // generate unique id for each class for angular routing
+                // generate unique id for each class for angular routing (this is necessary)
                 currentClass.metadata = currentClass.metadata || {};
                 currentClass.metadata.unique_id = ClassService.generateUniqueIdForClass(currentClass);
 
-                if (!currentClass.old) {
+                // if this is the initial schedule load, copy each class's initial data so that, after the
+                // class's properties are edited, they can be compared against the initial state
+                if (!schedule.scheduleStatus) {
                     currentClass.old = angular.copy(currentClass);
                 }
             }
         }
 
-        function saveSchedule(nuid, departmentCode, lastEditTime, classes) {
+        // saves schedule to database as draft
+        function saveSchedule(nuid, departmentCode, schedule) {
             var newScheduleStatus = "D";
-            lastEditTime = lastEditTime || new Date();
-            var url = "/connection/userUpdateSchedule.php";
+            var url = "/lib/userUpdateSchedule.php";
+            schedule.lastEditTime = schedule.lastEditTime || generateDBCompatibleTimestamp();
             var obj = {
                 NUID: nuid,
                 dept: departmentCode,
-                timeStamp: lastEditTime,
+                timestamp: schedule.lastEditTime,
                 action: newScheduleStatus,
-                classes: classes
+                classes: JSON.stringify(schedule.classes)
             };
             return $http.post(url, obj);
         }
 
-        function submitSchedule(schedule) {
-            // communicate with web service
+        // submits schedule so that registrar's office may view it
+        function submitSchedule(nuid, departmentCode, schedule) {
+            var newScheduleStatus = "S";
+            var url = "/lib/userUpdateSchedule.php";
+            schedule.lastEditTime = schedule.lastEditTime || generateDBCompatibleTimestamp();
+            var obj = {
+                NUID: nuid,
+                dept: departmentCode,
+                timestamp: schedule.lastEditTime,
+                action: newScheduleStatus,
+                classes: JSON.stringify(schedule.classes)
+            };
+            return $http.post(url, obj);
         }
 
-        function rejectSchedule(schedule, rejectionMessage) {
-            schedule.rejectionMessage = rejectionMessage;
-            // communicate with web service
+        // for admin (registrar) use: rejects a submitted schedule, with a rejection message
+        function rejectSchedule(departmentCode, rejectionMessage) {
+            var newScheduleStatus = "R";
+            var url = "/lib/adminUpdateSchedule.php";
+            var obj = {
+                dept: departmentCode,
+                action: newScheduleStatus,
+                comment: rejectionMessage
+            };
+            return $http.post(url, obj);
         }
 
-        function approveSchedule(schedule) {
-            // communicate with web service
+        // for admin (registrar) use: approves a submitted schedule
+        function approveSchedule(departmentCode) {
+            var newScheduleStatus = "A";
+            var url = "/lib/adminUpdateSchedule.php";
+            var obj = {
+                dept: departmentCode,
+                action: newScheduleStatus
+            };
+            return $http.post(url, obj);
+        }
+
+        // returns whether this schedule violates the "peak period" property; e.g.
+        // 60% or more of all classes in schedule are during peak periods; we
+        // want to warn users if this is the case
+        function scheduleViolatesPeakPeriodProperty(schedule) {
+            var peakPeriodClasses = 0;
+            for (var x = 0; x < schedule.classes.length; x++) {
+                var aClass = schedule.classes[x];
+                for (var y = 0; y < aClass.meetingTimes.length; y++) {
+                    var aMeetingTime = aClass.meetingTimes[y];
+                    if (ClassService.isPeakPeriod(aMeetingTime)) {
+                        peakPeriodClasses++;
+                        break;
+                    }
+                }
+            }
+
+            return (peakPeriodClasses / schedule.classes.length >= .6);
+        }
+
+        // returns string that can easily be used in MySQL database as a datetime
+        function generateDBCompatibleTimestamp() {
+            return (new Date()).toISOString().substring(0, 19).replace('T', ' ');
         }
 
         return api;

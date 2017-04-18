@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+include 'lib/DB.php';
 
 class DBTest extends TestCase {
     public function testInstance() {
@@ -10,6 +11,16 @@ class DBTest extends TestCase {
                 DB::class,
                 $db
         );
+    }
+
+    /**
+     * Tests that the config file exists and is readable.
+     */
+    public function testConfigFileExists() {
+        $configFilePath = 'config/config.ini';
+
+        $this->assertFileExists($configFilePath);
+        $this->assertFileIsReadable($configFilePath);
     }
 
     public function testQuery1() {
@@ -56,6 +67,17 @@ class DBTest extends TestCase {
         $this->assertEquals(
                 '{"STVCAMP_CODE":"BOS"}',
                 json_encode($results)
+        );
+    }
+
+    public function testQuery3() {
+        $db = new DB();
+        $queryStr = "CALL get_all_instructors()";
+        $results = $db->query($queryStr);
+
+        $this->assertCount(
+                7067,
+                $results
         );
     }
 

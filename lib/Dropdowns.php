@@ -3,7 +3,7 @@ include 'RegistrarDatabase.php';
 
 $dd = new Dropdowns();
 $instructionalMethod = $dd->getInstructionalMethods();
-$meetingSequences = $dd->getMeetingSequences();
+$meetingTimes = $dd->getMeetingTimes();
 $campus = $dd->getCampuses();
 $attributeCode = $dd->getAttributeCode();
 $majorRestrictions = $dd->getMajorRestrictions();
@@ -11,10 +11,13 @@ $classRestrictions = $dd->getClassRestrictions();
 $levelRestrictions = $dd->getLevelRestrictions();
 $programRestrictions = $dd->getProgramRestrictions();
 $collegeRestrictions = $dd->getCollegeRestrictions();
+$specialApprovals = $dd->getSpecialApprovals();
+$scheduleTypes = $dd->getScheduleTypes();
 
-$dropdownData = ["instructionalMethod" => $instructionalMethod, "meetingSequences" => $meetingSequences, "campus" => $campus,
+$dropdownData = ["instructionalMethod" => $instructionalMethod, "meetingTimes" => $meetingTimes, "campus" => $campus,
         "attributeCode" => $attributeCode, "majorRestrictions" => $majorRestrictions, "classRestrictions" => $classRestrictions,
-        "levelRestrictions" => $levelRestrictions, "programRestrictions" => $programRestrictions, "collegeRestrictions" => $collegeRestrictions
+        "levelRestrictions" => $levelRestrictions, "programRestrictions" => $programRestrictions, "collegeRestrictions" => $collegeRestrictions,
+        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes
 ];
 
 echo json_encode($dropdownData);
@@ -51,26 +54,26 @@ class Dropdowns {
     }
 
     /**
-     * Retrieves all the meeting sequences data.
+     * Retrieves all the meeting times. Data includes code, days of week, begin time, and end time.
      *
-     * @return array        the meeting sequences data
+     * @return array        the meeting times
      */
-    public function getMeetingSequences() {
+    public function getMeetingTimes() {
         $rows = $this->db->selectAllQuery('select_stvmeet');
         $rowObj = array();
-        $meetingSequences = array();
+        $meetingTimes = array();
 
         // loops through rows
         for ($i = 0; $i < count($rows); $i++) {
             $rowObj['code'] = $rows[$i]['code'];
-            $rowObj['dow'] = $rows[$i]['dow'];
+            $rowObj['days'] = $rows[$i]['days'];
             $rowObj['beginTime'] = $rows[$i]['beginTime'];
             $rowObj['endTime'] = $rows[$i]['endTime'];
             // adds instructional method code to array
-            $meetingSequences[] = $rowObj;
+            $meetingTimes[] = $rowObj;
         }
 
-        return $meetingSequences;
+        return $meetingTimes;
     }
 
     /**
@@ -209,5 +212,43 @@ class Dropdowns {
         }
 
         return $collegeRestrictions;
+    }
+
+    /**
+     * Retrieves all the special approvals data.
+     *
+     * @return array        the special approvals data
+     */
+    public function getSpecialApprovals() {
+        $rows = $this->db->selectAllQuery('special_approvals_lookup');
+        $specialApprovals = array();
+
+        // loops through rows
+        for ($i = 0; $i < count($rows); $i++) {
+            $rowObj['code'] = $rows[$i]['code'];
+            $rowObj['desc'] = $rows[$i]['desc'];
+            $specialApprovals[] = $rowObj;
+        }
+
+        return $specialApprovals;
+    }
+
+    /**
+     * Retrieves all the schedule types data.
+     *
+     * @return array        the schedule types data
+     */
+    public function getScheduleTypes() {
+        $rows = $this->db->selectAllQuery('schedule_types_lookup');
+        $scheduleTypes = array();
+
+        // loops through rows
+        for ($i = 0; $i < count($rows); $i++) {
+            $rowObj['code'] = $rows[$i]['code'];
+            $rowObj['desc'] = $rows[$i]['desc'];
+            $scheduleTypes[] = $rowObj;
+        }
+
+        return $scheduleTypes;
     }
 }

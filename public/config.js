@@ -3,6 +3,7 @@
         .module("NEURegistrar")
         .config(Config);
 
+    // routing process
     function Config($routeProvider) {
         $routeProvider
             .when("/login", {
@@ -24,9 +25,6 @@
                 templateUrl: "public/views/class/class-add.view.client.html",
                 controller: "ClassAddController",
                 controllerAs: "model"
-            })
-            .when("/submitted", {
-                templateUrl: "public/views/schedule/schedule-submission-done.view.client.html"
             })
             .when("/", {
                 redirectTo: "/login"

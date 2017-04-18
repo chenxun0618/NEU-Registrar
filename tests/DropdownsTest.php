@@ -118,4 +118,30 @@ class DropdownsTest extends TestCase {
                 count($collegeRestrictions)
         );
     }
+
+    /**
+     * Tests that the output for the getSpecialApprovals method is correct.
+     */
+    public function testGetSpecialApprovals() {
+        $dd = new Dropdowns();
+        $specialApprovals = $dd->getSpecialApprovals();
+
+        $this->assertEquals(
+                4,
+                count($specialApprovals)
+        );
+    }
+
+    /**
+     * Tests that the output for the getScheduleTypes method is correct.
+     */
+    public function testScheduleTypes() {
+        $dd = new Dropdowns();
+        $scheduleTypes = $dd->getScheduleTypes();
+
+        $this->assertEquals(
+                8,
+                count($scheduleTypes)
+        );
+    }
 }

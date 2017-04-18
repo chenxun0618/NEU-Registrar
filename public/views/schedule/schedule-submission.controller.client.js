@@ -3,9 +3,12 @@
         .module("NEURegistrar")
         .controller("ScheduleSubmissionController", ScheduleSubmissionController);
 
-    function ScheduleSubmissionController($location, $window, ClassService, ScheduleService) {
+    // controller for the Schedule Submission page (main page). schedule cannot be saved/submitted/rejected/approved
+    // unless user and schedule are in the appropriate states.
+    function ScheduleSubmissionController($location, $window, ClassService, ScheduleService, UserService, $timeout) {
         var vm = this;
 
+        // functions used in view
         vm.getScheduleDetail = getScheduleDetail;
         vm.saveSchedule = saveSchedule;
         vm.submitSchedule = submitSchedule;
@@ -13,78 +16,126 @@
         vm.approveSchedule = approveSchedule;
         vm.navigateToClassDetail = navigateToClassDetail;
         vm.navigateToAddClass = navigateToAddClass;
-        vm.getScheduleSummaryLine = getScheduleSummaryLine;
+        vm.getScheduleGroupName = getScheduleGroupName;
         vm.getScheduleStatusLine = getScheduleStatusLine;
-        vm.getReadableMeetingTime = getReadableMeetingTime;
+        vm.getReadableMeetingTimes = ClassService.getReadableMeetingTimes;
+        vm.shouldDisableSchedule = shouldDisableSchedule;
         vm.logout = logout;
+        vm.toastMessage = toastMessage;
 
+        // load initial data for schedule submission page
         function init() {
-            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser || null);
+            clearStatusMessages();
 
             if (!vm.loggedInUser) {
                 $location.url("/login/");
             } else {
-                vm.allDepartments = vm.loggedInUser.depts;
-
                 if ($window.sessionStorage.selectedDepartment) {
+                    vm.loadingSchedule = true;
                     vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
                     vm.schedule = JSON.parse($window.sessionStorage.schedule);
+                    vm.searchTerm = JSON.parse($window.sessionStorage.schedule);
+                    vm.loadingSchedule = false;
+                    vm.filterText = JSON.parse($window.sessionStorage.filterText || "");
+                    vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
+                    $timeout(function () {
+                        $window.scrollTo(0, JSON.parse($window.sessionStorage.previousScrollPosition || 0));
+                    });
                 }
             }
         }
 
-        function getScheduleDetail(selectedDepartment) {
+        // asks user if they want to load a new schedule
+        function getScheduleDetail() {
+            clearStatusMessages();
+
             var r = true;
             if (vm.schedule) {
                 r = confirm("Are you sure you want to load new schedule? Unsaved progress will be lost.");
             }
             if (r == true || !vm.schedule) {
-                ScheduleService.getScheduleDetail(selectedDepartment, vm.loggedInUser)
-                    .then(
-                        function (res) {
-                            vm.schedule = res.data;
-                            ScheduleService.preprocessSchedule(vm.schedule);
-                        },
-                        function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
-                        }
-                    );
+                loadSchedule();
             }
         }
 
+        // loads the selected schedule (vm.selectedDepartment) from the database, throwing away the old one
+        function loadSchedule() {
+            delete vm.schedule;
+            vm.loadingSchedule = true;
+            var scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
+            ScheduleService.getScheduleDetail(vm.selectedDepartment.departmentCode, vm.loggedInUser.admin)
+                .then(
+                    function (res) {
+                        vm.schedule = res.data;
+                        ScheduleService.preprocessSchedule(vm.schedule);
+                        vm.loadingSchedule = false;
+                        vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
+
+                        $timeout(function () {
+                            $window.scrollTo(0, scrollPos);
+                        });
+                    },
+                    function (error) {
+                        vm.error = error.data || error.statusText;
+                        vm.loadingSchedule = false;
+                    }
+                );
+        }
+
+        // saves the current state of the schedule to the database
         function saveSchedule() {
+            clearStatusMessages();
             if (vm.schedule) {
-                ScheduleService.saveSchedule(vm.loggedInUser.nuid, vm.selectedDepartment.departmentCode,
-                    findScheduleTimestamp(vm.selectedDepartment.departmentCode), vm.schedule.classes)
+                ScheduleService.saveSchedule(vm.loggedInUser.nuid, vm.selectedDepartment.departmentCode, vm.schedule)
                     .then(
                         function (res) {
-                            console.log(res);
+                            if (!res.data) {
+                                changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'D');
+                                loadSchedule(vm.selectedDepartment); // TODO may not want to reload entire schedule
+                                toastMessage(true);
+                            } else { // merge needed
+                                // TODO merge classes
+                                vm.error = "Someone else worked on this schedule while you were. Their changes have been merged into yours. Please save again when ready.";
+                                $window.scrollTo(0, 0);
+                            }
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
+                            $window.scrollTo(0, 0);
                         }
                     );
             } else {
                 vm.error = "No schedule found";
                 $window.scrollTo(0, 0);
             }
-
-            function findScheduleTimestamp(deptCode) {
-                for (var x = 0; x < vm.allDepartments.length; x++) {
-                    if (deptCode === vm.allDepartments[x].departmentCode) {
-                        return vm.allDepartments[x].lastEditTime;
-                    }
-                }
-            }
-
         }
 
+        // submits the current schedule to the database
         function submitSchedule() {
-            var r = confirm("Are you sure you want to submit this schedule?");
+            var r = confirm("Are you sure you want to submit this schedule? This action is final.");
             if (r == true) {
+                clearStatusMessages();
                 if (vm.schedule) {
-                    ScheduleService.submitSchedule(vm.schedule);
-                    $location.url("/submitted/");
+                    ScheduleService.submitSchedule(vm.loggedInUser.nuid, vm.selectedDepartment.departmentCode, vm.schedule)
+                        .then(
+                            function (res) {
+                                if (!res.data) {
+                                    changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'S');
+                                    clearSelectedDepartmentAndSchedule();
+                                    $window.scrollTo(0, 0);
+                                    vm.success = "Schedule submitted!";
+                                } else {
+                                    // merge classes TODO
+                                    vm.error = "Someone else worked on this schedule while you were. Their changes have been merged into yours. Please resubmit when ready.";
+                                    $window.scrollTo(0, 0);
+                                }
+                            },
+                            function (error) {
+                                vm.error = error.data || error.statusText;
+                                $window.scrollTo(0, 0);
+                            }
+                        );
                 } else {
                     vm.error = "No schedule found";
                     $window.scrollTo(0, 0);
@@ -92,13 +143,44 @@
             }
         }
 
+        // goes through all user's editable departments and manually alters the status to reflect the given status
+        function changeStatusOfSchedule(departmentCode, newStatus) {
+            vm.selectedDepartment.status = newStatus;
+            for (var x = 0; x < vm.loggedInUser.depts.length; x++) {
+                if (vm.loggedInUser.depts[x].departmentCode === departmentCode) {
+                    vm.loggedInUser.depts[x].status = newStatus;
+                    return;
+                }
+            }
+        }
+
+        // deletes sessionStorage entries for the currently selected department and the current schedule
+        function clearSelectedDepartmentAndSchedule() {
+            delete vm.selectedDepartment;
+            $window.sessionStorage.removeItem("selectedDepartment");
+            delete vm.schedule;
+            $window.sessionStorage.removeItem("schedule");
+        }
+
+        // rejects the current schedule, prompting the admin for a rejection message
         function rejectSchedule() {
             var rejection_message = prompt("Enter a reason for the rejection (optional):", "");
             if (rejection_message !== null) {
+                clearStatusMessages();
                 if (vm.schedule) {
-                    ScheduleService.rejectSchedule(vm.schedule, rejection_message);
-                    $window.sessionStorage.schedule = JSON.stringify(null);
-                    $location.url("/schedule-submission/");
+                    ScheduleService.rejectSchedule(vm.selectedDepartment.departmentCode, rejection_message)
+                        .then(
+                            function (res) {
+                                changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'R');
+                                clearSelectedDepartmentAndSchedule();
+                                $window.scrollTo(0, 0);
+                                vm.success = "Schedule rejected!";
+                            },
+                            function (error) {
+                                vm.error = error.data || error.statusText;
+                                $window.scrollTo(0, 0);
+                            }
+                        );
                 } else {
                     vm.error = "No schedule found";
                     $window.scrollTo(0, 0);
@@ -106,13 +188,25 @@
             }
         }
 
+        // approves the current schedule (admin only)
         function approveSchedule() {
-            var r = confirm("Are you sure you want to approve this schedule?");
+            var r = confirm("Are you sure you want to approve this schedule? This action is final.");
             if (r == true) {
+                clearStatusMessages();
                 if (vm.schedule) {
-                    ScheduleService.approveSchedule(vm.schedule);
-                    $window.sessionStorage.schedule = JSON.stringify(null);
-                    $location.url("/schedule-submission/");
+                    ScheduleService.approveSchedule(vm.selectedDepartment.departmentCode)
+                        .then(
+                            function (res) {
+                                changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'A');
+                                clearSelectedDepartmentAndSchedule();
+                                $window.scrollTo(0, 0);
+                                vm.success = "Schedule approved!";
+                            },
+                            function (error) {
+                                vm.error = error.data || error.statusText;
+                                $window.scrollTo(0, 0);
+                            }
+                        );
                 } else {
                     vm.error = "No schedule found";
                     $window.scrollTo(0, 0);
@@ -120,56 +214,84 @@
             }
         }
 
+        // navigate to "Class Detail" page
         function navigateToClassDetail(unique_class_id) {
             $window.sessionStorage.selectedDepartment = JSON.stringify(vm.selectedDepartment);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
+            $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
+            $window.sessionStorage.previousScrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
+            $window.sessionStorage.filterText = JSON.stringify(vm.filterText || "");
             $location.url("/class-detail/" + unique_class_id);
         }
 
+        // navigate to "Add Class" page
         function navigateToAddClass() {
             $window.sessionStorage.selectedDepartment = JSON.stringify(vm.selectedDepartment);
             $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
+            $window.sessionStorage.loggedInUser = JSON.stringify(vm.loggedInUser);
+            $window.sessionStorage.previousScrollPosition = JSON.stringify(document.documentElement.scrollTop || document.body.scrollTop);
+            $window.sessionStorage.filterText = JSON.stringify(vm.filterText || "");
             $location.url("/class-add/");
         }
 
-        function getScheduleSummaryLine(schedule) {
-            if (!schedule.status) {
-                return schedule.departmentCode;
-            } else if (schedule.status === 'D') {
-                return schedule.departmentCode + " (draft)";
-            } else if (schedule.status === 'S') {
-                return schedule.departmentCode + " (waiting approval)";
-            } else if (schedule.status === 'R') {
-                return schedule.departmentCode + " (rejected)";
+        // given schedule status code ('D', 'S', 'R', 'A', or ''), gets associated dropdown group category
+        function getScheduleGroupName(scheduleStatus) {
+            if (scheduleStatus === 'D') {
+                return "Draft";
+            } else if (scheduleStatus === 'S') {
+                return vm.loggedInUser.admin ? "Waiting Approval" : "Submitted";
+            } else if (scheduleStatus === 'R') {
+                return "Rejected";
+            } else if (scheduleStatus === 'A') {
+                return "Approved";
+            } else {
+                return "Untouched";
             }
         }
 
-        function getScheduleStatusLine(dept) {
-            if (dept.scheduleStatus === 'D') {
-                return "Last saved by " + dept.lastEditedBy + " on " + dept.lastEditTime;
+        // given a schedule, gets a message detailing the status of the schedule
+        function getScheduleStatusLine(schedule) {
+            if (schedule.scheduleStatus === 'D') {
+                return "Last saved by " + schedule.lastEditedBy + " on " + schedule.lastEditTime;
             } else if (schedule.scheduleStatus === 'R') {
-                return "Rejected by " + schedule.lastEditedBy + " on " + schedule.lastEditTime + " because: \n\n" + schedule.rejectionMessage;
+                return "Rejected on " + schedule.lastEditTime;
+            } else if (schedule.scheduleStatus === 'A') {
+                return "Approved on " + schedule.lastEditTime;
             } else if (schedule.scheduleStatus === 'S') {
                 return "Submitted by " + schedule.lastEditedBy + " on " + schedule.lastEditTime;
             }
         }
 
+        // whether the department line-item should be disabled in the Department dropdown (so user cannot load)
+        function shouldDisableSchedule(scheduleStatus) {
+            if (vm.loggedInUser.admin) {
+                return (!scheduleStatus || scheduleStatus === 'D' || scheduleStatus === 'R');
+            }
+        }
+
+        // logs out (clears sessionStorage)
         function logout() {
             $window.sessionStorage.clear();
             $location.url("/login/");
         }
 
-        function getReadableMeetingTime(aClass) {
-            if (!aClass.meetingDays || !aClass.meetingBeginTime || !aClass.meetingEndTime) {
-                return "(not found)";
+        // if input is truthy, show peak period toast message at bottom of screen
+        function toastMessage(show) {
+            var x = document.getElementById("toast");
+            if (show) {
+                x.classList.add("show");
+                setTimeout(function () {
+                    x.classList.remove("show");
+                }, 6000);
             } else {
-                return aClass.meetingDays + " " + getFormattedTime(aClass.meetingBeginTime) + "–" + getFormattedTime(aClass.meetingEndTime);
+                x.classList.remove("show");
             }
         }
 
-        function getFormattedTime(str) {
-            var secondToLast = str.length - 2;
-            return str.substring(0, secondToLast) + ":" + str.substring(secondToLast, str.length);
+        // clears error / success box at top of screen
+        function clearStatusMessages() {
+            vm.error = "";
+            vm.success = "";
         }
 
         init();

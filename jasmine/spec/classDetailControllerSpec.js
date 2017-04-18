@@ -81,12 +81,12 @@ describe("ClassDetailController", function() {
   })
 
   it("should display toast messages", function() {
-    ctrl.toastMessage(1)
+    ctrl.toastMessage(true)
     expect(ctrl.toastMessage).toBeDefined();
   })
 
   it("should not display toast messages for bad inputs", function() {
-    ctrl.toastMessage(0)
+    ctrl.toastMessage(false)
     expect(ctrl.toastMessage).toBeDefined();
   })
 

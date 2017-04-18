@@ -10,7 +10,7 @@ if (isset($_POST['comment'])) {
 } else {
     $comment = "";
 }
-$query = "CALL adminUpdateSchedule('$action', '$dept', $comment)";
+$query = "CALL adminUpdateSchedule('$action', '$dept', '$comment')";
 $db->query($query);
 $db->header(200, "OK");
 // @codeCoverageIgnoreEnd

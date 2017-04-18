@@ -1,7 +1,7 @@
 <script type="text/javascript">
     $('select.select2').select2();
     $('select.largeSelect2').select2({
-        minimumInputLength: 2
+        minimumInputLength: 3
     });
 </script>
 
@@ -10,15 +10,15 @@
         Add Class
     </h1>
 
-    <div ng-if="model.error" class="alert alert-danger error-box">{{model.error}}</div>
+    <div ng-if="model.error" class="alert alert-danger status-box">{{model.error}}</div>
 
     <table class="table narrow">
         <tbody>
         <tr>
             <td>Subject Code</td>
             <td>
-                <select class="select2" ng-model="model.selectedSubjectCode">
-                    <option ng-repeat="option in model.allSubjectCodesInDept">{{option}}</option>
+                <select style="width: 60px" class="select2" ng-model="model.selectedSubjectCode"
+                        ng-options="option for option in model.allSubjectCodesInDept">
                 </select>
             </td>
         </tr>
@@ -61,32 +61,21 @@
         <tr>
             <td>Title*</td>
             <td>
-                <input style="width:200px" ng-model="model.class.courseTitle" type="text" />
+                <input style="width:200px" ng-model="model.class.courseTitle" type="text"/>
             </td>
         </tr>
         <tr>
-            <td>Meeting Times*</td>
+            <td>Meeting Times</td>
             <td>
-                <select ng-model="model.class.meetingDays"
-                        ng-options="option for option in model.allMeetingDays"
-                        ng-change="model.updateOnChangeOfTime(0)">
-                </select>
-
-                <select ng-model="model.class.meetingBeginTime"
-                        ng-options="option as model.getFormattedTime(option) for option in model.allMeetingStartTimes"
-                        ng-change="model.updateOnChangeOfTime(1)">
-                </select>
-                —
-                <select ng-model="model.class.meetingEndTime"
-                        ng-options="option as model.getFormattedTime(option) for option in model.allMeetingEndTimes"
-                        ng-change="model.updateOnChangeOfTime(0)">
+                <select class="select2" style="width: 200px" ng-model="model.class.meetingTimes" multiple="multiple"
+                        ng-options="aMeetingTime as model.getReadableMeetingTime(aMeetingTime) for aMeetingTime in model.all.meetingTimes track by aMeetingTime.days+aMeetingTime.beginTime+aMeetingTime.endTime">
                 </select>
             </td>
         </tr>
         <tr>
             <td>Primary Instructor*</td>
             <td>
-                <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.primaryInstructorID"
+                <select class="largeSelect2" style="width: 200px" ng-model="model.class.primaryInstructorID"
                         ng-options="option.nuid as option.name for option in model.allInstructors">
                 </select>
             </td>
@@ -100,40 +89,35 @@
         <tr>
             <td>Waitlist?*</td>
             <td>
-                <select ng-model="model.class.waitlistCapacity">
-                    <option ng-repeat="option in [{capacity: 99, indicator: 'Y'}, {capacity: 0, indicator: 'N'}]" ng-value="option.capacity">
-                        {{option.indicator}}
-                    </option>
+                <select class="select2" ng-model="model.class.waitlistCapacity" style="width: 40px"
+                        ng-options="option.capacity as option.indicator for option in [{capacity: 99, indicator: 'Y'}, {capacity: 0, indicator: 'N'}]">
                 </select>
             </td>
         </tr>
         <tr>
             <td>Campus*</td>
             <td>
-                <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2" style="width: 150px"
-                            ng-model="model.class.campusCode"
-                            ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.campus">
-                    </select>
-                </div>
+                <select class="select2" style="width: 150px"
+                        ng-model="model.class.campusCode"
+                        ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.campus">
+                </select>
             </td>
         </tr>
         <tr>
             <td>Instructional Method*</td>
             <td>
-                <div ng-show="!model.loggedInUser.admin">
-                    <select class="select2" style="width: 150px"
-                            ng-model="model.class.instructionalMethodCode"
-                            ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.instructionalMethod">
-                    </select>
-                </div>
+                <select class="select2" style="width: 150px"
+                        ng-model="model.class.instructionalMethodCode"
+                        ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.all.instructionalMethod">
+                </select>
             </td>
         </tr>
         <tr>
-            <td>Special Approvals*</td>
+            <td>Special Approvals</td>
             <td>
-                <select ng-model="model.class.specialApprovalCode"
-                        ng-options="option.code as (option.desc + ' (' + option.code + ')') for option in model.allSpecialApprovals">
+                <select class="select2" style="width: 150px;"
+                        ng-model="model.class.specialApprovalCode"
+                        ng-options="option.code as option.desc + (option.code ? (' (' + option.code + ')') : '') for option in model.all.specialApprovals">
                 </select>
             </td>
         </tr>
@@ -148,7 +132,8 @@
                     <input type="radio" ng-model="model.class.includeMajorRestriction" ng-value="0">
                     Exclude
                 </label><br/>
-                <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.majorRestrictions" multiple="multiple"
+                <select class="largeSelect2" style="width: 200px" ng-model="model.class.majorRestrictions"
+                        multiple="multiple"
                         ng-options="option.code as option.desc for option in model.all.majorRestrictions">
                 </select>
             </td>
@@ -164,7 +149,8 @@
                     <input type="radio" ng-model="model.class.includeClassRestriction" ng-value="0">
                     Exclude
                 </label><br/>
-                <select class="select2" style="width: 200px" ng-model="model.class.classRestrictions" multiple="multiple"
+                <select class="select2" style="width: 200px" ng-model="model.class.classRestrictions"
+                        multiple="multiple"
                         ng-options="option.code as option.desc for option in model.all.classRestrictions">
                 </select>
             </td>
@@ -180,7 +166,8 @@
                     <input type="radio" ng-model="model.class.includeLevelRestriction" ng-value="0">
                     Exclude
                 </label><br/>
-                <select class="select2" style="width: 200px" ng-model="model.class.levelRestrictions" multiple="multiple"
+                <select class="select2" style="width: 200px" ng-model="model.class.levelRestrictions"
+                        multiple="multiple"
                         ng-options="option.code as option.desc for option in model.all.levelRestrictions">
                 </select>
             </td>
@@ -196,7 +183,8 @@
                     <input type="radio" ng-model="model.class.includeProgramRestriction" ng-value="0">
                     Exclude
                 </label><br/>
-                <select class="select2 largeSelect2" style="width: 200px" ng-model="model.class.programRestrictions" multiple="multiple"
+                <select class="largeSelect2" style="width: 200px" ng-model="model.class.programRestrictions"
+                        multiple="multiple"
                         ng-options="option.code as option.desc for option in model.all.programRestrictions">
                 </select>
             </td>
@@ -212,13 +200,14 @@
                     <input type="radio" ng-model="model.class.includeCollegeRestriction" ng-value="0">
                     Exclude
                 </label><br/>
-                <select class="select2" style="width: 200px" ng-model="model.class.collegeRestrictions" multiple="multiple"
+                <select class="select2" style="width: 200px" ng-model="model.class.collegeRestrictions"
+                        multiple="multiple"
                         ng-options="option.code as option.desc for option in model.all.collegeRestrictions">
                 </select>
             </td>
         </tr>
         <tr>
-            <td>Attributes</td>
+            <td>Billing Attributes & Honors</td>
             <td>
                 <select class="select2" style="width: 200px" ng-model="model.class.attributeCode" multiple="multiple"
                         ng-options="option.code as option.desc + ' (' + option.code + ')' for option in model.all.attributeCode">
@@ -228,7 +217,9 @@
         <tr>
             <td>Show on Banner Schedule?</td>
             <td>
-                <select ng-model="model.class.publish" ng-options="option for option in model.yesOrNo">
+                <select class="select2" style="width: 40px"
+                        ng-model="model.class.publish"
+                        ng-options="option for option in ['Y', 'N']">
                 </select>
             </td>
         </tr>
@@ -240,11 +231,15 @@
         </tr>
         </tbody>
     </table>
-    <div id="toast" ng-click="model.toastMessage(0)">
-        Time selected is during peak hours <b>MWR 9:15-15:25, TF 9:50-15:25</b>, please proceed with caution.
+
+    <div id="toast" class="toast-warning" ng-click="model.toastMessage(false)">
+        Over 60% of classes in schedule occur during peak periods, <b>MWR 9:15-15:25, TF 9:50-15:25</b>. Please proceed
+        with caution.
     </div>
+
     <div>
-        <button ng-if="model.class" ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Add to Schedule
+        <button ng-if="model.class" ng-click="model.saveAndReturnToSchedule()" type="button" class="btn btn-primary">Add
+            to Schedule
         </button>
         <button ng-click="model.returnToSchedule()" type="button" class="btn btn-warning">Cancel</button>
     </div>

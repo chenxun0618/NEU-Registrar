@@ -3,42 +3,43 @@
         .module("NEURegistrar")
         .controller("ClassDetailController", ClassDetailController);
 
-    function ClassDetailController($location, $window, $routeParams, ClassService, ScheduleService) {
+    // controller for the "Class Detail" page. When user and schedule are in appropriate state, the page is
+    // full of dropdowns and input fields; otherwise the fields are display-only, no edits can be made
+    function ClassDetailController($location, $window, $routeParams, ClassService, ScheduleService, UserService) {
         var vm = this;
+
+        // functions used in view
         vm.returnToSchedule = returnToSchedule;
         vm.saveAndReturnToSchedule = saveAndReturnToSchedule;
-        vm.isPeakPeriod = isPeakPeriod;
-        vm.updateEndingTimes = updateEndingTimes;
-        vm.updateOnChangeOfTime = updateOnChangeOfTime;
-        vm.toastMessage = toastMessage;
         vm.extractTargetAttributes = extractTargetAttributes;
         vm.differentFromLastYear = differentFromLastYear;
-        vm.getReadableMeetingTime = getReadableMeetingTime;
-        vm.getFormattedTime = getFormattedTime;
+        vm.isEqualMeetingTimes = ClassService.isEqualMeetingTimes;
+        vm.getReadableMeetingTime = ClassService.getReadableMeetingTime;
+        vm.getReadableMeetingTimes = ClassService.getReadableMeetingTimes;
+        vm.scheduleViolatesPeakPeriodProperty = ScheduleService.scheduleViolatesPeakPeriodProperty;
+        vm.toastMessage = toastMessage;
 
+        // load initial data for edit class page
         function init() {
-            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser ? $window.sessionStorage.loggedInUser : null);
+            vm.loggedInUser = JSON.parse($window.sessionStorage.loggedInUser || null);
 
             if (!vm.loggedInUser) {
                 $location.url("/login");
             } else {
-                vm.class = findClassInSessionState($routeParams.unique_id); // find in session state for now until I figure out how to pass the specified course to this controller
-
-                vm.currentTerm = ClassService.getCurrentTerm();
-                vm.allMeetingDays = ClassService.getAllMeetingDays();
-                vm.allMeetingStartTimes = ClassService.getAllTimeIntervals();
-                vm.allMeetingEndTimes = ClassService.getAllTimeIntervals();
-                vm.allStatuses = ClassService.getAllStatuses();
-                vm.allSpecialApprovals = ClassService.getAllSpecialApprovals();
-                vm.yesOrNo = ClassService.getYesOrNo();
+                $window.scrollTo(0, 0);
+                vm.schedule = JSON.parse($window.sessionStorage.schedule);
+                vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
+                vm.class = findClassInSessionState($routeParams.unique_id); // find in session state for now TODO set active class in ClassService or UserService
+                vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
 
                 ClassService.getDropdownValues()
                     .then(
                         function (res) {
                             vm.all = res.data;
+                            vm.all.specialApprovals = [{code: '', desc: ''}].concat(vm.all.specialApprovals); // prepend empty option
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
                         }
                     );
 
@@ -48,16 +49,19 @@
                             vm.allInstructors = res.data;
                         },
                         function (error) {
-                            vm.error = error.data ? error.data : error.statusText;
+                            vm.error = error.data || error.statusText;
                         }
                     );
+                vm.allStatuses = ClassService.getAllStatuses();
             }
         }
 
+        // return to schedule page without saving edits
         function returnToSchedule() {
             $location.url("/schedule-submission");
         }
 
+        // save edits and return to schedule
         function saveAndReturnToSchedule() {
             var invalidClassReasons = ClassService.getInvalidClassReasons(vm.class);
             if (invalidClassReasons.length) {
@@ -69,17 +73,16 @@
                 vm.class.metadata.deleted = (vm.class.status === "C");
                 vm.class.metadata.modifiedInSession = true;
 
-                var schedule = JSON.parse($window.sessionStorage.schedule);
-                schedule.classes[vm.class.sessionStateIndex] = vm.class;
-                $window.sessionStorage.schedule = JSON.stringify(schedule);
+                vm.schedule.classes[vm.class.sessionStateIndex] = vm.class;
+                $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
                 $location.url("/schedule-submission");
             }
         }
 
+        // TODO remove this and keep track of active class in ClassService or UserService
         function findClassInSessionState(unique_id) {
-            var schedule = JSON.parse($window.sessionStorage.schedule);
-            for (var x = 0; x < schedule.classes.length; x++) {
-                var current = schedule.classes[x];
+            for (var x = 0; x < vm.schedule.classes.length; x++) {
+                var current = vm.schedule.classes[x];
                 if (current.metadata.unique_id === unique_id) {
                     current.sessionStateIndex = x;
                     return current;
@@ -87,58 +90,25 @@
             }
         }
 
+        // if input is truthy, show peak period toast message at bottom of screen
         function toastMessage(show) {
             var x = document.getElementById("toast");
             if (show) {
-                x.className = "show";
+                x.classList.add("show");
                 setTimeout(function () {
-                    x.className = "";
+                    x.classList.remove("show");
                 }, 6000);
             } else {
-                x.className = "";
+                x.classList.remove("show");
             }
         }
 
-        function isPeakPeriod(day, time) {
-            var isPeakPeriod = 0;
-            var x = document.getElementById("toast");
-            if (day === "M" || day === "W" || day === "R" ||
-                day === "MW" || day === "MWR") {
-                if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
-                    (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
-                    (time.slice(0, 2) == 9 && time.slice(-2) >= 15)) {
-                    isPeakPeriod = 1;
-                }
-            }
-            if (day === "T" || day === "F" || day === "TF") {
-                if ((time.slice(0, 2) == 15 && time.slice(-2) <= 25) ||
-                    (time.slice(0, 2) > 9 && time.slice(0, 2) < 15) ||
-                    (time.slice(0, 2) == 9 && time.slice(-2) >= 50)) {
-                    isPeakPeriod = 1;
-                }
-            }
-            if (isPeakPeriod) {
-                if (x.className !== "show")
-                    toastMessage(1);
-            }
-            return isPeakPeriod;
-        }
-
-        function updateEndingTimes() {
-            var startTimeIdx = vm.allMeetingStartTimes.indexOf(vm.class.meetingBeginTime);
-            var classMinDuration = 65;
-            var classMaxDuration = 210;
-            vm.allMeetingEndTimes = vm.allMeetingStartTimes
-                .slice(startTimeIdx + classMinDuration / 5, startTimeIdx + classMaxDuration / 5 + 1);
-        }
-
-        function updateOnChangeOfTime(isMeetingStart) {
-            if (isMeetingStart)
-                updateEndingTimes();
-            vm.isPeakPeriod = isPeakPeriod(vm.class.meetingDays, vm.class.meetingBeginTime) ||
-                isPeakPeriod(vm.class.meetingDays, vm.class.meetingEndTime);
-        }
-
+        // e.g.
+        // targetAttribute: 'desc'
+        // sourceAttribute: 'code'
+        // allData: [{code: 'A', desc: 'Hello World'}, {code: 'B', desc: 'Goodbye'}, {code: 'C', desc: 'FooBar'}]
+        // localData: ['B', 'C']
+        // output: ['Goodbye', 'FooBar']
         function extractTargetAttributes(targetAttribute, sourceAttribute, allData, localData) {
             if (!allData || !localData) {
                 return null;
@@ -163,10 +133,13 @@
             }
         }
 
+        // given an array of attribute names, determines whether those attributes in the current class
+        // differ from the copy of the original data stored in the 'old' property of the current class
+        // if no 'old' property, returns false
         function differentFromLastYear(attributes) {
             for (var x = 0; x < attributes.length; x++) {
                 var attribute = attributes[x];
-                if (vm.class[attribute].constructor === Array) {
+                if (vm.class[attribute] && vm.class[attribute].constructor === Array) {
                     if (vm.class.old && !arraysEqual(vm.class[attribute], vm.class.old[attribute])) {
                         return true;
                     }
@@ -177,19 +150,6 @@
                 }
             }
             return false;
-        }
-
-        function getReadableMeetingTime(aClass) {
-            if (!aClass.meetingDays || !aClass.meetingBeginTime || !aClass.meetingEndTime) {
-                return "(not found)";
-            } else {
-                return aClass.meetingDays + " " + getFormattedTime(aClass.meetingBeginTime) + "–" + getFormattedTime(aClass.meetingEndTime);
-            }
-        }
-
-        function getFormattedTime(str) {
-            var secondToLast = str.length - 2;
-            return str.substring(0, secondToLast) + ":" + str.substring(secondToLast, str.length);
         }
 
         init();
