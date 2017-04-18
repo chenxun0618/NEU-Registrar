@@ -6,10 +6,10 @@ This directory holds all the back-end code. It includes the PHP files that the f
 *description*
 
 ## Dropdowns.php
-*description*
+returns data to populate the dropdown menus on the front-end
 
 ## RegistrarDatabase.php
-*description*
+a class for representing the database and includes methods to retrieve data
 
 ## adminGetSched.php
 takes in a 'dept' and returns the schedule for that department
