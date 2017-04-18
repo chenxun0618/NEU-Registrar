@@ -89,6 +89,7 @@ getDropdownValues() returns data that looks like this:
  classRestrictions: [{code: “GR”, desc: “Graduate”} …]
  collegeRestrictions: [{code: “AM”, desc: “Coll of Arts, Media & Design”}, …]
  instructionalMethod: [{code: “USFL”, desc: “NU Faculty-led in USA”}, …]
+ instructors: [{name: “FirstName LastName”, nuid: “000000000”}, …]
  levelRestrictions: [{code: “GP”, desc: “CPS - Graduate”}, …]
  majorRestrictions: [{code: “GIDM”, desc: “Graphic and Info. Design/Math”}, …]
  meetingTimes: [{beginTime: “0800”, code: “C2”, days: “F”, endTime: “0940”}, …]
@@ -96,14 +97,6 @@ getDropdownValues() returns data that looks like this:
  scheduleTypes: [{code: “LEC”, desc: “Lecture”}, …]
  specialApprovals: [{code: “A”, desc: “Advisor’s Signature}, …]
 }
-```
-
-### Instructors
-
-getAllInstructors() returns data that looks like this:
-
-```
-[{name: “FirstName LastName”, nuid: “000000000”}, {name: “FirstName2 LastName2”, nuid: “000000001”}, …]
 ```
 
 ### Subject Codes

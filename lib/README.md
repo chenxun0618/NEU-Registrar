@@ -26,9 +26,6 @@ takes in an 'NUID' of an admin user, returns the admin's information and an arra
 ## getAllSubjectCodesInDept.php
 given a department code, returns all subject codes housed in that department
 
-## getInstructors.php
-returns an array of all instructors' information
-
 ## getScheduleByDept.php
 takes in a 'dept' and returns the most recent schedule for that department, if no schedule is saved or submitted for that department, the old schedule will be returned
 

@@ -43,16 +43,6 @@
                             vm.error = error.data || error.statusText;
                         }
                     );
-
-                ClassService.getAllInstructors()
-                    .then(
-                        function (res) {
-                            vm.allInstructors = res.data;
-                        },
-                        function (error) {
-                            vm.error = error.data || error.statusText;
-                        }
-                    );
             }
         }
 
