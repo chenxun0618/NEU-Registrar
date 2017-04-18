@@ -205,6 +205,7 @@ getScheduleDetail(departmentCode, admin) returns data that looks like this, whic
          "includeCollegeRestriction":0,
          "includeProgramRestriction":1
       }
+      ... // many more classes
    ]
 }
 ```
