@@ -4,7 +4,7 @@ This folder contains all code for the front end.
 
 The organization follows Angular conventions. A controller object is associated with an HTML snippet that gets inserted into the dom when the corresponding URL in config.js (in NEU-Registrar/public) is requested.
 
-The controller contains functions that the HTML Angular directives use to whatever effect.
+The controller contains function calls to the corresponding services in the Services folder, as well as miscellaneous functions that the HTML Angular directives use to whatever effect.
 
 ## Class
 
