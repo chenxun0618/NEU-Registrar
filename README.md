@@ -1,6 +1,6 @@
-# NEU-Registrar
+# Semester Course Offerings—Office of the Registrar
 
-1. What is the problem the client is addressing?
+## The Problem
 
 The Office of the Registrar is responsible for all matters related to Northeastern scheduling. This project seeks to alleviate the amount of manual data entry undertaken by the Registrar each semester when trying to establish course offerings for each department.
 
@@ -12,12 +12,16 @@ Then, the registrar takes the spreadsheet and MANUALLY enters everything from th
 
 Our project drastically reduces the amount of manual editing and general oversight this process requires.
 
-2.  Does the client have a host environment and support staff/systems?
+## Host Environment
 
-The intention of the project was to make a viable standalone product, and then begin the transfer process, involving Northeastern's ITS, to move it onto the MyNEU system.
+The intention of the project was to make a viable standalone product, and then begin the transfer process, involving Northeastern's ITS, to move it onto the MyNEU system. This will require coordination and an extensively documented codebase.
 
-3.  How is the system organized?
+## Code Organization
 
 The project is hosted on an Amazon Web Services EC2 instance using LAMP (Linux, Apache, MySQL, PHP) architecture. See the lib/ folder.
 
 The front-end is written in Angular1, and makes direct calls to the PHP.
+
+## Testing
+
+
