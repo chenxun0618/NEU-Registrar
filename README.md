@@ -22,7 +22,7 @@ From the perspective of the Registrar (admin), this process looks much the same.
 
 The Registrar may choose only Submitted schedules for review. They can see which classes have been edited and click on "View" to be taken to the "Class Detail" page. If they like what they see, they click "Approve" to approve the schedule, and after that point, the schedule may no longer be altered (except through manual database backchannels). If they don't like what they see, they click "Reject" to reject the schedule and supply a rejection reason that is displayed to the user when they load the rejected schedule to work on it again.
 
-The semester's process ends when all submitted schedules have been approved by the registrar.
+The semester's process ends when all Submitted schedules have been Approved by the registrar.
 
 ## Host Environment
 
