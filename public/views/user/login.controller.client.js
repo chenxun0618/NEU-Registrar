@@ -78,6 +78,7 @@
             delete user.NUID;
         }
 
+        // Sorting needed to control order of <optgroup>'s in the department dropdown on the Schedule Submission page.
         // input: (boolean, [{departmentCode: "CS", status: "S"}, {departmentCode: "IS", status: ""} ...]
         // output: array sorted first by status according to map, then alphabetically
         function sortDepartments(admin, depts) {
