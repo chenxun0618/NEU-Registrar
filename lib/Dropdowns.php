@@ -259,6 +259,7 @@ class Dropdowns {
 
         // loops through rows
         for ($i = 0; $i < count($rows); $i++) {
+            // add leading zeros
             $rowObj['nuid'] = str_pad($rows[$i]['nuid'], 9, '0', STR_PAD_LEFT);
             $rowObj['name'] = $rows[$i]['name'];
             $instructors[] = $rowObj;
