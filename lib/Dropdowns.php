@@ -14,11 +14,12 @@ $collegeRestrictions = $dd->getCollegeRestrictions();
 $specialApprovals = $dd->getSpecialApprovals();
 $scheduleTypes = $dd->getScheduleTypes();
 $instructors = $dd->getInstructors();
+$testRows = $dd->testRows();
 
 $dropdownData = ["instructionalMethod" => $instructionalMethod, "meetingTimes" => $meetingTimes, "campus" => $campus,
         "attributeCode" => $attributeCode, "majorRestrictions" => $majorRestrictions, "classRestrictions" => $classRestrictions,
         "levelRestrictions" => $levelRestrictions, "programRestrictions" => $programRestrictions, "collegeRestrictions" => $collegeRestrictions,
-        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes, "instructors" => $instructors
+        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes
 ];
 
 echo json_encode($dropdownData);
@@ -265,5 +266,22 @@ class Dropdowns {
         }
 
         return $instructors;
+    }
+
+    public function testRows() {
+        $rows = $this->db->selectAllQuery('test_ssbsect');
+        $testRows = array();
+
+        // loops through rows
+        for ($i = 0; $i < count($rows); $i++) {
+            $rowObj['termCode'] = $rows[$i]['termCode'];
+            $rowObj['collegeCode'] = $rows[$i]['collegeCode'];
+            $rowObj['collegeDescription'] = $rows[$i]['collegeDesc'];
+            $rowObj['departmentCode'] = $rows[$i]['departmentCode'];
+            $rowObj['departmentDescription'] = $rows[$i]['departmentDesc'];
+            $testRows[] = $rowObj;
+        }
+
+        return $testRows;
     }
 }

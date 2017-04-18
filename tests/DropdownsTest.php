@@ -154,4 +154,14 @@ class DropdownsTest extends TestCase {
                 count($instructors)
         );
     }
+
+    public function testTestRows() {
+        $dd = new Dropdowns();
+        $testRows = $dd->testRows();
+
+        $this->assertEquals(
+                6272,
+                count($testRows)
+        );
+    }
 }
