@@ -35,8 +35,8 @@ A service for handling all class-related operations. A "class" object looks like
          "endTime":"0905"
          }
      ],
-     "primaryInstructorID":"001791547",
-     "primaryInstructorName":"Ghita Amor-Tijani",
+     "primaryInstructorID":"9-digit NUID",
+     "primaryInstructorName":"FirstName LastName",
      "includeMajorRestriction":1,
      "includeClassRestriction":0,
      "includeLevelRestriction":1,
