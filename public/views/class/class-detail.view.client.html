@@ -51,15 +51,11 @@
                             ng-change="model.toastMessage(model.scheduleViolatesPeakPeriodProperty(model.schedule))">
                     </select>
                 </div>
-                <div ng-if="!model.userCanEditSchedule" class="meetingTimeCell italics">
-                    {{model.getReadableMeetingTimes(model.class)}}
-                </div>
+                <div ng-if="!model.userCanEditSchedule" class="meetingTimeCell italics">{{model.getReadableMeetingTimes(model.class)}}</div>
             </td>
             <td>
                 <div ng-class="{hidden: model.class.old ? model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes) : true}"
-                     class="changedFrom meetingTimeCell">{{model.class.old ?
-                    model.getReadableMeetingTimes(model.class.old) : "(none)"}}
-                </div>
+                     class="changedFrom meetingTimeCell">{{model.class.old ? model.getReadableMeetingTimes(model.class.old) : "(none)"}}</div>
             </td>
         </tr>
         <tr ng-class="{'modified': model.differentFromLastYear(['primaryInstructorID'])}">
@@ -408,7 +404,7 @@
                 <div ng-if="!model.userCanEditSchedule" class="italics">
                     {{model.extractTargetAttributes("desc",
                     "code", model.allStatuses,
-                    model.class.old.status)}}
+                    model.class.status)}}
                 </div>
             </td>
             <td>
