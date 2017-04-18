@@ -32,7 +32,7 @@ The intention of the project was to make a viable standalone product, and then b
 
 The project is hosted on an Amazon Web Services EC2 instance using LAMP (Linux, Apache, MySQL, PHP) architecture. See the lib/ folder.
 
-The front-end is written in Angular1, and makes direct calls to the PHP.
+The front-end is written in Angular1, and makes direct calls to the PHP. See the public/ folder.
 
 ## Testing
 
