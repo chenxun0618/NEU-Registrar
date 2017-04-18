@@ -144,4 +144,14 @@ class DropdownsTest extends TestCase {
                 count($scheduleTypes)
         );
     }
+
+    public function testGetInstructors() {
+        $dd = new Dropdowns();
+        $instructors = $dd->getInstructors();
+
+        $this->assertEquals(
+                7067,
+                count($instructors)
+        );
+    }
 }

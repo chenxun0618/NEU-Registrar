@@ -13,11 +13,12 @@ $programRestrictions = $dd->getProgramRestrictions();
 $collegeRestrictions = $dd->getCollegeRestrictions();
 $specialApprovals = $dd->getSpecialApprovals();
 $scheduleTypes = $dd->getScheduleTypes();
+$instructors = $dd->getInstructors();
 
 $dropdownData = ["instructionalMethod" => $instructionalMethod, "meetingTimes" => $meetingTimes, "campus" => $campus,
         "attributeCode" => $attributeCode, "majorRestrictions" => $majorRestrictions, "classRestrictions" => $classRestrictions,
         "levelRestrictions" => $levelRestrictions, "programRestrictions" => $programRestrictions, "collegeRestrictions" => $collegeRestrictions,
-        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes
+        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes, "instructors" => $instructors
 ];
 
 echo json_encode($dropdownData);
@@ -250,5 +251,19 @@ class Dropdowns {
         }
 
         return $scheduleTypes;
+    }
+
+    public function getInstructors() {
+        $rows = $this->db->selectAllQuery('get_all_instructors');
+        $instructors = array();
+
+        // loops through rows
+        for ($i = 0; $i < count($rows); $i++) {
+            $rowObj['nuid'] = $rows[$i]['nuid'];
+            $rowObj['name'] = $rows[$i]['name'];
+            $instructors[] = $rowObj;
+        }
+
+        return $instructors;
     }
 }
