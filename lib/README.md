@@ -24,7 +24,7 @@ takes in an 'action'('A' for approval, 'R' for rejection), a 'dept' and an optio
 takes in an 'NUID' of an admin user, returns the admin's information and an array of all department codes with statuses
 
 ## getAllSubjectCodesInDept.php
-*description*
+given a department code, returns all subject codes housed in that department
 
 ## getInstructors.php
 returns an array of all instructors' information
