@@ -32,7 +32,7 @@ For a non-admin, this page looks like the admin version if they are viewing a su
 
 ### Schedule Submission Page
 
-The main page of the app. Contains the schedule data. (See the Services folder for Schedule object information.) Shows a list of all the classes, highlighted yellow if they have been edited, green if they have been newly added, or red if they are marked for deletion. A status box at the top of the schedule shows data on how recently the schedule has been edited (saved, submitted, rejected, or approved).
+The main page of the app. Loads the schedule data. (See the Services folder for Schedule object information.) Shows a list of all the classes, highlighted yellow if they have been edited, green if they have been newly added, or red if they are marked for deletion. A status box at the top of the schedule shows data on how recently the schedule has been edited (saved, submitted, rejected, or approved). For non-admins, Save and Submit are performed here. For admins, Accept and Reject are performed here.
 
 ## User
 
