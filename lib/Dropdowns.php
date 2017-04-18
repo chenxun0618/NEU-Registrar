@@ -14,12 +14,11 @@ $collegeRestrictions = $dd->getCollegeRestrictions();
 $specialApprovals = $dd->getSpecialApprovals();
 $scheduleTypes = $dd->getScheduleTypes();
 $instructors = $dd->getInstructors();
-$testRows = $dd->testRows();
 
 $dropdownData = ["instructionalMethod" => $instructionalMethod, "meetingTimes" => $meetingTimes, "campus" => $campus,
         "attributeCode" => $attributeCode, "majorRestrictions" => $majorRestrictions, "classRestrictions" => $classRestrictions,
         "levelRestrictions" => $levelRestrictions, "programRestrictions" => $programRestrictions, "collegeRestrictions" => $collegeRestrictions,
-        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes
+        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes, "instructors" => $instructors
 ];
 
 echo json_encode($dropdownData);

@@ -150,7 +150,7 @@ class DropdownsTest extends TestCase {
         $instructors = $dd->getInstructors();
 
         $this->assertEquals(
-                7067,
+                7064,
                 count($instructors)
         );
     }

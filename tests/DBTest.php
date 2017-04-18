@@ -76,7 +76,7 @@ class DBTest extends TestCase {
         $results = $db->query($queryStr);
 
         $this->assertCount(
-                7067,
+                7064,
                 $results
         );
     }
