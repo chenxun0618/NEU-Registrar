@@ -63,17 +63,17 @@
             <td>
                 <div ng-show="model.userCanEditSchedule">
                     <select class="largeSelect2" style="width: 200px" ng-model="model.class.primaryInstructorID"
-                            ng-options="option.nuid as option.name for option in model.allInstructors">
+                            ng-options="option.nuid as option.name for option in model.all.instructors">
                     </select>
                 </div>
                 <div ng-show="!model.userCanEditSchedule" class="italics">
-                    {{model.extractTargetAttributes("name", "nuid", model.allInstructors,
+                    {{model.extractTargetAttributes("name", "nuid", model.all.instructors,
                     [model.class.primaryInstructorID])}}
                 </div>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['primaryInstructorID'])}"
-                     class="changedFrom">{{model.extractTargetAttributes("name", "nuid", model.allInstructors,
+                     class="changedFrom">{{model.extractTargetAttributes("name", "nuid", model.all.instructors,
                     [model.class.old.primaryInstructorID])}}
                 </div>
             </td>

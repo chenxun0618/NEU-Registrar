@@ -16,15 +16,15 @@ class DropdownsTest extends TestCase {
     }
 
     /**
-     * Tests that the output for the getMeetingSequences method is correct.
+     * Tests that the output for the getMeetingTimes method is correct.
      */
-    public function testGetMeetingSequences() {
+    public function testGetMeetingTimes() {
         $dd = new Dropdowns();
-        $meetingSequences = $dd->getMeetingSequences();
+        $meetingTimes = $dd->getMeetingTimes();
 
         $this->assertEquals(
                 117,
-                count($meetingSequences)
+                count($meetingTimes)
         );
     }
 
@@ -142,6 +142,26 @@ class DropdownsTest extends TestCase {
         $this->assertEquals(
                 8,
                 count($scheduleTypes)
+        );
+    }
+
+    public function testGetInstructors() {
+        $dd = new Dropdowns();
+        $instructors = $dd->getInstructors();
+
+        $this->assertEquals(
+                7064,
+                count($instructors)
+        );
+    }
+
+    public function testTestRows() {
+        $dd = new Dropdowns();
+        $testRows = $dd->testRows();
+
+        $this->assertEquals(
+                6272,
+                count($testRows)
         );
     }
 }

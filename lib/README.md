@@ -3,13 +3,13 @@ This directory holds all the back-end code. It includes the PHP files that the f
 
 # Files
 ## DB.php
-*description*
+a class for representing the database and includes methods to retrieve data
 
 ## Dropdowns.php
-*description*
+returns data to populate the dropdown menus on the front-end
 
 ## RegistrarDatabase.php
-*description*
+a class for representing the database and includes methods to retrieve data
 
 ## adminGetSched.php
 takes in a 'dept' and returns the schedule for that department
@@ -18,16 +18,13 @@ takes in a 'dept' and returns the schedule for that department
 takes in an 'action'('A' for approval, 'R' for rejection), a 'dept' and an optional 'comment', it updates the status of the schedule in sched_submit and the data in ssbsect, ssrrattr, ssrmeet, ssrrmaj, ssrrcls, ssrrcol, ssrrlvl, ssrrprg with the submitted schedule
 
 ## courseCatalogLookup.php
-*description*
+retrieves data from course catalog given Subject Code and Course Number
 
 ## getAdminInfo.php
 takes in an 'NUID' of an admin user, returns the admin's information and an array of all department codes with statuses
 
 ## getAllSubjectCodesInDept.php
 given a department code, returns all subject codes housed in that department
-
-## getInstructors.php
-returns an array of all instructors' information
 
 ## getScheduleByDept.php
 takes in a 'dept' and returns the most recent schedule for that department, if no schedule is saved or submitted for that department, the old schedule will be returned

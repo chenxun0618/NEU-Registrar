@@ -13,11 +13,12 @@ $programRestrictions = $dd->getProgramRestrictions();
 $collegeRestrictions = $dd->getCollegeRestrictions();
 $specialApprovals = $dd->getSpecialApprovals();
 $scheduleTypes = $dd->getScheduleTypes();
+$instructors = $dd->getInstructors();
 
 $dropdownData = ["instructionalMethod" => $instructionalMethod, "meetingTimes" => $meetingTimes, "campus" => $campus,
         "attributeCode" => $attributeCode, "majorRestrictions" => $majorRestrictions, "classRestrictions" => $classRestrictions,
         "levelRestrictions" => $levelRestrictions, "programRestrictions" => $programRestrictions, "collegeRestrictions" => $collegeRestrictions,
-        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes
+        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes, "instructors" => $instructors
 ];
 
 echo json_encode($dropdownData);
@@ -250,5 +251,37 @@ class Dropdowns {
         }
 
         return $scheduleTypes;
+    }
+
+    public function getInstructors() {
+        $rows = $this->db->selectAllQuery('get_all_instructors');
+        $instructors = array();
+
+        // loops through rows
+        for ($i = 0; $i < count($rows); $i++) {
+            // add leading zeros
+            $rowObj['nuid'] = str_pad($rows[$i]['nuid'], 9, '0', STR_PAD_LEFT);
+            $rowObj['name'] = $rows[$i]['name'];
+            $instructors[] = $rowObj;
+        }
+
+        return $instructors;
+    }
+
+    public function testRows() {
+        $rows = $this->db->selectAllQuery('test_ssbsect');
+        $testRows = array();
+
+        // loops through rows
+        for ($i = 0; $i < count($rows); $i++) {
+            $rowObj['termCode'] = $rows[$i]['termCode'];
+            $rowObj['collegeCode'] = $rows[$i]['collegeCode'];
+            $rowObj['collegeDescription'] = $rows[$i]['collegeDesc'];
+            $rowObj['departmentCode'] = $rows[$i]['departmentCode'];
+            $rowObj['departmentDescription'] = $rows[$i]['departmentDesc'];
+            $testRows[] = $rowObj;
+        }
+
+        return $testRows;
     }
 }

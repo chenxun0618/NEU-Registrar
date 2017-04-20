@@ -26,7 +26,7 @@ The semester's process ends when all Submitted schedules have been Approved by t
 
 ## Host Environment
 
-The intention of the project was to make a viable standalone product, and then begin the transfer process, involving Northeastern's ITS, to move it onto the MyNEU system. This will require coordination and an extensively documented codebase.
+The intention of the project was to make a viable standalone product, and then begin the transfer process, involving Northeastern's ITS, to move it onto the MyNEU system. This will require coordination and an extensively documented codebase. Currently the project is hosted on our AWS EC2 server and uses a database we created that also lives on the server.
 
 ## Code Organization
 
@@ -35,5 +35,7 @@ The project is hosted on an Amazon Web Services EC2 instance using LAMP (Linux, 
 The front-end is written in Angular1, and makes direct calls to the PHP. See the public/ folder.
 
 ## Testing
+
+For front-end testing, we mainly used Jasmine and Karma to test the AngularJS code. For the back-end, we used PHPUnit and Xdebug to test the PHP code. When the tests run, a code coverage report is generated to allow us to review the results.
 
 
