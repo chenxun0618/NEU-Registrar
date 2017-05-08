@@ -3,6 +3,7 @@
 include 'DB.php';
 
 $db = new DB();
+$db->postInit();
 $action = $db->post('action');
 $dept = $db->post('dept');
 if (isset($_POST['comment'])) {

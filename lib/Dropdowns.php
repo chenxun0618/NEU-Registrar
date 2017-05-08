@@ -15,21 +15,32 @@ $specialApprovals = $dd->getSpecialApprovals();
 $scheduleTypes = $dd->getScheduleTypes();
 $instructors = $dd->getInstructors();
 
-$dropdownData = ["instructionalMethod" => $instructionalMethod, "meetingTimes" => $meetingTimes, "campus" => $campus,
-        "attributeCode" => $attributeCode, "majorRestrictions" => $majorRestrictions, "classRestrictions" => $classRestrictions,
-        "levelRestrictions" => $levelRestrictions, "programRestrictions" => $programRestrictions, "collegeRestrictions" => $collegeRestrictions,
-        "specialApprovals" => $specialApprovals, "scheduleTypes" => $scheduleTypes, "instructors" => $instructors
+$dropdownData = [
+    "instructionalMethod" => $instructionalMethod,
+    "meetingTimes" => $meetingTimes,
+    "campus" => $campus,
+    "attributeCode" => $attributeCode,
+    "majorRestrictions" => $majorRestrictions,
+    "classRestrictions" => $classRestrictions,
+    "levelRestrictions" => $levelRestrictions,
+    "programRestrictions" => $programRestrictions,
+    "collegeRestrictions" => $collegeRestrictions,
+    "specialApprovals" => $specialApprovals,
+    "scheduleTypes" => $scheduleTypes,
+    "instructors" => $instructors
 ];
 
 echo json_encode($dropdownData);
 
-class Dropdowns {
+class Dropdowns
+{
     private $db;
 
     /**
      * Constructor for Dropdowns object.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = new RegistrarDatabase();
     }
 
@@ -38,7 +49,8 @@ class Dropdowns {
      *
      * @return array
      */
-    public function getInstructionalMethods() {
+    public function getInstructionalMethods()
+    {
         $rows = $this->db->selectAllQuery('select_gtvinsm');
         $rowObj = array();
         $instructionalMethod = array();
@@ -59,7 +71,8 @@ class Dropdowns {
      *
      * @return array        the meeting times
      */
-    public function getMeetingTimes() {
+    public function getMeetingTimes()
+    {
         $rows = $this->db->selectAllQuery('select_stvmeet');
         $rowObj = array();
         $meetingTimes = array();
@@ -82,7 +95,8 @@ class Dropdowns {
      *
      * @return array        the campuses data
      */
-    public function getCampuses() {
+    public function getCampuses()
+    {
         $rows = $this->db->selectAllQuery('select_stvcamp');
         $campuses = array();
 
@@ -101,7 +115,8 @@ class Dropdowns {
      *
      * @return array        the billing attributes data
      */
-    public function getAttributeCode() {
+    public function getAttributeCode()
+    {
         $rows = $this->db->selectAllQuery('select_stvattr');
         $attributeCode = array();
 
@@ -120,7 +135,8 @@ class Dropdowns {
      *
      * @return array        the major restrictions data
      */
-    public function getMajorRestrictions() {
+    public function getMajorRestrictions()
+    {
         $rows = $this->db->selectAllQuery('select_stvmajr');
         $majorRestrictions = array();
 
@@ -144,7 +160,8 @@ class Dropdowns {
      *
      * @return array        the class restrictions data
      */
-    public function getClassRestrictions() {
+    public function getClassRestrictions()
+    {
         $rows = $this->db->selectAllQuery('select_stvclas');
         $classRestrictions = array();
 
@@ -163,7 +180,8 @@ class Dropdowns {
      *
      * @return array        the level restrictions data
      */
-    public function getLevelRestrictions() {
+    public function getLevelRestrictions()
+    {
         $rows = $this->db->selectAllQuery('select_stvlevl');
         $levelRestrictions = array();
 
@@ -182,7 +200,8 @@ class Dropdowns {
      *
      * @return array        the program restrictions data
      */
-    public function getProgramRestrictions() {
+    public function getProgramRestrictions()
+    {
         $rows = $this->db->selectAllQuery('select_stvprog');
         $programRestrictions = array();
 
@@ -201,7 +220,8 @@ class Dropdowns {
      *
      * @return array        the college restrictions data
      */
-    public function getCollegeRestrictions() {
+    public function getCollegeRestrictions()
+    {
         $rows = $this->db->selectAllQuery('select_stvcoll');
         $collegeRestrictions = array();
 
@@ -220,7 +240,8 @@ class Dropdowns {
      *
      * @return array        the special approvals data
      */
-    public function getSpecialApprovals() {
+    public function getSpecialApprovals()
+    {
         $rows = $this->db->selectAllQuery('special_approvals_lookup');
         $specialApprovals = array();
 
@@ -239,7 +260,8 @@ class Dropdowns {
      *
      * @return array        the schedule types data
      */
-    public function getScheduleTypes() {
+    public function getScheduleTypes()
+    {
         $rows = $this->db->selectAllQuery('schedule_types_lookup');
         $scheduleTypes = array();
 
@@ -253,14 +275,14 @@ class Dropdowns {
         return $scheduleTypes;
     }
 
-    public function getInstructors() {
+    public function getInstructors()
+    {
         $rows = $this->db->selectAllQuery('get_all_instructors');
         $instructors = array();
 
         // loops through rows
         for ($i = 0; $i < count($rows); $i++) {
-            // add leading zeros
-            $rowObj['nuid'] = str_pad($rows[$i]['nuid'], 9, '0', STR_PAD_LEFT);
+            $rowObj['nuid'] = $rows[$i]['nuid'];
             $rowObj['name'] = $rows[$i]['name'];
             $instructors[] = $rowObj;
         }
@@ -268,7 +290,8 @@ class Dropdowns {
         return $instructors;
     }
 
-    public function testRows() {
+    public function testRows()
+    {
         $rows = $this->db->selectAllQuery('test_ssbsect');
         $testRows = array();
 

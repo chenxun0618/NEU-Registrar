@@ -3,6 +3,7 @@
 include 'DB.php';
 
 $db = new DB();
+$db->postInit();
 $id = $db->post('NUID');
 $dept = $db->post('dept');
 $timestamp = $db->post('timestamp');

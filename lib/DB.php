@@ -4,19 +4,21 @@
  * a utility class that contains all the framework functions
  */
 
-class DB {
+class DB
+{
     protected $conn;
 
     /*
      * set up the connection to the database
      */
-    function __construct() {
+    function __construct()
+    {
         // If a connection has not been established yet, establish it
         if (!isset($this->conn)) {
             // Load configuration
             $config = parse_ini_file('config/config.ini');
             $this->conn = new mysqli($config['hostname'], $config['username'],
-                    $config['password'], $config['database']);
+                $config['password'], $config['database']);
         }
 
         // If connection was not established
@@ -31,7 +33,8 @@ class DB {
     /*
      * close the connection to the database
      */
-    function __destruct() {
+    function __destruct()
+    {
         $this->conn->close();
     }
 
@@ -39,33 +42,41 @@ class DB {
      * get the value from front-end get request
      */
     // @codeCoverageIgnoreStart
-    function get($val) {
+    function get($val)
+    {
         if (!isset($_GET[$val])) {
             $this->header(400, $val . " is not valid");
             die;
         }
-        return $_GET[$val];
+        return mysqli_real_escape_string($this->conn, $_GET[$val]);
+    }
+
+    /*
+     * initialize post request data
+     */
+    function postInit()
+    {
+        $rest_json = file_get_contents("php://input");
+        $_POST = json_decode($rest_json, true);
     }
 
     /*
      * get the value from front-end post request
      */
-    function post($val) {
-        // this snippet necessary because $_POST contains nothing otherwise. TODO: why?
-        $rest_json = file_get_contents("php://input");
-        $_POST = json_decode($rest_json, true);
-
+    function post($val)
+    {
         if (!isset($_POST[$val])) {
             $this->header(400, $val . " is not valid");
             die;
         }
-        return $_POST[$val];
+        return mysqli_real_escape_string($this->conn, $_POST[$val]);
     }
 
     /*
      * set the response header
      */
-    function header($code, $text) {
+    function header($code, $text)
+    {
         header("HTTP/1.1 " . $code . ' ' . $text);
     }
     // @codeCoverageIgnoreEnd
@@ -73,7 +84,8 @@ class DB {
     /*
      * perform a query on the database and return the retrieved data in an array
      */
-    function query($query) {
+    function query($query)
+    {
         // Query the database
         $result = $this->conn->query($query);
 
@@ -115,7 +127,8 @@ class DB {
      * set the header of the response and return json_encoded result
      */
     // @codeCoverageIgnoreStart
-    function return_json($code, $json) {
+    function return_json($code, $json)
+    {
         if ($code / 100 == 2)
             $text = "OK";
         else
