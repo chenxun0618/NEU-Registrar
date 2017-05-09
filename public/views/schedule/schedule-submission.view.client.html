@@ -14,7 +14,7 @@
 
     <span ng-show="model.schedule" class="search-box">
         <input style="float: right" type="text" id="filterText" ng-model="model.filterText"
-               placeholder="Search a class number, class name...">
+               placeholder="Search a course number, title, crn...">
     </span>
     <br>
     <span>Department: </span>
@@ -23,14 +23,16 @@
             ng-change="model.getScheduleDetail()">
     </select>
 
-    <div ng-if="model.schedule && model.getScheduleStatusLine(model.schedule)" class="alert alert-info margin-top-20">
-        {{model.getScheduleStatusLine(model.schedule)}}
+    <div ng-if="model.schedule && model.getScheduleStatusLine(model.schedule)"
+         class="alert alert-info margin-top-20" ng-click="hideAlertBox = true"
+         ng-hide="hideAlertBox">
+        {{model.statusLine}}
         <div ng-if="model.schedule.scheduleStatus === 'R' && model.schedule.comment">
             <br>Reason: <span class="bold">{{model.schedule.comment}}</span>
         </div>
     </div>
 
-    <div class="loader" ng-show="model.loadingSchedule">Loading...</div>
+    <div class="loader" ng-show="model.loadingSchedule"></div>
 
     <div style="width: 100%; max-height: 400px; overflow-y: auto">
         <table ng-show="model.schedule && !model.loadingSchedule" class="table">
