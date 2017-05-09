@@ -32,39 +32,41 @@
 
     <div class="loader" ng-show="model.loadingSchedule">Loading...</div>
 
-    <table ng-show="model.schedule && !model.loadingSchedule" class="table">
-        <thead>
-        <tr>
-            <th>Course No.</th>
-            <th>Section</th>
-            <th>CRN</th>
-            <th>Title</th>
-            <th>Meeting Time</th>
-            <th></th>
-        </tr>
-        </thead>
+    <div style="width: 100%; max-height: 400px; overflow-y: auto">
+        <table ng-show="model.schedule && !model.loadingSchedule" class="table">
+            <thead>
+            <tr>
+                <th>Course No.</th>
+                <th>Section</th>
+                <th>CRN</th>
+                <th>Title</th>
+                <th>Meeting Time</th>
+                <th></th>
+            </tr>
+            </thead>
 
-        <tbody>
-        <tr ng-show="model.schedule && model.schedule.classes && model.schedule.classes.length === 0">
-            <td colspan="4">No data found</td>
-        </tr>
-        <tr ng-class="{'added': (class.metadata && class.metadata.added), 'deleted': (class.metadata && !class.metadata.added && class.metadata.deleted), 'modified': (class.metadata && !class.metadata.deleted && !class.metadata.added && class.metadata.modified)}"
-            ng-repeat="class in model.schedule.classes | filterClass:model.filterText">
-            <td>{{class.subjectCode}} {{class.courseNumber}}</td>
-            <td>{{class.section}}</td>
-            <td ng-class="{'italics': (!class.crn)}">{{class.crn || "(to be generated)"}}</td>
-            <td>{{class.courseTitle}}</td>
-            <td ng-class="{'italics': (!class.meetingTimes.length)}">
-                <div class="meetingTimeCell">{{model.getReadableMeetingTimes(class)}}</div>
-            </td>
-            <td>
-                <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">
-                    {{model.userCanEditSchedule ? "Edit" : "View"}}
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+            <tbody>
+            <tr ng-show="model.schedule && model.schedule.classes && model.schedule.classes.length === 0">
+                <td colspan="4">No data found</td>
+            </tr>
+            <tr ng-class="{'added': (class.metadata && class.metadata.added), 'deleted': (class.metadata && !class.metadata.added && class.metadata.deleted), 'modified': (class.metadata && !class.metadata.deleted && !class.metadata.added && class.metadata.modified)}"
+                ng-repeat="class in model.schedule.classes | filterClass:model.filterText">
+                <td>{{class.subjectCode}} {{class.courseNumber}}</td>
+                <td>{{class.section}}</td>
+                <td ng-class="{'italics': (!class.crn)}">{{class.crn || "(to be generated)"}}</td>
+                <td>{{class.courseTitle}}</td>
+                <td ng-class="{'italics': (!class.meetingTimes.length)}">
+                    <div class="meetingTimeCell">{{model.getReadableMeetingTimes(class)}}</div>
+                </td>
+                <td>
+                    <a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">
+                        {{model.userCanEditSchedule ? "Edit" : "View"}}
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <div ng-show="model.schedule" class="color-legend">
         <div class="color-legend-item">
@@ -85,7 +87,7 @@
         </div>
     </div>
 
-    <div id="toast" class="toast-success" ng-click="model.toastMessage(false)">
+    <div id="toast" class="alert alert-success" ng-click="model.toastMessage(false)">
         Schedule successfully saved!
     </div>
 

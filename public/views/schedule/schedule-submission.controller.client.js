@@ -275,7 +275,7 @@
             $location.url("/login/");
         }
 
-        // if input is truthy, show peak period toast message at bottom of screen
+        // if input is truthy, show toast message at bottom of screen
         function toastMessage(show) {
             var x = document.getElementById("toast");
             if (show) {

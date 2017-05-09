@@ -22,9 +22,9 @@
         // for given department code. uses different endpoints for admins and non-admins, but this could be consolidated
         function getScheduleDetail(departmentCode, admin) {
             if (admin) {
-                var url = "/lib/adminGetSched.php?dept=" + departmentCode;
+                var url = "lib/adminGetSched.php?dept=" + departmentCode;
             } else {
-                var url = "/lib/getScheduleByDept.php?dept=" + departmentCode;
+                var url = "lib/getScheduleByDept.php?dept=" + departmentCode;
             }
             return $http.get(url);
         }
@@ -72,7 +72,7 @@
         // saves schedule to database as draft
         function saveSchedule(nuid, departmentCode, schedule) {
             var newScheduleStatus = "D";
-            var url = "/lib/userUpdateSchedule.php";
+            var url = "lib/userUpdateSchedule.php";
             schedule.lastEditTime = schedule.lastEditTime || generateDBCompatibleTimestamp();
             var obj = {
                 NUID: nuid,
@@ -87,7 +87,7 @@
         // submits schedule so that registrar's office may view it
         function submitSchedule(nuid, departmentCode, schedule) {
             var newScheduleStatus = "S";
-            var url = "/lib/userUpdateSchedule.php";
+            var url = "lib/userUpdateSchedule.php";
             schedule.lastEditTime = schedule.lastEditTime || generateDBCompatibleTimestamp();
             var obj = {
                 NUID: nuid,
@@ -102,7 +102,7 @@
         // for admin (registrar) use: rejects a submitted schedule, with a rejection message
         function rejectSchedule(departmentCode, rejectionMessage) {
             var newScheduleStatus = "R";
-            var url = "/lib/adminUpdateSchedule.php";
+            var url = "lib/adminUpdateSchedule.php";
             var obj = {
                 dept: departmentCode,
                 action: newScheduleStatus,
@@ -114,7 +114,7 @@
         // for admin (registrar) use: approves a submitted schedule
         function approveSchedule(departmentCode) {
             var newScheduleStatus = "A";
-            var url = "/lib/adminUpdateSchedule.php";
+            var url = "lib/adminUpdateSchedule.php";
             var obj = {
                 dept: departmentCode,
                 action: newScheduleStatus

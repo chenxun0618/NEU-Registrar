@@ -1,16 +1,5 @@
-.toast-warning {
-    background-color: #fcf8e3;
-    color: #faebcc;
-}
-
-.toast-success {
-    color: #3c763d;
-    background-color: #dff0d8;
-    border-color: #d6e9c6;
-}
-
 #toast {
-    visibility: visible;
+    visibility: hidden;
     min-width: 250px;
     margin-left: -125px;
     text-align: center;

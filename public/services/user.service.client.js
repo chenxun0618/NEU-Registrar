@@ -13,7 +13,7 @@
 
         // returns http promise containing relevant user data, like all departments which can be edited by given user
         function login(email, nuid) {
-            var url = "/lib/login.php?NUID=" + nuid + "&email=" + encodeURIComponent(email);
+            var url = "lib/login.php?NUID=" + nuid + "&email=" + encodeURIComponent(email);
             return $http.get(url);
         }
 

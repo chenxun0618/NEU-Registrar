@@ -24,13 +24,13 @@
 
         // returns http promise for getting all dropdown values except instructors and Y/N values
         function getDropdownValues() {
-            var url = "/lib/Dropdowns.php";
+            var url = "lib/Dropdowns.php";
             return $http.get(url);
         }
 
         // returns all subject codes associated with the specified department code
         function getAllSubjectCodesInDept(deptCode) {
-            var url = "/lib/getAllSubjectCodesInDept.php?dept=" + deptCode;
+            var url = "lib/getAllSubjectCodesInDept.php?dept=" + deptCode;
             return $http.get(url);
         }
 
@@ -46,7 +46,7 @@
 
         // given a subject code and course number, returns all catalog data (e.g. title) for that course
         function getCourseDataFromCatalog(subjectCode, courseNumber) {
-            var url = "/lib/courseCatalogLookup.php?subjectCode=" + subjectCode + "&courseNumber=" + courseNumber;
+            var url = "lib/courseCatalogLookup.php?subjectCode=" + subjectCode + "&courseNumber=" + courseNumber;
             return $http.get(url);
         }
 
@@ -123,7 +123,7 @@
                     (aClass.includeLevelRestriction === aClass.old.includeLevelRestriction) &&
                     (aClass.includeProgramRestriction === aClass.old.includeProgramRestriction) &&
                     (aClass.includeCollegeRestriction === aClass.old.includeCollegeRestriction) &&
-                    (aClass.waitlistCapacity === aClass.old.waitlistCapacity) &&
+                    (aClass.waitListCapacity === aClass.old.waitListCapacity) &&
                     (aClass.campusCode === aClass.old.campusCode) &&
                     (aClass.instructionalMethodCode === aClass.old.instructionalMethodCode) &&
                     (aClass.specialApprovalCode === aClass.old.specialApprovalCode) &&
@@ -181,8 +181,8 @@
             if (aClass.collegeRestrictions.constructor !== Array) {
                 invalidReasons.push("Invalid college restrictions: " + aClass.collegeRestrictions);
             }
-            if (!(typeof aClass.waitlistCapacity === 'number' && aClass.waitlistCapacity >= 0)) {
-                invalidReasons.push("Invalid waitlist capacity: " + aClass.waitlistCapacity);
+            if (!(typeof aClass.waitListCapacity === 'number' && aClass.waitListCapacity >= 0)) {
+                invalidReasons.push("Invalid waitlist capacity: " + aClass.waitListCapacity);
             }
             if (!aClass.campusCode) {
                 invalidReasons.push("Campus code is required");
