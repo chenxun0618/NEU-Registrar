@@ -94,7 +94,7 @@ describe("ClassService", function () {
         blank2.levelRestrictions = 3;
         blank2.programRestrictions = 4;
         blank2.collegeRestrictions = 5;
-        blank2.waitListCapacity = -1;
+        blank2.waitlistCapacity = -1;
         var lis2 = api.getInvalidClassReasons(blank2);
         expect(lis2.length).toEqual(24);
 
