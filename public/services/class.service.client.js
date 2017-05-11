@@ -53,6 +53,7 @@
         // fills in default values for a new class; needs the schedule in which this class is contained
         // to find what section number to use
         function fillDefaultData(aClass, schedule) {
+            aClass.crn = null;
             aClass.termCode = getCurrentTerm();
             aClass.status = "A";
             aClass.meetingTimes = [];

@@ -14,7 +14,7 @@
                 if (classes[i].subjectCode.search(re) !== -1 ||
                     classes[i].courseNumber.search(re) !== -1 ||
                     classes[i].courseTitle.search(re) !== -1 ||
-                    classes[i].crn.search(re) !== -1) {
+                    (classes[i].crn && classes[i].crn.search(re) !== -1)) {
                     result.push(classes[i]);
                 }
             }
