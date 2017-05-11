@@ -84,19 +84,11 @@ textarea {
 /*
 Title is longer than the rest
  */
-.fixed-header tr td:nth-child(4) {
+.fixed-header tr td:nth-child(4), .fixed-header tr th:nth-child(4) {
     width: 25%;
 }
 
-.fixed-header tr th:nth-child(4) {
-    width: 25%;
-}
-
-/*tr td:last-child {*/
-    /*width: 5%;*/
-/*}*/
-
-/*tr th:last-child {*/
+/*tr td:last-child, tr th:last-child {*/
     /*width: 5%;*/
 /*}*/
 
@@ -224,7 +216,7 @@ input[type=number] {
     width: 20%;
 }
 
-input[type=text] {
+input[type=text], input[type=password] {
     box-sizing: border-box;
     border: 1px solid darkgray;
     border-radius: 4px;
