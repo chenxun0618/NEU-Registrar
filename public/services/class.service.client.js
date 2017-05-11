@@ -123,7 +123,7 @@
                     (aClass.includeLevelRestriction === aClass.old.includeLevelRestriction) &&
                     (aClass.includeProgramRestriction === aClass.old.includeProgramRestriction) &&
                     (aClass.includeCollegeRestriction === aClass.old.includeCollegeRestriction) &&
-                    (aClass.waitListCapacity === aClass.old.waitListCapacity) &&
+                    (aClass.waitlistCapacity === aClass.old.waitlistCapacity) &&
                     (aClass.campusCode === aClass.old.campusCode) &&
                     (aClass.instructionalMethodCode === aClass.old.instructionalMethodCode) &&
                     (aClass.specialApprovalCode === aClass.old.specialApprovalCode) &&
@@ -181,8 +181,8 @@
             if (aClass.collegeRestrictions.constructor !== Array) {
                 invalidReasons.push("Invalid college restrictions: " + aClass.collegeRestrictions);
             }
-            if (!(typeof aClass.waitListCapacity === 'number' && aClass.waitListCapacity >= 0)) {
-                invalidReasons.push("Invalid waitlist capacity: " + aClass.waitListCapacity);
+            if (!(typeof aClass.waitlistCapacity === 'number' && aClass.waitlistCapacity >= 0)) {
+                invalidReasons.push("Invalid waitlist capacity: " + aClass.waitlistCapacity);
             }
             if (!aClass.campusCode) {
                 invalidReasons.push("Campus code is required");
