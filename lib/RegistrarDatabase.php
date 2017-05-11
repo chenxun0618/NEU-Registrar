@@ -136,49 +136,6 @@ SQL;
         return $resultsArr;
     }
 
-    public function getCourseCatalog($subjectCode, $courseNumber) {
-        $conn = $this->databaseConnect();
-
-        if ($subjectCode == '') {
-            throw new InvalidArgumentException("Subject code is an empty string.");
-        }
-
-        if ($courseNumber == '') {
-            throw new InvalidArgumentException("Course number is an empty string.");
-        }
-
-        $subjectCode = mysqli_real_escape_string($conn, $subjectCode);
-        $courseNumber = mysqli_real_escape_string($conn, $courseNumber);
-        $query = <<<SQL
-              CALL course_catalog_lookup('$subjectCode', '$courseNumber');
-SQL;
-
-        $rowObj = array();
-        $courseCatalog = array();
-
-        try {
-            $result = mysqli_query($conn, $query);
-        // @codeCoverageIgnoreStart
-        } catch (Exception $e) {
-            throw new mysqli_sql_exception("Error with query: " . $e);
-        }
-        // @codeCoverageIgnoreEnd
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rowObj['collegeCode'] = $row['collegeCode'];
-            $rowObj['collegeDescription'] = $row['collegeDescription'];
-            $rowObj['departmentCode'] = $row['departmentCode'];
-            $rowObj['departmentDescription'] = $row['departmentDescription'];
-            $rowObj['subjectCode'] = $row['subjectCode'];
-            $rowObj['courseNumber'] = $row['courseNumber'];
-            $rowObj['title'] = $row['title'];
-
-            $courseCatalog[] = $rowObj;
-        }
-
-        return $courseCatalog;
-    }
-
     /**
      * Checks if the given stored procedure name is in the database.
      *
