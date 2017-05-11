@@ -36,9 +36,8 @@
                     vm.loadingSchedule = true;
                     vm.selectedDepartment = JSON.parse($window.sessionStorage.selectedDepartment);
                     vm.schedule = JSON.parse($window.sessionStorage.schedule);
-                    vm.searchTerm = JSON.parse($window.sessionStorage.schedule);
-                    vm.loadingSchedule = false;
                     vm.filterText = JSON.parse($window.sessionStorage.filterText || "");
+                    vm.loadingSchedule = false;
                     vm.userCanEditSchedule = UserService.userCanEditSchedule(vm.loggedInUser, vm.selectedDepartment.status);
                     $timeout(function () {
                         $window.scrollTo(0, JSON.parse($window.sessionStorage.previousScrollPosition || 0));
