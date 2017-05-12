@@ -111,7 +111,7 @@
                 </div>
             </td>
         </tr>
-        <tr> <!-- Credit and billing hours can only be edited for added classes -->
+        <tr> <!-- Credit hours, billing hours, and part of term can only be edited for added classes -->
             <td>Credit Hours</td>
             <td>
                 <div ng-show="model.userCanEditSchedule && model.class.metadata && model.class.metadata.added && model.class.creditHourHigh !== null">
@@ -134,6 +134,23 @@
                     <span class="italics">(min: {{model.class.billingHourLow}}, max: {{model.class.billingHourHigh}})</span>
                 </div>
                 <span ng-class="{italics: !model.userCanEditSchedule}" ng-show="!(model.userCanEditSchedule && model.class.metadata && model.class.metadata.added && model.class.billingHourHigh !== null)">{{model.class.billingHours}}</span>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Part of Term</td>
+            <td>
+                <div ng-show="model.userCanEditSchedule && model.class.metadata && model.class.metadata.added">
+                    <select class="select2" style="width: 150px"
+                            ng-model="model.class.partOfTerm"
+                            ng-options="option.partOfTermCode as (option.partOfTermDesc + ' (' + option.partOfTermCode + ')') for option in model.all.partOfTerms">
+                    </select>
+                </div>
+                <div ng-class="{italics: !model.userCanEditSchedule}" ng-show="!(model.userCanEditSchedule && model.class.metadata && model.class.metadata.added)">
+                    {{model.extractTargetAttributes("partOfTermDesc", "partOfTermCode",
+                    model.all.partOfTerms,
+                    [model.class.partOfTerm])}}
+                </div>
             </td>
             <td></td>
         </tr>

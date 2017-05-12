@@ -60,7 +60,7 @@
                     .then(
                         function (res) {
                             // TODO server should return better value if no data found
-                            if (res.data === "null") {
+                            if (!res.data.title) {
                                 vm.error = "Class not found";
                             } else {
                                 vm.class = {};
