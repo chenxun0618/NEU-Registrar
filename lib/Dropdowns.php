@@ -14,6 +14,7 @@ $collegeRestrictions = $dd->getCollegeRestrictions();
 $specialApprovals = $dd->getSpecialApprovals();
 $scheduleTypes = $dd->getScheduleTypes();
 $instructors = $dd->getInstructors();
+$partOfTerms = $dd->getPartOfTerms();
 
 $dropdownData = [
     "instructionalMethod" => $instructionalMethod,
@@ -27,7 +28,8 @@ $dropdownData = [
     "collegeRestrictions" => $collegeRestrictions,
     "specialApprovals" => $specialApprovals,
     "scheduleTypes" => $scheduleTypes,
-    "instructors" => $instructors
+    "instructors" => $instructors,
+    "partOfTerms" => $partOfTerms
 ];
 
 echo json_encode($dropdownData);
@@ -288,6 +290,20 @@ class Dropdowns
         }
 
         return $instructors;
+    }
+
+    public function getPartOfTerms() {
+        $rows = $this->db->selectAllQuery('select_sobptrm');
+        $partOfTerms = array();
+
+        // loops through rows
+        for ($i = 0; $i < count($rows); $i++) {
+            $rowObj['partOfTermCode'] = $rows[$i]['partOfTermCode'];
+            $rowObj['partOfTermDesc'] = $rows[$i]['partOfTermDesc'];
+            $partOfTerms[] = $rowObj;
+        }
+
+        return $partOfTerms;
     }
 
     public function testRows()
