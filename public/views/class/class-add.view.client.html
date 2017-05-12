@@ -215,6 +215,24 @@
             </td>
         </tr>
         <tr>
+            <td>Credit Hour</td>
+            <td>
+                <p ng-show="model.creditHourHigh == null">{{model.creditHourLow}}</p>
+                <input ng-show="model.creditHourHigh != null" type="number" step="0.5"
+                       min="model.creditHourLow" max="model.creditHourHigh"
+                       value="{{(model.creditHourHigh - model.creditHourLow) / 2}}">
+            </td>
+        </tr>
+        <tr>
+            <td>Billing Hour</td>
+            <td>
+                <p ng-show="model.billingHourHigh == null">{{model.billingHourLow}}</p>
+                <input ng-show="model.billingHourHigh != null" type="number" step="0.5"
+                       min="model.billingHourLow" max="model.billingHourHigh"
+                       value="{{(model.billingHourLow - model.billingHourHigh) / 2}}">
+            </td>
+        </tr>
+        <tr>
             <td>Show on Banner Schedule?</td>
             <td>
                 <select class="select2" style="width: 40px"
@@ -226,7 +244,7 @@
         <tr>
             <td>Comment</td>
             <td>
-                <textarea ng-model="model.class.comment"/>
+                <textarea ng-model="model.class.comment" maxlength="2000"></textarea>
             </td>
         </tr>
         </tbody>

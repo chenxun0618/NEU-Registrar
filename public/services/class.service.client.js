@@ -155,9 +155,6 @@
             if (!aClass.courseTitle) {
                 invalidReasons.push("Invalid title: " + aClass.courseTitle);
             }
-            if (!aClass.primaryInstructorID) {
-                invalidReasons.push("Invalid primary instructor: " + aClass.primaryInstructorID);
-            }
             if (aClass.meetingTimes.constructor !== Array) {
                 invalidReasons.push("Invalid meeting times: " + aClass.meetingTimes);
             }

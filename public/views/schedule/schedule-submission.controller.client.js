@@ -18,7 +18,6 @@
         vm.navigateToAddClass = navigateToAddClass;
         vm.getScheduleGroupName = getScheduleGroupName;
         vm.getScheduleStatusLine = getScheduleStatusLine;
-        vm.statusLine = "";
         vm.getReadableMeetingTimes = ClassService.getReadableMeetingTimes;
         vm.shouldDisableSchedule = shouldDisableSchedule;
         vm.logout = logout;
@@ -252,17 +251,13 @@
         // given a schedule, gets a message detailing the status of the schedule
         function getScheduleStatusLine(schedule) {
             if (schedule.scheduleStatus === 'D') {
-                vm.statusLine = "Last saved by " + schedule.lastEditedBy + " on " + schedule.lastEditTime;
-                return true;
+                return "Last saved by " + schedule.lastEditedBy + " on " + schedule.lastEditTime;
             } else if (schedule.scheduleStatus === 'R') {
-                vm.statusLine = "Rejected on " + schedule.lastEditTime;
-                return true;
+                return "Rejected on " + schedule.lastEditTime;
             } else if (schedule.scheduleStatus === 'A') {
-                vm.statusLine = "Approved on " + schedule.lastEditTime;
-                return true;
+                return "Approved on " + schedule.lastEditTime;
             } else if (schedule.scheduleStatus === 'S') {
-                vm.statusLine = "Submitted by " + schedule.lastEditedBy + " on " + schedule.lastEditTime;
-                return true;
+                return "Submitted by " + schedule.lastEditedBy + " on " + schedule.lastEditTime;
             }
         }
 

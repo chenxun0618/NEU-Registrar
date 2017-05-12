@@ -2,22 +2,12 @@
 // @codeCoverageIgnoreStart
 include 'RegistrarDatabase.php';
 
-if (isset($_GET['subjectCode'])) {
-    $subjectCode = $_GET['subjectCode'];
-} else {
-    echo "Error: Subject code parameter was not set.";
-    return;
-}
+include 'DB.php';
 
-if (isset($_GET['courseNumber'])) {
-    $courseNumber = $_GET['courseNumber'];
-} else {
-    echo "Error: Course number parameter was not set.";
-    return;
-}
-
-$db = new RegistrarDatabase();
-$courseCatalog = $db->getCourseCatalog($subjectCode, $courseNumber)[0];
-
-echo json_encode($courseCatalog);
+$db = new DB();
+$subject = $db->get('subjectCode');
+$courseNumber = $db->get('courseNumber');
+$query = "CALL course_catalog_lookup('$subject', '$courseNumber')";
+$result = $db->query($query);
+$db->return_json(200, $result);
 // @codeCoverageIgnoreEnd
