@@ -23,7 +23,7 @@
             ng-change="model.getScheduleDetail()">
     </select>
 
-    <div ng-if="model.schedule && model.getScheduleStatusLine(model.schedule)"
+    <div ng-if="model.schedule && model.getScheduleStatusLine(model.schedule) && !model.loadingSchedule"
          class="alert alert-info margin-top-20" ng-click="hideAlertBox = true"
          ng-hide="hideAlertBox">
         {{model.getScheduleStatusLine(model.schedule)}}
@@ -63,7 +63,7 @@
         </tbody>
     </table>
 
-    <div ng-show="model.schedule" class="color-legend">
+    <div ng-show="model.schedule && !model.loadingSchedule" class="color-legend">
         <div class="color-legend-item">
             <div class="color-box added"/>
             <div class="text-box">Added</div>
@@ -86,24 +86,24 @@
         Schedule successfully saved!
     </div>
 
-    <div class="float-right">
-        <button ng-click="model.navigateToAddClass()" ng-show="model.schedule && !model.loggedInUser.admin"
+    <div ng-show="model.schedule && !model.loadingSchedule" class="float-right">
+        <button ng-click="model.navigateToAddClass()" ng-show="!model.loggedInUser.admin"
                 type="button" class="btn btn-info" ng-disabled="!model.userCanEditSchedule">
             Add Class
         </button>
-        <button ng-click="model.saveSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button"
+        <button ng-click="model.saveSchedule()" ng-show="!model.loggedInUser.admin" type="button"
                 class="btn btn-success" ng-disabled="!model.userCanEditSchedule">
             Save
         </button>
-        <button ng-click="model.submitSchedule()" ng-show="model.schedule && !model.loggedInUser.admin" type="button"
+        <button ng-click="model.submitSchedule()" ng-show="!model.loggedInUser.admin" type="button"
                 class="btn btn-primary" ng-disabled="!model.userCanEditSchedule">
             Submit
         </button>
-        <button ng-click="model.rejectSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button"
+        <button ng-click="model.rejectSchedule()" ng-show="model.loggedInUser.admin" type="button"
                 class="btn btn-danger" ng-disabled="model.selectedDepartment.status !== 'S'">
             Reject
         </button>
-        <button ng-click="model.approveSchedule()" ng-show="model.schedule && model.loggedInUser.admin" type="button"
+        <button ng-click="model.approveSchedule()" ng-show="model.loggedInUser.admin" type="button"
                 class="btn btn-success" ng-disabled="model.selectedDepartment.status !== 'S'">
             Approve
         </button>
