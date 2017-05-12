@@ -56,6 +56,8 @@
                 currentClass.priorEnrollment = parseInt(currentClass.priorEnrollment);
                 currentClass.waitlistCapacity = parseInt(currentClass.waitlistCapacity);
                 currentClass.section = parseInt(currentClass.section);
+                currentClass.billingHours = parseFloat(currentClass.billingHours);
+                currentClass.creditHours = parseFloat(currentClass.creditHours);
 
                 // generate unique id for each class for angular routing (this is necessary)
                 currentClass.metadata = currentClass.metadata || {};

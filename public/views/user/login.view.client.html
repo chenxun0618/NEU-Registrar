@@ -8,7 +8,8 @@
     <div class="margin-bottom-20">
         <div class="margin-bottom-20">
             <span class="margin-right-10"> Email: </span>
-            <input autocorrect="off" type="text" ng-model="email" ng-init="email='d.hodgkin@northeastern.edu'"/>
+            <input autocorrect="off" type="text" ng-model="email" ng-init="email='d.hodgkin@northeastern.edu'"
+                   ng-keyup="$event.keyCode == 13 && model.login(email, nuid)"/>
         </div>
         <div>
             <span class="margin-right-10"> NUID: </span>

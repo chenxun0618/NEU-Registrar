@@ -26,7 +26,7 @@
         </tr>
         <tr>
             <td>CRN</td>
-            <td ng-class="{changedFrom: !model.class.crn}">{{model.class.crn || "(to be generated)"}}</td>
+            <td ng-class="{italics: !model.class.crn}">{{model.class.crn || "(to be generated)"}}</td>
             <td></td>
         </tr>
         <tr ng-class="{'modified': model.differentFromLastYear(['courseTitle'])}">
@@ -37,7 +37,7 @@
                 <div ng-if="!model.userCanEditSchedule" class="italics">{{model.class.courseTitle}}</div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['courseTitle'])}" class="changedFrom">
+                <div ng-class="{hidden: !model.differentFromLastYear(['courseTitle'])}" class="grayItalics">
                     {{model.class.old.courseTitle}}
                 </div>
             </td>
@@ -55,7 +55,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: model.class.old ? model.isEqualMeetingTimes(model.class.meetingTimes, model.class.old.meetingTimes) : true}"
-                     class="changedFrom meetingTimeCell">{{model.class.old ? model.getReadableMeetingTimes(model.class.old) : "(none)"}}</div>
+                     class="grayItalics meetingTimeCell">{{model.class.old ? model.getReadableMeetingTimes(model.class.old) : "(none)"}}</div>
             </td>
         </tr>
         <tr ng-class="{'modified': model.differentFromLastYear(['primaryInstructorID'])}">
@@ -73,7 +73,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['primaryInstructorID'])}"
-                     class="changedFrom">{{model.extractTargetAttributes("name", "nuid", model.all.instructors,
+                     class="grayItalics">{{model.extractTargetAttributes("name", "nuid", model.all.instructors,
                     [model.class.old.primaryInstructorID])}}
                 </div>
             </td>
@@ -83,16 +83,14 @@
             <td>
                 <input ng-if="model.userCanEditSchedule" ng-model="model.class.maxEnrollment" type="number" min="1"
                        step="1"/>
-                <div ng-if="model.userCanEditSchedule" class="italics">
+                <span ng-if="!model.userCanEditSchedule" class="italics">{{model.class.maxEnrollment}}</span>
+                <span class="italics">
                     {{model.class.priorEnrollment ? ("(Prior enrollment: " + model.class.priorEnrollment + ")") : ""}}
-                </div>
-                <div ng-if="!model.userCanEditSchedule" class="italics">{{model.class.maxEnrollment}}
-                    {{model.class.priorEnrollment ? ("(Prior enrollment: " + model.class.priorEnrollment + ")") : ""}}
-                </div>
+                </span>
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['maxEnrollment'])}"
-                     class="changedFrom">{{model.class.old.maxEnrollment}}
+                     class="grayItalics">{{model.class.old.maxEnrollment}}
                 </div>
             </td>
         </tr>
@@ -109,9 +107,35 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['waitlistCapacity'])}"
-                     class="changedFrom">{{model.class.old.waitlistCapacity ? "Y" : "N"}}
+                     class="grayItalics">{{model.class.old.waitlistCapacity ? "Y" : "N"}}
                 </div>
             </td>
+        </tr>
+        <tr> <!-- Credit and billing hours can only be edited for added classes -->
+            <td>Credit Hours</td>
+            <td>
+                <div ng-show="model.userCanEditSchedule && model.class.metadata && model.class.metadata.added && model.class.creditHourHigh !== null">
+                    <input type="number" step="0.5"
+                           min="{{model.class.creditHourLow}}" max="{{model.class.creditHourHigh}}"
+                           ng-model="model.class.creditHours"/>
+                    <span class="italics">(min: {{model.class.creditHourLow}}, max: {{model.class.creditHourHigh}})</span>
+                </div>
+                <span ng-class="{italics: !model.userCanEditSchedule}" ng-show="!(model.userCanEditSchedule && model.class.metadata && model.class.metadata.added && model.class.creditHourHigh !== null)">{{model.class.creditHours}}</span>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Billing Hours</td>
+            <td>
+                <div ng-show="model.userCanEditSchedule && model.class.metadata && model.class.metadata.added && model.class.billingHourHigh !== null">
+                    <input type="number" step="0.5"
+                           min="{{model.class.billingHourLow}}" max="{{model.class.billingHourHigh}}"
+                           ng-model="model.class.billingHours"/>
+                    <span class="italics">(min: {{model.class.billingHourLow}}, max: {{model.class.billingHourHigh}})</span>
+                </div>
+                <span ng-class="{italics: !model.userCanEditSchedule}" ng-show="!(model.userCanEditSchedule && model.class.metadata && model.class.metadata.added && model.class.billingHourHigh !== null)">{{model.class.billingHours}}</span>
+            </td>
+            <td></td>
         </tr>
         <tr ng-class="{'modified': model.differentFromLastYear(['campusCode'])}">
             <td>Campus</td>
@@ -129,7 +153,7 @@
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['campusCode'])}" class="changedFrom">
+                <div ng-class="{hidden: !model.differentFromLastYear(['campusCode'])}" class="grayItalics">
                     {{model.extractTargetAttributes("desc", "code",
                     model.all.campus,
                     [model.class.old.campusCode])}}
@@ -153,7 +177,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['instructionalMethodCode'])}"
-                     class="changedFrom">
+                     class="grayItalics">
                     {{model.extractTargetAttributes("desc", "code",
                     model.all.instructionalMethod,
                     [model.class.old.instructionalMethodCode])}}
@@ -179,7 +203,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['specialApprovalCode'])}"
-                     class="changedFrom">
+                     class="grayItalics">
                     {{model.extractTargetAttributes("desc", "code", model.all.specialApprovals,
                     [model.class.old.specialApprovalCode]) ?
                     model.extractTargetAttributes("desc", "code", model.all.specialApprovals,
@@ -214,7 +238,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['majorRestrictions', 'includeMajorRestriction'])}"
-                     class="changedFrom">{{(model.class.old.includeMajorRestriction ? "Include: " : "Exclude: ") +
+                     class="grayItalics">{{(model.class.old.includeMajorRestriction ? "Include: " : "Exclude: ") +
                     model.extractTargetAttributes("desc", "code",
                     model.all.majorRestrictions,
                     model.class.old.majorRestrictions)}}
@@ -247,7 +271,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['classRestrictions', 'includeClassRestriction'])}"
-                     class="changedFrom">{{(model.class.old.includeClassRestriction ? "Include: " : "Exclude: ") +
+                     class="grayItalics">{{(model.class.old.includeClassRestriction ? "Include: " : "Exclude: ") +
                     model.extractTargetAttributes("desc", "code",
                     model.all.classRestrictions,
                     model.class.old.classRestrictions)}}
@@ -280,7 +304,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['levelRestrictions', 'includeLevelRestriction'])}"
-                     class="changedFrom">{{(model.class.old.includeLevelRestriction ? "Include: " : "Exclude: ") +
+                     class="grayItalics">{{(model.class.old.includeLevelRestriction ? "Include: " : "Exclude: ") +
                     model.extractTargetAttributes("desc", "code",
                     model.all.levelRestrictions,
                     model.class.old.levelRestrictions)}}
@@ -313,7 +337,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['programRestrictions', 'includeProgramRestriction'])}"
-                     class="changedFrom">{{(model.class.old.includeProgramRestriction ? "Include: " : "Exclude: ") +
+                     class="grayItalics">{{(model.class.old.includeProgramRestriction ? "Include: " : "Exclude: ") +
                     model.extractTargetAttributes("desc", "code",
                     model.all.programRestrictions,
                     model.class.old.programRestrictions)}}
@@ -346,7 +370,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['collegeRestrictions', 'includeCollegeRestriction'])}"
-                     class="changedFrom">{{(model.class.old.includeCollegeRestriction ? "Include: " : "Exclude: ") +
+                     class="grayItalics">{{(model.class.old.includeCollegeRestriction ? "Include: " : "Exclude: ") +
                     model.extractTargetAttributes("desc", "code",
                     model.all.collegeRestrictions,
                     model.class.old.collegeRestrictions)}}
@@ -370,7 +394,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['attributeCode'])}"
-                     class="changedFrom">{{model.extractTargetAttributes("desc",
+                     class="grayItalics">{{model.extractTargetAttributes("desc",
                     "code", model.all.attributeCode,
                     model.class.old.attributeCode)}}
                 </div>
@@ -389,7 +413,7 @@
             </td>
             <td>
                 <div ng-class="{hidden: !model.differentFromLastYear(['publish'])}"
-                     class="changedFrom">{{model.class.old.publish}}
+                     class="grayItalics">{{model.class.old.publish}}
                 </div>
             </td>
         </tr>
@@ -408,7 +432,7 @@
                 </div>
             </td>
             <td>
-                <div ng-class="{hidden: !model.differentFromLastYear(['status'])}" class="changedFrom">
+                <div ng-class="{hidden: !model.differentFromLastYear(['status'])}" class="grayItalics">
                     {{model.extractTargetAttributes("desc",
                     "code", model.allStatuses,
                     model.class.old.status)}}
@@ -438,7 +462,7 @@
                     </div>
                 </div>
             </td>
-            <td ng-class="{hidden: model.class.metadata && model.class.metadata.added}" class="changedFrom">
+            <td ng-class="{hidden: model.class.metadata && model.class.metadata.added}" class="grayItalics">
                 <div class="text-box">Last year's data in gray, if changed</div>
             </td>
         </tr>
