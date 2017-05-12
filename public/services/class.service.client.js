@@ -53,6 +53,7 @@
         // fills in default values for a new class; needs the schedule in which this class is contained
         // to find what section number to use
         function fillDefaultData(aClass, schedule) {
+            aClass.crn = null;
             aClass.termCode = getCurrentTerm();
             aClass.status = "A";
             aClass.meetingTimes = [];
@@ -153,9 +154,6 @@
             }
             if (!aClass.courseTitle) {
                 invalidReasons.push("Invalid title: " + aClass.courseTitle);
-            }
-            if (!aClass.primaryInstructorID) {
-                invalidReasons.push("Invalid primary instructor: " + aClass.primaryInstructorID);
             }
             if (aClass.meetingTimes.constructor !== Array) {
                 invalidReasons.push("Invalid meeting times: " + aClass.meetingTimes);

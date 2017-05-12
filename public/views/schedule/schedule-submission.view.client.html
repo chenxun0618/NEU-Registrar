@@ -23,10 +23,10 @@
             ng-change="model.getScheduleDetail()">
     </select>
 
-    <div ng-if="model.schedule && (statusLine = model.getScheduleStatusLine(model.schedule))"
+    <div ng-if="model.schedule && model.getScheduleStatusLine(model.schedule)"
          class="alert alert-info margin-top-20" ng-click="hideAlertBox = true"
          ng-hide="hideAlertBox">
-        {{statusLine}}
+        {{model.getScheduleStatusLine(model.schedule)}}
         <div ng-if="model.schedule.scheduleStatus === 'R' && model.schedule.comment">
             <br>Reason: <span class="bold">{{model.schedule.comment}}</span>
         </div>
@@ -59,11 +59,6 @@
             <td ng-class="{'italics': (!class.meetingTimes.length)}">
                 <div class="meetingTimeCell">{{model.getReadableMeetingTimes(class)}}</div>
             </td>
-            <!--<td>-->
-                <!--<a ng-click="model.navigateToClassDetail(class.metadata.unique_id)">-->
-                    <!--{{model.userCanEditSchedule ? "Edit" : "View"}}-->
-                <!--</a>-->
-            <!--</td>-->
         </tr>
         </tbody>
     </table>
