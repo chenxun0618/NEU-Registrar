@@ -2,7 +2,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `addClass`(IN class JSON, IN termcod
   BEGIN
     SET
     @collegeCode = JSON_UNQUOTE(JSON_EXTRACT(class, '$.collegeCode')),
-    @deptCode = JSON_UNQUOTE(JSON_EXTRACT(class, '$.deptCode')),
+    @departmentCode = JSON_UNQUOTE(JSON_EXTRACT(class, '$.departmentCode')),
     @partOfTerm = JSON_UNQUOTE(JSON_EXTRACT(class, '$.partOfTerm')),
     @subjectCode = JSON_UNQUOTE(JSON_EXTRACT(class, '$.subjectCode')),
     @courseNumber = JSON_UNQUOTE(JSON_EXTRACT(class, '$.courseNumber')),
@@ -39,7 +39,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `addClass`(IN class JSON, IN termcod
 
     # insert main table info
     INSERT INTO ssbsect VALUES (
-      termcode, @collegeCode, @deptCode, crn, @partOfTerm, @subjectCode, @courseNumber,
+      termcode, @collegeCode, @departmentCode, crn, @partOfTerm, @subjectCode, @courseNumber,
                 @section, @status, @scheduleTypeCode, @campusCode, '', @courseTitle, @creditHours,
                                                                    @billingHours, @maxEnrollment, @instructionalMethodCode, 0, @waitlistCapacity, @specialApprovalCode, @publish
     );
