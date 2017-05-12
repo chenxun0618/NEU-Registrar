@@ -193,12 +193,12 @@
             if (r == true) {
                 clearStatusMessages();
                 if (vm.schedule) {
-                    clearSelectedDepartmentAndSchedule();
                     vm.loadingSchedule = true;
                     ScheduleService.approveSchedule(vm.selectedDepartment.departmentCode)
                         .then(
                             function (res) {
                                 changeStatusOfSchedule(vm.selectedDepartment.departmentCode, 'A');
+                                clearSelectedDepartmentAndSchedule();
                                 vm.loadingSchedule = false;
                                 $window.scrollTo(0, 0);
                                 vm.success = "Schedule approved!";
