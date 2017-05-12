@@ -65,6 +65,8 @@
                             } else {
                                 vm.class = {};
                                 vm.class.termCode = res.data.termCode;
+                                vm.class.collegeCode = res.data.collegeCode;
+                                vm.class.deptCode = res.data.deptCode;
                                 vm.class.subjectCode = res.data.subjectCode;
                                 vm.class.courseNumber = res.data.courseNumber;
                                 vm.class.courseTitle = res.data.title;
