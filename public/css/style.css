@@ -74,7 +74,7 @@ textarea {
 .fixed-header tbody tr:hover {
     background-color: #DAEDF6;
     border: solid #93baf1 2px;
-    font-weight: bold;
+    font-weight: 500;
     cursor: pointer;
 }
 
