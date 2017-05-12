@@ -1,5 +1,5 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `login`(IN email VARCHAR(45), IN id VARCHAR(9))
-main: BEGIN
+CREATE DEFINER =`root`@`localhost` PROCEDURE `login`(IN email VARCHAR(45), IN id VARCHAR(9))
+    main: BEGIN
     # check if the email is valid
     IF (SELECT COUNT(*)
         FROM `user`

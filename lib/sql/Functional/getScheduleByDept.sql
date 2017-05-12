@@ -1,5 +1,5 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `getScheduleByDept`(IN `dept` VARCHAR(4))
-BEGIN
+CREATE DEFINER =`root`@`localhost` PROCEDURE `getScheduleByDept`(IN `dept` VARCHAR(4))
+  BEGIN
     DECLARE existsSched INT DEFAULT 0;
 
     SELECT COUNT(*)

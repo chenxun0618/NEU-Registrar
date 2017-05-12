@@ -1,5 +1,5 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `getUserInfo`(IN id VARCHAR(9))
-BEGIN
+CREATE DEFINER =`root`@`localhost` PROCEDURE `getUserInfo`(IN id VARCHAR(9))
+  BEGIN
     DECLARE departments JSON;
     DECLARE i INT DEFAULT 0;
     DECLARE dept JSON DEFAULT '[]';

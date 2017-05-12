@@ -1,5 +1,5 @@
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getClassesByDept`(IN dept VARCHAR(4))
-BEGIN
+  BEGIN
     DROP TABLE IF EXISTS major;
     CREATE TEMPORARY TABLE major AS (
       SELECT
@@ -69,14 +69,21 @@ BEGIN
 
     SELECT
       SSBSECT_TERM_CODE                                  AS 'termCode',
+      SSBSECT_COLL_CODE                                  AS 'collegeCode',
+      SSBSECT_DEPT_CODE                                  AS 'deptCode',
       SSBSECT_CRN                                        AS 'crn',
+      SSBSECT_PTRM_CODE                                  AS 'partOfTerm',
       SSBSECT_SUBJ_CODE                                  AS 'subjectCode',
       SSBSECT_CRSE_NUMB                                  AS 'courseNumber',
       SSBSECT_SEQ_NUMB                                   AS 'section',
       SSBSECT_SSTS_CODE                                  AS 'status',
       SSBSECT_SCHD_CODE                                  AS 'scheduleTypeCode',
       SSBSECT_CAMP_CODE                                  AS 'campusCode',
-      SSBSECT_CRSE_TITLE                                 AS 'courseTitle',
+      IF(SSBSECT_CRSE_TITLE_ALT = '',
+         SSBSECT_CRSE_TITLE,
+         SSBSECT_CRSE_TITLE_ALT)                         AS 'courseTitle',
+      SSBSECT_CREDIT_HR                                  AS 'creditHours',
+      SSBSECT_BILLING_HR                                 AS 'billingHours',
       SSBSECT_MAX_ENRL                                   AS 'maxEnrollment',
       SSBSECT_INSM_CODE                                  AS 'instructionalMethodCode',
       SSBSECT_PRIOR_ENRL                                 AS 'priorEnrollment',

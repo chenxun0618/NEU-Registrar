@@ -1,5 +1,5 @@
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAdminInfo`(IN id VARCHAR(9))
-BEGIN
+  BEGIN
     DECLARE dept JSON DEFAULT '[]';
     DECLARE name VARCHAR(45);
     DECLARE email VARCHAR(45);
@@ -36,7 +36,7 @@ BEGIN
       SET @status = IFNULL((SELECT SCHED_STATUS
                             FROM sched_submit
                             WHERE SCHED_DEPT_CODE = department), '');
-      
+
       SET @status = IF(@status = 'D', '', @status);
 
       SET dept_status = JSON_OBJECT(department, @status);

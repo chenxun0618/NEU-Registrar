@@ -1,7 +1,7 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `userUpdateSchedule`(IN `id`         VARCHAR(9), IN `dept` VARCHAR(4),
+CREATE DEFINER =`root`@`localhost` PROCEDURE `userUpdateSchedule`(IN `id`         VARCHAR(9), IN `dept` VARCHAR(4),
                                                                   IN `time_stamp` DATETIME, IN `action` ENUM ('D', 'S'),
                                                                   IN `classes`    JSON)
-main: BEGIN
+    main: BEGIN
     DECLARE username VARCHAR(60);
     DECLARE departments JSON;
     DECLARE last_time DATETIME;
