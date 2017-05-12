@@ -193,6 +193,9 @@
             if (!aClass.creditHours && aClass.creditHours !== 0) {
                 invalidReasons.push("Invalid credit hours: " + aClass.creditHours);
             }
+            if (!["1", "2", "A", "B"].includes(aClass.partOfTerm)) {
+                invalidReasons.push("Invalid part of term: " + aClass.partOfTerm);
+            }
 
             return invalidReasons;
         }

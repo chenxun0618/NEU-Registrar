@@ -120,6 +120,15 @@
             </td>
         </tr>
         <tr>
+            <td>Part of Term*</td>
+            <td>
+                <select class="select2" style="width: 150px"
+                        ng-model="model.class.partOfTerm"
+                        ng-options="option.partOfTermCode as (option.partOfTermDesc + ' (' + option.partOfTermCode + ')') for option in model.all.partOfTerms">
+                </select>
+            </td>
+        </tr>
+        <tr>
             <td>Campus*</td>
             <td>
                 <select class="select2" style="width: 150px"
