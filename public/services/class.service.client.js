@@ -29,8 +29,8 @@
         }
 
         // returns all subject codes associated with the specified department code
-        function getAllSubjectCodesInDept(deptCode) {
-            var url = "lib/getAllSubjectCodesInDept.php?dept=" + deptCode;
+        function getAllSubjectCodesInDept(departmentCode) {
+            var url = "lib/getAllSubjectCodesInDept.php?dept=" + departmentCode;
             return $http.get(url);
         }
 

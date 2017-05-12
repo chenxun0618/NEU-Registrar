@@ -70,7 +70,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getClassesByDept`(IN dept VARCHAR(4
     SELECT
       SSBSECT_TERM_CODE                                  AS 'termCode',
       SSBSECT_COLL_CODE                                  AS 'collegeCode',
-      SSBSECT_DEPT_CODE                                  AS 'deptCode',
+      SSBSECT_DEPT_CODE                                  AS 'departmentCode',
       SSBSECT_CRN                                        AS 'crn',
       SSBSECT_PTRM_CODE                                  AS 'partOfTerm',
       SSBSECT_SUBJ_CODE                                  AS 'subjectCode',
