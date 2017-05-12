@@ -38,6 +38,7 @@
                     .then(
                         function (res) {
                             vm.all = res.data;
+                            vm.all.specialApprovals = [{code: '', desc: ''}].concat(vm.all.specialApprovals); // prepend empty option
                         },
                         function (error) {
                             vm.error = error.data || error.statusText;
@@ -67,6 +68,12 @@
                                 vm.class.subjectCode = res.data.subjectCode;
                                 vm.class.courseNumber = res.data.courseNumber;
                                 vm.class.courseTitle = res.data.title;
+                                vm.class.billingHourHigh = (res.data.billingHourHigh === null) ? null : parseFloat(res.data.billingHourHigh);
+                                vm.class.billingHourLow = parseFloat(res.data.billingHourLow);
+                                vm.class.billingHours = vm.class.billingHourLow;
+                                vm.class.creditHourHigh = (res.data.creditHourHigh === null) ? null : parseFloat(res.data.creditHourHigh);
+                                vm.class.creditHourLow = parseFloat(res.data.creditHourLow);
+                                vm.class.creditHours = vm.class.creditHourLow;
                                 ClassService.fillDefaultData(vm.class, vm.schedule);
                             }
                         },

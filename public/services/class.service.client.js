@@ -54,7 +54,6 @@
         // to find what section number to use
         function fillDefaultData(aClass, schedule) {
             aClass.crn = null;
-            aClass.termCode = getCurrentTerm();
             aClass.status = "A";
             aClass.meetingTimes = [];
             aClass.majorRestrictions = [];
@@ -71,27 +70,21 @@
             aClass.attributeCode = [];
             aClass.publish = "Y";
             aClass.comment = "";
-
-            aClass.section = findMinimalSection(aClass, schedule) + 1;
-        }
-
-        // TODO move to database
-        function getCurrentTerm() {
-            return "201810";
+            aClass.section = findLargestSection(aClass, schedule) + 1;
         }
 
         // searches schedule for largest section number associated with given class (subject code and course number)
-        function findMinimalSection(aClass, schedule) {
-            var minSection = 0;
+        function findLargestSection(aClass, schedule) {
+            var largestSection = 0;
 
             for (var x = 0; x < schedule.classes.length; x++) {
                 var currentClass = schedule.classes[x];
                 if (aClass.subjectCode === currentClass.subjectCode && aClass.courseNumber === currentClass.courseNumber) {
-                    minSection = Math.max(minSection, currentClass.section);
+                    largestSection = Math.max(largestSection, currentClass.section);
                 }
             }
 
-            return minSection;
+            return largestSection;
         }
 
         // returns a string uniquely identifying the given class (crn, or, if an added class [no crn], combination
@@ -191,8 +184,14 @@
             if (!['Y', 'N'].includes(aClass.publish)) {
                 invalidReasons.push("Invalid publish indicator: " + aClass.publish);
             }
-            if (!["", "A", "D", "G", "I"].includes(aClass.specialApprovalCode)) {
+            if (![null, "", "A", "D", "G", "I"].includes(aClass.specialApprovalCode)) {
                 invalidReasons.push("Invalid special approval code: " + aClass.specialApprovalCode);
+            }
+            if (!aClass.billingHours && aClass.billingHours !== 0) {
+                invalidReasons.push("Invalid billing hours: " + aClass.billingHours);
+            }
+            if (!aClass.creditHours && aClass.creditHours !== 0) {
+                invalidReasons.push("Invalid credit hours: " + aClass.creditHours);
             }
 
             return invalidReasons;
