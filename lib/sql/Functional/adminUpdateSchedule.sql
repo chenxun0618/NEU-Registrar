@@ -1,5 +1,5 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `adminUpdateSchedule`(IN action  ENUM ('A', 'R'), IN dept VARCHAR(4),
-                                                                  IN message VARCHAR(2000))
+CREATE DEFINER =`root`@`localhost` PROCEDURE `adminUpdateSchedule`(IN action  ENUM ('A', 'R'), IN dept VARCHAR(4),
+                                                                   IN message VARCHAR(2000))
   BEGIN
     DECLARE classes JSON;
     DECLARE i INT DEFAULT 0;
@@ -21,7 +21,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `adminUpdateSchedule`(IN action  ENU
         SET @class = JSON_EXTRACT(classes, CONCAT('$[', i, ']'));
         SET @crn = JSON_UNQUOTE(JSON_EXTRACT(@class, '$.crn'));
         # if it's a new class
-        IF @crn IS NULL
+        IF @crn = 'null'
         THEN
           CALL addClass(@termCode, @class);
         # editing an existing class

@@ -1,6 +1,8 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `addClass`(IN class JSON, IN termcode VARCHAR(6), IN crn VARCHAR(5))
+CREATE DEFINER =`root`@`localhost` PROCEDURE `addClass`(IN termcode VARCHAR(6), IN class JSON)
   BEGIN
     SET
+    @crn = (SELECT MAX(SSBSECT_CRN)
+            FROM ssbsect) + 1,
     @collegeCode = JSON_UNQUOTE(JSON_EXTRACT(class, '$.collegeCode')),
     @departmentCode = JSON_UNQUOTE(JSON_EXTRACT(class, '$.departmentCode')),
     @partOfTerm = JSON_UNQUOTE(JSON_EXTRACT(class, '$.partOfTerm')),
@@ -21,38 +23,30 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `addClass`(IN class JSON, IN termcod
     @waitlistCapacity = JSON_EXTRACT(class, '$.waitlistCapacity'),
     @specialApprovalCode = JSON_UNQUOTE(JSON_EXTRACT(class, '$.specialApprovalCode')),
     @publish = JSON_UNQUOTE(JSON_EXTRACT(class, '$.publish')),
-    @instructorID = JSON_UNQUOTE(JSON_EXTRACT(class, '$.primaryInstructorID')),
-    @instructorFirstName = (SELECT INSTRUCTOR_FIRST_NAME
-                            FROM instructor
-                            WHERE INSTRUCTOR_ID = @instructorID),
-    @instructorLastName = (SELECT INSTRUCTOR_LAST_NAME
-                           FROM instructor
-                           WHERE INSTRUCTOR_ID = @instructorID);
+    @instructorID = JSON_UNQUOTE(JSON_EXTRACT(class, '$.primaryInstructorID'));
 
     SELECT
-      SSRRTST_LEVL_CODE,
-      SSRRTST_MIN_GRDE
-    INTO @levelCode, @minGrade
-    FROM ssrrtst
-    WHERE SSRRTST_SUBJ_CODE_PREQ = @subjectCode AND SSRRTST_CRSE_NUMB_PREQ = @courseNumber
-    LIMIT 1;
+      INSTRUCTOR_FIRST_NAME,
+      INSTRUCTOR_LAST_NAME
+    INTO @instructorFirstName, @instructorLastName
+    FROM instructor
+    WHERE INSTRUCTOR_ID = @instructorID;
 
     # insert main table info
-    INSERT INTO ssbsect VALUES (
-      termcode, @collegeCode, @departmentCode, crn, @partOfTerm, @subjectCode, @courseNumber,
-                @section, @status, @scheduleTypeCode, @campusCode, '', @courseTitle, @creditHours,
-                                                                   @billingHours, @maxEnrollment, @instructionalMethodCode, 0, @waitlistCapacity, @specialApprovalCode, @publish
-    );
+    INSERT INTO ssbsect (SSBSECT_CRN, SSBSECT_TERM_CODE, SSBSECT_COLL_CODE, SSBSECT_DEPT_CODE, SSBSECT_PTRM_CODE,
+                         SSBSECT_SUBJ_CODE, SSBSECT_CRSE_NUMB, SSBSECT_SEQ_NUMB, SSBSECT_SSTS_CODE, SSBSECT_SCHD_CODE,
+                         SSBSECT_CAMP_CODE, SSBSECT_CRSE_TITLE, SSBSECT_CREDIT_HR, SSBSECT_BILLING_HR, SSBSECT_MAX_ENRL,
+                         SSBSECT_INSM_CODE, SSBSECT_WAIT_CCAPACITY, SSBSECT_SAPR_CODE, PUBLISH_IND)
+    VALUES (@crn, termcode, @collegeCode, @departmentCode, @partOfTerm, @subjectCode, @courseNumber,
+                  @section, @status, @scheduleTypeCode, @campusCode, @courseTitle, @creditHours,
+            @billingHours, @maxEnrollment, @instructionalMethodCode, @waitlistCapacity, @specialApprovalCode, @publish);
 
     # insert instructor info
-    INSERT INTO sirasgn VALUES (
-      termcode, crn, @instructorID, @instructorFirstName, @instructorLastName
+    INSERT INTO sirasgn (SIRASGN_TERM_CODE, SIRASGN_CRN, SIRASGN_ID, SIRASGN_FIRST_NAME, SIRASGN_LAST_NAME) VALUES (
+      termcode, @crn, @instructorID, @instructorFirstName, @instructorLastName
     );
 
-    # insert prerequisite
-    INSERT INTO ssrrtst VALUES (
-      termcode, crn, '', '', @subjectCode, @courseNumber, @levelCode, @minGrade
-    );
+    # insert prerequisite (not implemented yet)
 
-    CALL addRestrictions(termcode, crn, @class);
+    CALL addRestrictions(termcode, @crn, @class);
   END

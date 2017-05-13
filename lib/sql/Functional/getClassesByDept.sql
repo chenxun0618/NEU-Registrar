@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `getClassesByDept`(IN dept VARCHAR(4))
+CREATE DEFINER =`root`@`localhost` PROCEDURE `getClassesByDept`(IN dept VARCHAR(4))
   BEGIN
     DROP TABLE IF EXISTS major;
     CREATE TEMPORARY TABLE major AS (

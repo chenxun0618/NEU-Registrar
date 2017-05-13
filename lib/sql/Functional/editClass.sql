@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `editClass`(IN termcode VARCHAR(6), IN crn VARCHAR(5), IN class JSON)
+CREATE DEFINER =`root`@`localhost` PROCEDURE `editClass`(IN termcode VARCHAR(6), IN crn VARCHAR(5), IN class JSON)
   BEGIN
     # update main table
     UPDATE ssbsect
@@ -15,17 +15,23 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `editClass`(IN termcode VARCHAR(6), 
 
     SET @instructorID = JSON_UNQUOTE(JSON_EXTRACT(class, '$.primaryInstructorID'));
 
+    SELECT
+      INSTRUCTOR_LAST_NAME,
+      INSTRUCTOR_LAST_NAME
+    INTO @instructorFirstName, @instructorLastName
+    FROM instructor
+    WHERE INSTRUCTOR_ID = @instructorID;
+
     # update instructor table
-    UPDATE sirasgn
-    SET
-      SIRASGN_ID         = @instructorID,
-      SIRASGN_FIRST_NAME = (SELECT INSTRUCTOR_FIRST_NAME
-                            FROM instructor
-                            WHERE INSTRUCTOR_ID = @instructorID),
-      SIRASGN_LAST_NAME  = (SELECT INSTRUCTOR_LAST_NAME
-                            FROM instructor
-                            WHERE INSTRUCTOR_ID = @instructorID)
-    WHERE SIRASGN_CRN = crn AND SIRASGN_TERM_CODE = termCode;
+    IF @instructorFirstName IS NOT NULL AND @instructorLastName IS NOT NULL
+    THEN
+      UPDATE sirasgn
+      SET
+        SIRASGN_ID         = @instructorID,
+        SIRASGN_FIRST_NAME = @instructorFirstName,
+        SIRASGN_LAST_NAME  = @instructorLastName
+      WHERE SIRASGN_CRN = crn AND SIRASGN_TERM_CODE = termCode;
+    END IF;
 
     DELETE FROM ssrrmaj
     WHERE SSRRMAJ_CRN = crn;
