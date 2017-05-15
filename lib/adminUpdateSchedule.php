@@ -7,7 +7,7 @@ $db->postInit();
 $action = $db->post('action');
 $dept = $db->post('dept');
 if (isset($_POST['comment'])) {
-    $comment = $_POST['comment'];
+    $comment = $db->post('comment');
 } else {
     $comment = "";
 }
