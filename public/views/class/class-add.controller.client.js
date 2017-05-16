@@ -99,7 +99,16 @@
                 $window.scrollTo(0, 0);
             } else {
                 prepareAddedClass(vm.class);
-                vm.schedule.classes.push(vm.class);
+                for (var i = 0; i < vm.schedule.classes.length; i++) {
+                    if (i === vm.schedule.classes.length - 1) {
+                        vm.schedule.classes.push(vm.class);
+                        break;
+                    }
+                    else if (vm.schedule.classes[i + 1].courseNumber > vm.class.courseNumber) {
+                        vm.schedule.classes.splice(i + 1, 0, vm.class);
+                        break;
+                    }
+                }
                 $window.sessionStorage.schedule = JSON.stringify(vm.schedule);
                 $location.url("/schedule-submission");
             }
